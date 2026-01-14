@@ -9,6 +9,8 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
+import com.example.flea_market_app.FleaMarketAppApplication;
+
 import lombok.RequiredArgsConstructor;
 
 @Configuration
@@ -16,8 +18,17 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class SecurityConfig {
 
+	private final SecurityFilterChain securityFilterChain;
+
+	private final FleaMarketAppApplication fleaMarketAppApplication;
+
 	private final JwtAuthenticationFilter jwtAuthenticationFilter;
 	private final AuthorizationConfig authorizationConfig;
+
+	SecurityConfig(FleaMarketAppApplication fleaMarketAppApplication, SecurityFilterChain securityFilterChain) {
+		this.fleaMarketAppApplication = fleaMarketAppApplication;
+		this.securityFilterChain = securityFilterChain;
+	}
 
 	@Bean
 	public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
@@ -37,10 +48,26 @@ public class SecurityConfig {
 
 				// 例外ハンドリング（401 / 403）
 				.exceptionHandling(ex -> ex
-						.authenticationEntryPoint(
-								authorizationConfig.authenticationEntryPoint())
-						.accessDeniedHandler(
-								authorizationConfig.accessDeniedHandler()));
+						.authenticationEntryPoint((request, response, authException) -> {
+							response.setStatus(401);
+							response.setContentType("application/json;charset=UTF-8");
+							response.getWriter().write("""
+									    {
+									      "error": "UNAUTHORIZED",
+									      "message": "認証が必要です"
+									    }
+									""");
+						})
+						.accessDeniedHandler((request, response, accessDeniedException) -> {
+							response.setStatus(403);
+							response.setContentType("application/json;charset=UTF-8");
+							response.getWriter().write("""
+									    {
+									      "error": "FORBIDDEN",
+									      "message": "権限がありません"
+									    }
+									""");
+						}));
 
 		return http.build();
 	}
