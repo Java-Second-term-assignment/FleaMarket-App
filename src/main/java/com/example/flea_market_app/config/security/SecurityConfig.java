@@ -9,8 +9,6 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
-import com.example.flea_market_app.FleaMarketAppApplication;
-
 import lombok.RequiredArgsConstructor;
 
 @Configuration
@@ -18,17 +16,8 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class SecurityConfig {
 
-	private final SecurityFilterChain securityFilterChain;
-
-	private final FleaMarketAppApplication fleaMarketAppApplication;
-
 	private final JwtAuthenticationFilter jwtAuthenticationFilter;
 	private final AuthorizationConfig authorizationConfig;
-
-	SecurityConfig(FleaMarketAppApplication fleaMarketAppApplication, SecurityFilterChain securityFilterChain) {
-		this.fleaMarketAppApplication = fleaMarketAppApplication;
-		this.securityFilterChain = securityFilterChain;
-	}
 
 	@Bean
 	public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
