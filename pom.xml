@@ -59,7 +59,7 @@
 		</dependency>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-webmvc</artifactId>
+			<artifactId>spring-boot-starter-web</artifactId>
 		</dependency>
 
 		<dependency>
@@ -104,10 +104,25 @@
          </dependency>
 
 		<dependency>
-			<groupId>com.example</groupId>
-			<artifactId>flea-market-system-complete</artifactId>
-			<version>0.0.1-SNAPSHOT</version>
-		</dependency>
+		     <groupId>com.example</groupId>
+             <artifactId>flea-market-system-complete</artifactId>
+             <version>0.0.1-SNAPSHOT</version>
+        <exclusions>
+            <exclusion>
+             <groupId>com.fasterxml.jackson.core</groupId>
+             <artifactId>jackson-databind</artifactId>
+            </exclusion>
+            <exclusion>
+             <groupId>com.fasterxml.jackson.core</groupId>
+             <artifactId>jackson-annotations</artifactId>
+            </exclusion>
+            <exclusion>
+             <groupId>com.fasterxml.jackson.core</groupId>
+             <artifactId>jackson-core</artifactId>
+            </exclusion>
+        </exclusions>
+        </dependency>
+
 		
 		<dependency>
             <groupId>software.amazon.awssdk</groupId>
