@@ -29,6 +29,21 @@
 	<properties>
 		<java.version>17</java.version>
 	</properties>
+	
+	<dependencyManagement>
+        <dependencies>
+           <dependency>
+              <groupId>software.amazon.awssdk</groupId>
+              <artifactId>bom</artifactId>
+              <version>2.25.29</version>
+              <type>pom</type>
+              <scope>import</scope>
+           </dependency>
+       </dependencies>
+     </dependencyManagement>
+
+
+	
 	<dependencies>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
@@ -93,6 +108,11 @@
 			<artifactId>flea-market-system-complete</artifactId>
 			<version>0.0.1-SNAPSHOT</version>
 		</dependency>
+		
+		<dependency>
+            <groupId>software.amazon.awssdk</groupId>
+            <artifactId>rekognition</artifactId>
+        </dependency>
 	</dependencies>
 
 	<build>
