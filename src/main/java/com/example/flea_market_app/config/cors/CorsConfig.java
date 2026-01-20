@@ -18,7 +18,7 @@ public class CorsConfig {
 
 		config.setAllowedOrigins(List.of(
 				"http://localhost:3000",
-				"http://examole.com"
+				"http://example.com"
 
 		));
 
