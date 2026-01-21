@@ -18,7 +18,7 @@ public class CorsConfig {
 
 		config.setAllowedOrigins(List.of(
 				"http://localhost:3000",
-				"http://examole.com"
+				"http://example.com"
 
 		));
 
@@ -28,7 +28,7 @@ public class CorsConfig {
 
 		UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
 
-		source.registerCorsConfiguration("api/**", config);
+		source.registerCorsConfiguration("/api/**", config);
 
 		return source;
 	}
