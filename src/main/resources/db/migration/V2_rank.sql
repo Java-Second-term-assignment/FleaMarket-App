@@ -6,7 +6,7 @@ VALUES
   (1, 'BRONZE', 'ブロンズ', 1000),
   (2, 'SILVER', 'シルバー', 800),
   (3, 'GOLD',   'ゴールド', 600)
-ON CONFLICT (rank_code) DO UPDATE
+ON CONFLICT (id) DO UPDATE
 SET
   rank_code      = EXCLUDED.rank_code,
   rank_name      = EXCLUDED.rank_name,
