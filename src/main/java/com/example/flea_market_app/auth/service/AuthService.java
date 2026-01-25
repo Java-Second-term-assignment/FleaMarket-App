@@ -10,6 +10,7 @@ import com.example.flea_market_app.auth.service.dto.LoginRequest;
 import com.example.flea_market_app.auth.service.dto.LoginResponse;
 import com.example.flea_market_app.auth.service.dto.RefreshRequest;
 import com.example.flea_market_app.auth.service.dto.RefreshResponse;
+import com.example.flea_market_app.common.exception.UnauthorizedBusinessException;
 
 import lombok.RequiredArgsConstructor;
 
@@ -26,12 +27,18 @@ public class AuthService {
 	@Transactional
 	public LoginResponse login(LoginRequest request) {
 
-		// 認証対象の取得(仮) (あとでUserService等に差し替え)
-		AuthUser authUser = authUserProvider.loadByIdentifier(request.getIdentifier());
+		// ユーザー不在でも404ではなく、401(認証情報の不足)
+		AuthUser authUser;
+
+		try {
+			authUser = authUserProvider.loadByIdentifier(request.getIdentifier());
+		} catch (RuntimeException e) {
+			throw UnauthorizedBusinessException.invalidCredentials();
+		}
 
 		if (!passwordHasher.matches(request.getPassword(), authUser.getPasswordHash())) {
 			// exceptionに関して要検討
-			throw new IllegalArgumentException("Invalid credentials");
+			throw UnauthorizedBusinessException.invalidCredentials();
 		}
 
 		String accessToken = tokenService.generateAccessToken(authUser.getUserId());
@@ -51,10 +58,10 @@ public class AuthService {
 
 		RefreshToken refreshToken = refreshTokenRepository
 				.findByToken(request.getRefreshToken())
-				.orElseThrow(() -> new IllegalArgumentException("Invalid refresh token"));
+				.orElseThrow(UnauthorizedBusinessException::invalidRefreshToken);
 
 		if (refreshToken.isExpired()) {
-			throw new IllegalStateException("Refresh token expired");
+			throw UnauthorizedBusinessException.refreshTokenExpired();
 		}
 
 		String newAccessToken = tokenService.generateAccessToken(refreshToken.getUserId());

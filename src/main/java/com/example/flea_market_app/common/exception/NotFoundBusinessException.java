@@ -22,6 +22,9 @@ import com.example.flea_market_app.common.error.ErrorCode;
  * @author FleaMarket-App Team
  * @since 1.0.0
  */
+
+// 404系統
+
 public class NotFoundBusinessException extends BusinessException {
 
 	/**
@@ -33,8 +36,7 @@ public class NotFoundBusinessException extends BusinessException {
 	private NotFoundBusinessException() {
 		super(
 				ErrorCode.RESOURCE_NOT_FOUND,
-				ErrorCode.RESOURCE_NOT_FOUND.getMessageKey()
-		);
+				ErrorCode.RESOURCE_NOT_FOUND.getMessageKey());
 	}
 
 	/**
@@ -50,8 +52,7 @@ public class NotFoundBusinessException extends BusinessException {
 	private NotFoundBusinessException(ErrorCode errorCode) {
 		super(
 				Objects.requireNonNull(errorCode, "errorCode must not be null"),
-				errorCode.getMessageKey()
-		);
+				errorCode.getMessageKey());
 	}
 
 	/**
