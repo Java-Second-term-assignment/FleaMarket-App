@@ -1,15 +1,16 @@
 package com.example.flea_market_app.auth.repository;
 
 import java.util.Optional;
+import java.util.UUID;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import com.example.flea_market_app.auth.domain.RefreshToken;
+import com.example.flea_market_app.auth.domain.RefreshTokenEntity;
 
-public interface RefreshTokenRepository extends JpaRepository<RefreshToken, String> {
+public interface RefreshTokenRepository extends JpaRepository<RefreshTokenEntity, UUID> {
 
-	Optional<RefreshToken> findByToken(String token);
+	Optional<RefreshTokenEntity> findByTokenHash(String tokenHash);
 
-	void deleteByUserId(String userId);
+	void deleteByUserId(UUID userId);
 
 }

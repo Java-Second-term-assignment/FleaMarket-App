@@ -1,11 +1,15 @@
 package com.example.flea_market_app.auth.service;
 
+import java.time.OffsetDateTime;
+import java.util.UUID;
+
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.example.flea_market_app.auth.domain.AuthUser;
-import com.example.flea_market_app.auth.domain.RefreshToken;
+import com.example.flea_market_app.auth.domain.RefreshTokenEntity;
 import com.example.flea_market_app.auth.repository.RefreshTokenRepository;
+import com.example.flea_market_app.auth.service.TokenService.IssuedRefreshToken;
 import com.example.flea_market_app.auth.service.dto.LoginRequest;
 import com.example.flea_market_app.auth.service.dto.LoginResponse;
 import com.example.flea_market_app.auth.service.dto.RefreshRequest;
@@ -23,13 +27,12 @@ public class AuthService {
 
 	private final AuthUserProvider authUserProvider;
 	private final PasswordHasher passwordHasher;
+	private final TokenHasher tokenHasher;
 
 	@Transactional
 	public LoginResponse login(LoginRequest request) {
 
-		// ユーザー不在でも404ではなく、401(認証情報の不足)
 		AuthUser authUser;
-
 		try {
 			authUser = authUserProvider.loadByIdentifier(request.getIdentifier());
 		} catch (RuntimeException e) {
@@ -37,36 +40,40 @@ public class AuthService {
 		}
 
 		if (!passwordHasher.matches(request.getPassword(), authUser.getPasswordHash())) {
-			// exceptionに関して要検討
 			throw UnauthorizedBusinessException.invalidCredentials();
 		}
 
-		String accessToken = tokenService.generateAccessToken(authUser.getUserId());
-		RefreshToken refreshToken = tokenService.generateRefreshToken(authUser.getUserId());
+		// userId を UUID に変換（DBがuuidのため）
+		UUID userId = UUID.fromString(authUser.getUserId());
 
-		refreshTokenRepository.deleteByUserId(authUser.getUserId());
-		refreshTokenRepository.save(refreshToken);
+		String accessToken = tokenService.generateAccessToken(userId);
+
+		IssuedRefreshToken issued = tokenService.issueRefreshToken(userId);
+
+		refreshTokenRepository.deleteByUserId(userId);
+		refreshTokenRepository.save(issued.getEntity());
 
 		return new LoginResponse(
 				authUser.getUserId(),
 				accessToken,
-				refreshToken.getToken());
+				issued.getRawToken());
 	}
 
 	@Transactional(readOnly = true)
 	public RefreshResponse refresh(RefreshRequest request) {
 
-		RefreshToken refreshToken = refreshTokenRepository
-				.findByToken(request.getRefreshToken())
+		String tokenHash = tokenHasher.hash(request.getRefreshToken());
+
+		RefreshTokenEntity entity = refreshTokenRepository
+				.findByTokenHash(tokenHash)
 				.orElseThrow(UnauthorizedBusinessException::invalidRefreshToken);
 
-		if (refreshToken.isExpired()) {
+		OffsetDateTime now = OffsetDateTime.now();
+		if (entity.isRevoked() || entity.isExpired(now)) {
 			throw UnauthorizedBusinessException.refreshTokenExpired();
 		}
 
-		String newAccessToken = tokenService.generateAccessToken(refreshToken.getUserId());
-
+		String newAccessToken = tokenService.generateAccessToken(entity.getUserId());
 		return new RefreshResponse(newAccessToken);
-
 	}
 }
