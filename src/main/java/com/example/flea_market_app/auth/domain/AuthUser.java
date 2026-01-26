@@ -9,9 +9,10 @@ public class AuthUser {
 
 	private final String userId;
 	private final String passwordHash;
+	private final String identifier;
 
-	public static AuthUser of(String userId, String passwordHash) {
-		return new AuthUser(userId, passwordHash);
+	public static AuthUser of(String userId, String passwordHash, String identifier) {
+		return new AuthUser(userId, passwordHash, identifier);
 	}
 
 }
