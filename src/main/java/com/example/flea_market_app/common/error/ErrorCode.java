@@ -44,6 +44,18 @@ public enum ErrorCode {
 	/** 決済処理が失敗した場合のエラーコード */
 	PAYMENT_FAILED("error.payment_failed", HttpStatus.BAD_REQUEST),
 
+	/** 画像形式が不正な場合のエラーコード */
+	INVALID_IMAGE_FORMAT("error.invalid_image_format", HttpStatus.BAD_REQUEST),
+
+	/** 画像サイズが上限超過の場合のエラーコード */
+	IMAGE_TOO_LARGE("error.image_too_large", HttpStatus.BAD_REQUEST),
+
+	/** S3への画像アップロードが失敗した場合のエラーコード */
+	IMAGE_UPLOAD_FAILED("error.image_upload_failed", HttpStatus.INTERNAL_SERVER_ERROR),
+
+	/** S3からの画像削除が失敗した場合のエラーコード */
+	IMAGE_DELETE_FAILED("error.image_delete_failed", HttpStatus.INTERNAL_SERVER_ERROR),
+
 	/** アクセス権限がない場合のエラーコード */
 	PERMISSION_DENIED("error.access_denied", HttpStatus.FORBIDDEN),
 
