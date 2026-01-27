@@ -2,26 +2,42 @@ package com.example.flea_market_app.user.controller;
 
 import java.util.UUID;
 
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
-final class SecurityUtil {
+import com.example.flea_market_app.config.security.SecurityUtil;
+import com.example.flea_market_app.user.service.UserProfileQueryService;
+import com.example.flea_market_app.user.service.UserService;
+import com.example.flea_market_app.user.service.dto.UpdateProfileRequest;
+import com.example.flea_market_app.user.service.dto.UserMeResponse;
 
-	private SecurityUtil() {
+import lombok.RequiredArgsConstructor;
+
+@RestController
+@RequiredArgsConstructor
+@RequestMapping("/user")
+@Validated
+public class UserController {
+
+	private final UserProfileQueryService userProfileQueryService;
+	private final UserService userService;
+
+	// userIdはSecurityContextからのみ取得（引数で受け取らない）
+	@GetMapping("/me")
+	public ResponseEntity<UserMeResponse> getMe() {
+		UUID userId = SecurityUtil.getCurrentUserId();
+		return ResponseEntity.ok(userProfileQueryService.getMe(userId));
 	}
 
-	public static UUID getCurrentUserId() {
-		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-		if (auth == null || auth.getPrincipal() == null) {
-			throw new IllegalStateException("Unauthenticated");
-		}
-
-		// 例：principalに userId(UUID) を入れている想定
-		// 実プロジェクトに合わせてここを調整
-		if (auth.getPrincipal() instanceof String s) {
-			return UUID.fromString(s);
-		}
-
-		throw new IllegalStateException("Unsupported principal type: " + auth.getPrincipal().getClass());
+	@PatchMapping("/me")
+	public ResponseEntity<Void> updateMe(@Validated @RequestBody UpdateProfileRequest req) {
+		UUID userId = SecurityUtil.getCurrentUserId();
+		userService.updateProfile(userId, req.getDisplayName());
+		return ResponseEntity.noContent().build();
 	}
 }

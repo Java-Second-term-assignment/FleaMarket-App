@@ -1,20 +1,11 @@
 package com.example.flea_market_app.user.repository;
 
-import java.util.Optional;
 import java.util.UUID;
 
-import com.example.flea_market_app.user.domain.User;
+import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface UserRepository {
+import com.example.flea_market_app.user.domain.UserEntity;
 
-	Optional<User> findById(UUID userId);
-
-	default User getRequired(UUID userId) {
-
-		return findById(userId).orElseThrow(() -> new IllegalArgumentException("User not found: " + userId));
-
-	}
-
-	void save(User user);
+public interface UserRepository extends JpaRepository<UserEntity, UUID> {
 
 }

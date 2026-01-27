@@ -1,9 +1,8 @@
 package com.example.flea_market_app.user.repository;
 
+import org.springframework.data.jpa.repository.JpaRepository;
+
 import com.example.flea_market_app.user.domain.UserRank;
 
-// UserRankの
-public interface UserRankRepository {
-
-	UserRank getById(short id);
+public interface UserRankRepository extends JpaRepository<UserRank, Short> {
 }

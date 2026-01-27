@@ -1,4 +1,4 @@
-package com.example.flea_market_app.user.repository.jpa;
+package com.example.flea_market_app.user.domain;
 
 import java.util.UUID;
 
@@ -14,7 +14,7 @@ import lombok.Setter;
 @Table(name = "users")
 @Getter
 @Setter
-public class UserJpaEntity {
+public class UserEntity {
 
 	@Id
 	@Column(name = "id", nullable = false)
@@ -27,9 +27,8 @@ public class UserJpaEntity {
 	private short userRankId;
 
 	@Column(name = "identity_status", nullable = false)
-	private String identityStatus;
+	private String identityStatus; // UNVERIFIED etc
 
 	@Column(name = "is_active", nullable = false)
 	private boolean active;
-
 }
