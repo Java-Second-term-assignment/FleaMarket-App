@@ -9,7 +9,7 @@ import lombok.Getter;
 public class User {
 
 	private final UUID id;
-	private String dispalayname;
+	private String displayName;
 	private VerificationStatus verificationStatus;
 	private UserRank rank;
 	private boolean active;
@@ -22,7 +22,7 @@ public class User {
 			boolean active) {
 
 		this.id = Objects.requireNonNull(id);
-		this.dispalayname = requireText(displayName, "displayName");
+		this.displayName = requireText(displayName, "displayName");
 		this.verificationStatus = Objects.requireNonNull(verificationStatus);
 		this.rank = Objects.requireNonNull(rank);
 		this.active = active;
@@ -31,7 +31,7 @@ public class User {
 
 	public void updateProfile(String newDisplayName) {
 
-		this.dispalayname = requireText(newDisplayName, "displayName");
+		this.displayName = requireText(newDisplayName, "displayName");
 	}
 
 	public void submitVerification() {
