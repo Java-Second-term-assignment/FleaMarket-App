@@ -5,9 +5,9 @@ import java.util.UUID;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import com.example.flea_market_app.catalog.domain.ItemImage;
+import com.example.flea_market_app.catalog.domain.ItemImageEntity;
 
-public interface ItemImageRepository extends JpaRepository<ItemImage, UUID> {
+public interface ItemImageRepository extends JpaRepository<ItemImageEntity, UUID> {
 
 	/**
 	 * 商品IDで画像を取得（表示順でソート）
@@ -15,7 +15,7 @@ public interface ItemImageRepository extends JpaRepository<ItemImage, UUID> {
 	 * @param itemId 商品ID
 	 * @return 画像リスト（display_orderの昇順）
 	 */
-	List<ItemImage> findByItemIdOrderByDisplayOrderAsc(UUID itemId);
+	List<ItemImageEntity> findByItemIdOrderByDisplayOrderAsc(UUID itemId);
 
 	/**
 	 * 商品の画像数をカウント

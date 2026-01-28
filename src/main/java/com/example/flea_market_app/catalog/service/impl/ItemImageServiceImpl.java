@@ -13,7 +13,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.example.flea_market_app.catalog.domain.ItemImage;
+import com.example.flea_market_app.catalog.domain.ItemImageEntity;
 import com.example.flea_market_app.catalog.repository.ItemImageRepository;
 import com.example.flea_market_app.catalog.service.ItemImageService;
 import com.example.flea_market_app.common.error.ErrorCode;
@@ -111,7 +111,7 @@ public class ItemImageServiceImpl implements ItemImageService {
 				}
 
 				// データベースに保存
-				ItemImage itemImage = new ItemImage();
+				ItemImageEntity itemImage = new ItemImageEntity();
 				itemImage.setId(UUID.randomUUID());
 				itemImage.setItemId(itemId);
 				itemImage.setS3Key(s3Key);
@@ -155,10 +155,10 @@ public class ItemImageServiceImpl implements ItemImageService {
 	public List<String> getItemImageUrls(UUID itemId) {
 		log.debug("Getting image URLs for item: {}", itemId);
 
-		List<ItemImage> images = itemImageRepository.findByItemIdOrderByDisplayOrderAsc(itemId);
+		List<ItemImageEntity> images = itemImageRepository.findByItemIdOrderByDisplayOrderAsc(itemId);
 		List<String> urls = new ArrayList<>();
 
-		for (ItemImage image : images) {
+		for (ItemImageEntity image : images) {
 			String url = s3ImageService.generateImageUrl(bucketName, image.getS3Key());
 			urls.add(url);
 		}
@@ -172,14 +172,14 @@ public class ItemImageServiceImpl implements ItemImageService {
 	public String getThumbnailImageUrl(UUID itemId) {
 		log.debug("Getting thumbnail image URL for item: {}", itemId);
 
-		List<ItemImage> images = itemImageRepository.findByItemIdOrderByDisplayOrderAsc(itemId);
+		List<ItemImageEntity> images = itemImageRepository.findByItemIdOrderByDisplayOrderAsc(itemId);
 		if (images.isEmpty()) {
 			log.debug("No images found for item: {}", itemId);
 			return null;
 		}
 
 		// 1枚目（display_order=0）がサムネイル
-		ItemImage thumbnail = images.get(0);
+		ItemImageEntity thumbnail = images.get(0);
 		String url = s3ImageService.generateImageUrl(bucketName, thumbnail.getS3Key());
 
 		log.debug("Found thumbnail image for item: {}, s3Key={}", itemId, thumbnail.getS3Key());
@@ -191,9 +191,9 @@ public class ItemImageServiceImpl implements ItemImageService {
 	public void deleteItemImages(UUID itemId) {
 		log.info("Deleting all images for item: {}", itemId);
 
-		List<ItemImage> images = itemImageRepository.findByItemIdOrderByDisplayOrderAsc(itemId);
+		List<ItemImageEntity> images = itemImageRepository.findByItemIdOrderByDisplayOrderAsc(itemId);
 
-		for (ItemImage image : images) {
+		for (ItemImageEntity image : images) {
 			try {
 				s3ImageService.deleteImage(bucketName, image.getS3Key());
 				log.info("Successfully deleted image from S3: {}", image.getS3Key());

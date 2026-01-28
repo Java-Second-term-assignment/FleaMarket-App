@@ -16,7 +16,7 @@ import lombok.Setter;
 @Table(name = "item_images")
 @Getter
 @Setter
-public class ItemImage {
+public class ItemImageEntity {
 
 	@Id
 	@Column(name = "id", nullable = false)
