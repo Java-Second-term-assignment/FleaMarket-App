@@ -47,6 +47,9 @@ CREATE TABLE users (
   user_rank_id    smallint NOT NULL REFERENCES user_ranks(id),
   identity_status text NOT NULL CHECK (identity_status IN ('UNVERIFIED','PENDING','VERIFIED','REJECTED')),
   is_active       boolean NOT NULL DEFAULT true,
+  -- プロフィール画像: S3のobject keyを保存（URLは保存しない）
+  -- 命名規則: profiles/{userId}/{uuid}.{ext}
+  profile_image_s3_key text NULL,
   created_at      timestamptz NOT NULL DEFAULT now(),
   updated_at      timestamptz NOT NULL DEFAULT now()
 );

@@ -9,5 +9,7 @@ import com.example.flea_market_app.auth.domain.AuthUserEntity;
 
 public interface AuthUserRepository extends JpaRepository<AuthUserEntity, UUID> {
 
+	Optional<AuthUserEntity> findByUserId(UUID userId);
+
 	Optional<AuthUserEntity> findByEmail(String email);
 }
