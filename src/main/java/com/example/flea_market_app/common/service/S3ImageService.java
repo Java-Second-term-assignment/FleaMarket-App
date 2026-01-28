@@ -62,4 +62,18 @@ public interface S3ImageService {
 		return String.format("profiles/%s/%s.%s", userId, fileId, fileExtension);
 	}
 
+	/**
+	 * 商品画像用のS3キーを生成します。
+	 * 
+	 * <p>命名規則: items/{itemId}/{uuid}.{ext}
+	 * 
+	 * @param itemId 商品ID
+	 * @param fileExtension ファイル拡張子（ドットを含まない、例: jpg）
+	 * @return S3オブジェクトキー
+	 */
+	default String generateItemImageKey(UUID itemId, String fileExtension) {
+		UUID fileId = UUID.randomUUID();
+		return String.format("items/%s/%s.%s", itemId, fileId, fileExtension);
+	}
+
 }

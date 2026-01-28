@@ -56,6 +56,9 @@ public enum ErrorCode {
 	/** S3からの画像削除が失敗した場合のエラーコード */
 	IMAGE_DELETE_FAILED("error.image_delete_failed", HttpStatus.INTERNAL_SERVER_ERROR),
 
+	/** 商品画像数が上限を超えている場合のエラーコード */
+	ITEM_IMAGE_COUNT_EXCEEDED("error.item_image_count_exceeded", HttpStatus.BAD_REQUEST),
+
 	/** アクセス権限がない場合のエラーコード */
 	PERMISSION_DENIED("error.access_denied", HttpStatus.FORBIDDEN),
 
