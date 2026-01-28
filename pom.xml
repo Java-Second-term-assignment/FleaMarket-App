@@ -109,25 +109,27 @@
              <artifactId>spring-boot-starter-security</artifactId>
          </dependency>
 
+		<!--
 		<dependency>
 		     <groupId>com.example</groupId>
              <artifactId>flea-market-system-complete</artifactId>
              <version>0.0.1-SNAPSHOT</version>
-        <exclusions>
-            <exclusion>
-             <groupId>com.fasterxml.jackson.core</groupId>
-             <artifactId>jackson-databind</artifactId>
-            </exclusion>
-            <exclusion>
-             <groupId>com.fasterxml.jackson.core</groupId>
-             <artifactId>jackson-annotations</artifactId>
-            </exclusion>
-            <exclusion>
-             <groupId>com.fasterxml.jackson.core</groupId>
-             <artifactId>jackson-core</artifactId>
-            </exclusion>
-        </exclusions>
+	        <exclusions>
+	            <exclusion>
+	             <groupId>com.fasterxml.jackson.core</groupId>
+	             <artifactId>jackson-databind</artifactId>
+	            </exclusion>
+	            <exclusion>
+	             <groupId>com.fasterxml.jackson.core</groupId>
+	             <artifactId>jackson-annotations</artifactId>
+	            </exclusion>
+	            <exclusion>
+	             <groupId>com.fasterxml.jackson.core</groupId>
+	             <artifactId>jackson-core</artifactId>
+	            </exclusion>
+	        </exclusions>
         </dependency>
+        -->
 
 		
 		<dependency>
