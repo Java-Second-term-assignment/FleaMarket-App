@@ -31,4 +31,7 @@ public class UserEntity {
 
 	@Column(name = "is_active", nullable = false)
 	private boolean active;
+
+	@Column(name = "profile_image_s3_key")
+	private String profileImageS3Key;
 }
