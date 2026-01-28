@@ -13,6 +13,9 @@ import org.springframework.web.multipart.MultipartFile;
 import com.example.flea_market_app.catalog.domain.ItemEntity;
 import com.example.flea_market_app.catalog.repository.ItemRepository;
 import com.example.flea_market_app.catalog.service.ItemImageService;
+import com.example.flea_market_app.listing.domain.ItemCondition;
+import com.example.flea_market_app.listing.domain.Listing;
+import com.example.flea_market_app.listing.domain.ShippingFeePayer;
 import com.example.flea_market_app.listing.service.ListingService;
 import com.example.flea_market_app.listing.service.dto.CreateItemRequest;
 import com.example.flea_market_app.listing.service.dto.CreateItemResponse;
@@ -39,20 +42,20 @@ public class ListingServiceImpl implements ListingService {
 	public CreateItemResponse createItem(UUID sellerId, CreateItemRequest request, List<MultipartFile> images) {
 		log.info("Creating item for seller: {}, name: {}", sellerId, request.getName());
 
-		// 商品エンティティの作成
-		ItemEntity item = new ItemEntity();
-		item.setId(UUID.randomUUID());
-		item.setSellerId(sellerId);
-		item.setCategoryId(request.getCategoryId());
-		item.setName(request.getName());
-		item.setDescription(request.getDescription() != null ? request.getDescription() : "");
-		item.setPriceAmount(request.getPriceAmount());
-		item.setCurrency("JPY");
-		item.setStatus("DRAFT");
-		item.setCondition(request.getCondition());
-		item.setShippingFeePayer(request.getShippingFeePayer());
+		// リクエストの condition / shippingFeePayer を Enum に変換（事前バリデーション済み想定）
+		ItemCondition condition = ItemCondition.valueOf(request.getCondition());
+		ShippingFeePayer shippingFeePayer = ShippingFeePayer.valueOf(request.getShippingFeePayer());
 
-		// 商品を保存
+		// ドメインオブジェクトを生成し、Entity に変換して保存
+		Listing listing = Listing.createDraft(
+				sellerId,
+				request.getCategoryId(),
+				request.getName(),
+				request.getDescription(),
+				request.getPriceAmount(),
+				condition,
+				shippingFeePayer);
+		ItemEntity item = listing.toEntity();
 		item = itemRepository.save(item);
 		log.info("Successfully created item: {}", item.getId());
 
