@@ -71,6 +71,9 @@ public enum ErrorCode {
 	/** 内部サーバーエラーが発生した場合のエラーコード */
 	INTERNAL_SERVER_ERROR("error.internal_server_error", HttpStatus.INTERNAL_SERVER_ERROR),
 
+	/** 状態遷移が不正な場合のエラーコード（例: PAID以外でconfirmPurchase等） */
+	INVALID_STATE("error.invalid_state", HttpStatus.BAD_REQUEST),
+
 	/** リソースが見つからない場合の汎用的なエラーコード（未知のリソースタイプ用） */
 	RESOURCE_NOT_FOUND("error.not_found", HttpStatus.NOT_FOUND);
 
@@ -145,8 +148,8 @@ public enum ErrorCode {
 	 */
 	public boolean isNotFound() {
 		return switch (this) {
-			case USER_NOT_FOUND, ITEM_NOT_FOUND, ORDER_NOT_FOUND, RESOURCE_NOT_FOUND -> true;
-			default -> false;
+		case USER_NOT_FOUND, ITEM_NOT_FOUND, ORDER_NOT_FOUND, RESOURCE_NOT_FOUND -> true;
+		default -> false;
 		};
 	}
 
