@@ -48,6 +48,9 @@ public class ItemImageServiceImpl implements ItemImageService {
 	@Value("${aws.s3.item-image.max-count:10}")
 	private Integer maxImageCount;
 
+	@Value("${aws.s3.item-image.min-count:1}")
+	private Integer minImageCount;
+
 	@Override
 	@Transactional
 	public List<String> uploadItemImages(UUID itemId, List<MultipartFile> files) {
@@ -55,10 +58,20 @@ public class ItemImageServiceImpl implements ItemImageService {
 
 		if (files == null || files.isEmpty()) {
 			log.warn("No images provided for item: {}", itemId);
-			return new ArrayList<>();
+			throw new ValidationBusinessException(
+					ErrorCode.ITEM_IMAGE_COUNT_INSUFFICIENT,
+					"error.item_image_count_insufficient");
 		}
 
-		// 画像数のバリデーション
+		// 画像数のバリデーション（最小値）
+		if (files.size() < minImageCount) {
+			log.warn("Image count is below minimum: {} < {}", files.size(), minImageCount);
+			throw new ValidationBusinessException(
+					ErrorCode.ITEM_IMAGE_COUNT_INSUFFICIENT,
+					"error.item_image_count_insufficient");
+		}
+
+		// 画像数のバリデーション（最大値）
 		if (files.size() > maxImageCount) {
 			log.warn("Image count exceeds maximum: {} > {}", files.size(), maxImageCount);
 			throw new ValidationBusinessException(

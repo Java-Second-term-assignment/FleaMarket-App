@@ -5,6 +5,7 @@ import java.util.UUID;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 
 import lombok.Data;
@@ -33,8 +34,12 @@ public class CreateItemRequest {
 	private UUID categoryId;
 
 	@NotBlank(message = "商品状態は必須です")
-	private String condition; // NEW, LIKE_NEW, USED_GOOD, USED_FAIR, USED_POOR
+	@Pattern(regexp = "^(NEW|LIKE_NEW|USED_GOOD|USED_FAIR|USED_POOR)$", 
+			message = "商品状態はNEW、LIKE_NEW、USED_GOOD、USED_FAIR、USED_POORのいずれかである必要があります")
+	private String condition;
 
 	@NotBlank(message = "配送料負担者は必須です")
-	private String shippingFeePayer; // SELLER, BUYER
+	@Pattern(regexp = "^(SELLER|BUYER)$", 
+			message = "配送料負担者はSELLERまたはBUYERである必要があります")
+	private String shippingFeePayer;
 }

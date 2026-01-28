@@ -59,6 +59,9 @@ public enum ErrorCode {
 	/** 商品画像数が上限を超えている場合のエラーコード */
 	ITEM_IMAGE_COUNT_EXCEEDED("error.item_image_count_exceeded", HttpStatus.BAD_REQUEST),
 
+	/** 商品画像数が最小値を下回っている場合のエラーコード */
+	ITEM_IMAGE_COUNT_INSUFFICIENT("error.item_image_count_insufficient", HttpStatus.BAD_REQUEST),
+
 	/** アクセス権限がない場合のエラーコード */
 	PERMISSION_DENIED("error.access_denied", HttpStatus.FORBIDDEN),
 

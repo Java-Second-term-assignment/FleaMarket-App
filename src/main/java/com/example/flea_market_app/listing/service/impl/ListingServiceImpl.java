@@ -56,18 +56,16 @@ public class ListingServiceImpl implements ListingService {
 		item = itemRepository.save(item);
 		log.info("Successfully created item: {}", item.getId());
 
-		// 画像のアップロード（画像がある場合のみ）
+		// 画像のアップロード（最低1枚必須）
 		List<String> imageUrls = new ArrayList<>();
-		if (images != null && !images.isEmpty()) {
-			try {
-				itemImageService.uploadItemImages(item.getId(), images);
-				imageUrls = itemImageService.getItemImageUrls(item.getId());
-				log.info("Successfully uploaded {} images for item: {}", imageUrls.size(), item.getId());
-			} catch (Exception e) {
-				log.error("Failed to upload images for item: {}", item.getId(), e);
-				// 画像アップロード失敗時は商品も削除（トランザクションロールバック）
-				throw e;
-			}
+		try {
+			itemImageService.uploadItemImages(item.getId(), images);
+			imageUrls = itemImageService.getItemImageUrls(item.getId());
+			log.info("Successfully uploaded {} images for item: {}", imageUrls.size(), item.getId());
+		} catch (Exception e) {
+			log.error("Failed to upload images for item: {}", item.getId(), e);
+			// 画像アップロード失敗時は商品も削除（トランザクションロールバック）
+			throw e;
 		}
 
 		log.info("Successfully created item with {} images: {}", imageUrls.size(), item.getId());

@@ -19,6 +19,7 @@ import com.example.flea_market_app.listing.service.ListingService;
 import com.example.flea_market_app.listing.service.dto.CreateItemRequest;
 import com.example.flea_market_app.listing.service.dto.CreateItemResponse;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
 /**
@@ -50,7 +51,7 @@ public class ListingController {
 	 */
 	@PostMapping
 	public ResponseEntity<ApiResponse<CreateItemResponse>> createItem(
-			@RequestPart("item") @Validated CreateItemRequest request,
+			@RequestPart("item") @Valid CreateItemRequest request,
 			@RequestPart(value = "images", required = false) List<MultipartFile> images) {
 
 		log.info("Received item creation request: name={}, images={}", 
