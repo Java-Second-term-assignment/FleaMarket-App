@@ -22,6 +22,7 @@ public class AuthorizationConfig {
 				.requestMatchers(HttpMethod.POST, "/items/**").hasRole("USER")
 				.requestMatchers(HttpMethod.PUT, "/items/**").hasRole("USER")
 				.requestMatchers("/user/me/**").hasRole("USER")
+				.requestMatchers("/api/favorites/**").hasRole("USER")
 
 				// 管理者
 				.requestMatchers("/admin/**").hasRole("ADMIN")
