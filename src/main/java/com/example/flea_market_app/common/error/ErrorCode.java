@@ -74,6 +74,12 @@ public enum ErrorCode {
 	/** 状態遷移が不正な場合のエラーコード（例: PAID以外でconfirmPurchase等） */
 	INVALID_STATE("error.invalid_state", HttpStatus.BAD_REQUEST),
 
+	/** 既にお気に入りに追加済みの場合のエラーコード */
+	ALREADY_FAVORITED("error.already_favorited", HttpStatus.BAD_REQUEST),
+
+	/** 商品が公開中でない場合のエラーコード（お気に入り追加時など） */
+	ITEM_NOT_PUBLISHED("error.item_not_published", HttpStatus.BAD_REQUEST),
+
 	/** リソースが見つからない場合の汎用的なエラーコード（未知のリソースタイプ用） */
 	RESOURCE_NOT_FOUND("error.not_found", HttpStatus.NOT_FOUND);
 

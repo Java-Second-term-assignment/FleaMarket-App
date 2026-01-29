@@ -9,7 +9,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.example.flea_market_app.common.exception.AccessDeniedBusinessException;
 import com.example.flea_market_app.common.exception.NotFoundBusinessException;
-import com.example.flea_market_app.common.exception.ResourceType; // ← スクショにある前提
+import com.example.flea_market_app.common.exception.ResourceType;
+import com.example.flea_market_app.engagement.notification.service.EmailNotificationSender;
 import com.example.flea_market_app.transaction.domain.ChatMessage;
 import com.example.flea_market_app.transaction.domain.OrderEntity;
 import com.example.flea_market_app.transaction.domain.OrderMessageEntity;
@@ -24,6 +25,7 @@ public class ChatService {
 
 	private final OrderRepository orderRepository;
 	private final OrderMessageRepository orderMessageRepository;
+	private final EmailNotificationSender emailNotificationSender;
 
 	@Transactional
 	public void sendMessage(UUID orderId, UUID currentUserId, String content) {
@@ -42,6 +44,9 @@ public class ChatService {
 		e.setCreatedAt(msg.getCreatedAt());
 
 		orderMessageRepository.save(e);
+
+		UUID recipientUserId = order.getBuyerId().equals(currentUserId) ? order.getSellerId() : order.getBuyerId();
+		emailNotificationSender.sendChatReceived(recipientUserId, orderId);
 	}
 
 	@Transactional(readOnly = true)
