@@ -11,41 +11,92 @@
 	<main class="main-container">
 		<h1 class="page-title">出品内容の確認</h1>
 
-		<div class="confirm-card">
+		<form th:action="@{/product/submit}" method="post" class="confirm-card" th:object="${productForm}">
 
+			<input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
+
+			<!-- ================= 商品情報 ================= -->
 			<div class="confirm-section">
 				<div class="confirm-section-title">商品情報</div>
 
 				<div class="confirm-row">
 					<span class="confirm-label">商品名</span>
-					<span class="confirm-value" id="confirmName"></span>
+					<span class="confirm-value" th:text="*{name}">商品名</span>
 				</div>
 
 				<div class="confirm-row">
 					<span class="confirm-label">カテゴリー</span>
-					<span class="confirm-value" id="confirmCategory"></span>
+					<div class="confirm-value">
+						<ul class="confirm-list">
+							<li th:each="cat : *{categories}" th:text="${cat}">カテゴリー</li>
+						</ul>
+					</div>
+				</div>
+
+				<div class="confirm-row">
+					<span class="confirm-label">商品状態</span>
+					<div class="confirm-value">
+						<ul class="confirm-list">
+							<li th:each="cond : *{conditions}" th:text="${cond}">状態</li>
+						</ul>
+					</div>
 				</div>
 
 				<div class="confirm-row">
 					<span class="confirm-label">商品説明</span>
-					<span class="confirm-value" id="confirmDescription"></span>
+					<p class="confirm-description" th:text="*{description}">
+						説明
+					</p>
 				</div>
 			</div>
 
-			<div class="confirm-section">
-				<div class="confirm-section-title">価格</div>
-				<div class="confirm-price-box">
-					<span id="confirmPrice"></span> 円
+
+			<!-- ================= 価格 ================= -->
+			<div class="form-section price-section">
+				<div class="price-section-header">
+					価格を設定する
+				</div>
+
+				<div class="price-section-body">
+					<div class="price-row">
+						<span class="price-label">販売価格</span>
+						<span class="price-range">¥300〜</span>
+					</div>
+
+					<div class="price-input-area">
+						<input class="input50 price-input" type="text" inputmode="numeric" pattern="\d*"
+							placeholder="例）3000" th:field="*{price}" required>
+						<div class="input-hint price-input-hint">
+							半角数字で入力してください（例：3000）
+						</div>
+					</div>
+
+					<hr class="price-section-divider">
+
+					<div class="price-fee">
+						<span>販売手数料</span>
+						<span th:text="${fee != null ? '¥' + fee : '-'}">-</span>
+					</div>
+
+					<div class="price-profit">
+						<span>販売利益</span>
+						<span th:text="${profit != null ? '¥' + profit : '-'}">-</span>
+					</div>
+
+					<div class="price-bottom-space"></div>
 				</div>
 			</div>
 
+			<!-- ================= ボタン ================= -->
 			<div class="confirm-button-area">
-				<button type="button" class="btn-back">戻る</button>
-				<button type="button" class="btn-confirm">この内容で出品</button>
+				<a th:href="@{/product/add}" class="btn-back">戻る</a>
+				<button type="submit" class="btn-confirm">
+					この内容で出品
+				</button>
 			</div>
 
 			<p class="confirm-note">※ 出品後は内容を変更できません。</p>
-		</div>
+		</form>
 	</main>
 
 	<script th:src="@{/static/js/product_confirm.js}"></script>
