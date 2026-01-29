@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="ja" xmlns:th="http://www.thymeleaf.org">
+<body>
+
+<!-- 商品カード -->
+<div th:fragment="body">
+
+    <a th:href="@{/product/{id}(id=${item.id})}">
+        <div class="item-card">
+
+            <!-- ================= 画像 ================= -->
+            <div class="item-card-image">
+                <img class="item-img"
+                     th:src="${item.imageUrl}"
+                     alt="商品画像">
+
+                <!-- Sold out -->
+                <div class="soldout-badge" th:if="${item.stock == 0}">
+                    <span>Sold out</span>
+                </div>
+            </div>
+
+            <!-- ================= 情報 ================= -->
+            <div class="item-card-content">
+
+                <div class="item-card-title"
+                     th:text="${item.name}">
+                    商品名
+                </div>
+
+                <div class="item-card-price">
+                    値段:
+                    <span class="price-value"
+                          th:text="${#numbers.formatInteger(item.price,3,'COMMA')} + '円'">
+                        0円
+                    </span>
+                </div>
+
+                <div class="item-card-footer">
+                    ジャンル:
+                    <span class="item-card-category-chip"
+                          th:text="${item.category.name}">
+                        カテゴリー
+                    </span>
+                </div>
+
+            </div>
+        </div>
+    </a>
+
+</div>
+
+</body>
+</html>

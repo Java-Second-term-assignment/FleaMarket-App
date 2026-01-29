@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head th:replace="~{common/fragments :: common_head('ユーザー設定', ~{::link})}">
+	<link rel="stylesheet" th:href="@{/css/user.css}">
+</head>
+
+<body>
+	<div th:replace="~{common/fragments :: header}"></div>
+
+	<main class="main-container" style="margin-top: 80px;">
+		<div class="user-container">
+			<div style="display: flex;">
+				<div class="user-sidebar" style="width: 250px;">
+					<a th:href="@{/user/settings}" class="user-menu-item active">プロフィール設定</a>
+					<a th:href="@{/user/password}" class="user-menu-item">パスワード変更</a>
+					<a th:href="@{/user/items}" class="user-menu-item">出品した商品</a>
+				</div>
+
+				<div style="flex: 1; padding: 30px;">
+					<h3>プロフィール編集</h3>
+					<form th:action="@{/user/update}" th:object="${user}" method="post">
+						<div class="form-section">
+							<label>ユーザー名</label>
+							<input type="text" th:field="*{username}" class="input50">
+						</div>
+						<div class="form-section">
+							<label>メールアドレス</label>
+							<input type="email" th:field="*{email}" class="input50" readonly>
+							<small>※メールアドレスは変更できません</small>
+						</div>
+						<button type="submit" class="btn-blue">設定を保存する</button>
+					</form>
+				</div>
+			</div>
+		</div>
+	</main>
+</body>
+
+</html>

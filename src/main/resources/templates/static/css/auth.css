@@ -1,0 +1,142 @@
+@charset "UTF-8";
+
+/* 背景と全体のレイアウト */
+body {
+	background-color: #b9bddb;
+	/* 背景の薄紫 */
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	min-height: 100vh;
+	margin: 0;
+	font-family: "Helvetica Neue", Arial, sans-serif;
+}
+
+/* 中央の白いカード */
+.container {
+	background-color: white;
+	width: 90%;
+	max-width: 500px;
+	border-radius: 12px;
+	box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+	overflow: hidden;
+}
+
+/* ヘッダー */
+.header {
+	padding: 30px 20px;
+	border-bottom: 1.5px solid #3b4d8d;
+	text-align: center;
+}
+
+.header h1 {
+	margin: 0;
+	font-size: 28px;
+	font-weight: 800;
+	color: #333;
+}
+
+/* コンテンツエリア */
+.content {
+	padding: 30px 45px;
+}
+
+.form-group {
+	margin-bottom: 22px;
+}
+
+label {
+	display: block;
+	margin-bottom: 10px;
+	font-size: 14px;
+	font-weight: 500;
+}
+
+.required {
+	color: #e33e3e;
+	margin-left: 4px;
+}
+
+input {
+	width: 100%;
+	padding: 12px 15px;
+	border: 1px solid #d1d1d1;
+	border-radius: 6px;
+	box-sizing: border-box;
+	font-size: 14px;
+	background-color: #fff;
+}
+
+/* ボタンの共通設定 */
+.btn {
+	width: 100%;
+	padding: 16px;
+	border: none;
+	border-radius: 6px;
+	color: white;
+	font-size: 15px;
+	font-weight: bold;
+	cursor: pointer;
+	margin-top: 10px;
+	transition: opacity 0.2s;
+}
+
+.btn:hover {
+	opacity: 0.9;
+}
+
+/* ログイン用（紺色） */
+.btn-login {
+	background-color: #54649b;
+}
+
+/* パスワード変更・登録用（緑色） */
+.btn-register,
+.btn-submit {
+	background-color: #28a745;
+}
+
+.btn-register:hover,
+.btn-submit:hover {
+	background-color: #218838;
+}
+
+/* 下部のテキストリンク */
+.link-bottom {
+	text-align: center;
+	margin-top: 25px;
+	font-size: 13px;
+}
+
+a {
+	color: #4a69bd;
+	text-decoration: underline;
+}
+
+/* 左下のコピーライト */
+.copyright {
+	position: fixed;
+	bottom: 20px;
+	left: 20px;
+	color: rgba(255, 255, 255, 0.8);
+	font-size: 14px;
+}
+
+/* 登録画面の補足 */
+.footer-text {
+	font-size: 12px;
+	color: #333;
+	line-height: 1.6;
+	margin-top: 10px;
+}
+
+/* バリデーションエラー */
+.error-text {
+	color: #e33e3e;
+	font-size: 12px;
+	margin-top: 6px;
+}
+
+.btn-change {
+	background-color: #54649b;
+}

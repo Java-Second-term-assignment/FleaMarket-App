@@ -1,0 +1,110 @@
+@charset "UTF-8";
+
+body {
+	background-color: #2c2c2c;
+	margin: 0;
+	font-family: "Helvetica Neue", Arial, sans-serif;
+	padding-top: 80px;
+}
+
+.confirm-container {
+	max-width: 1100px;
+	margin: 0 auto;
+	padding: 0 20px;
+	display: flex;
+	gap: 30px;
+	align-items: flex-start;
+}
+
+.page-title {
+	color: #F2EEB8;
+	margin-bottom: 20px;
+}
+
+.confirm-main {
+	flex: 2;
+}
+
+.confirm-sidebar {
+	flex: 1;
+	margin-top: 60px;
+}
+
+/* カード */
+.section-card,
+.summary-card {
+	background: #fff;
+	border-radius: 16px;
+	padding: 24px;
+	margin-bottom: 20px;
+	box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+/* 商品 */
+.item-row {
+	display: flex;
+	gap: 15px;
+	padding: 15px 0;
+	border-bottom: 1px solid #eee;
+}
+
+.item-img {
+	width: 80px;
+	height: 80px;
+	object-fit: cover;
+	border-radius: 8px;
+}
+
+.item-price {
+	font-weight: bold;
+	color: #e63946;
+}
+
+.item-qty {
+	font-size: 12px;
+	color: #888;
+}
+
+/* 情報 */
+.info-grid {
+	display: grid;
+	grid-template-columns: 100px 1fr;
+	gap: 10px;
+	font-size: 14px;
+}
+
+.info-label {
+	color: #888;
+}
+
+/* サマリー */
+.summary-row,
+.total-row {
+	display: flex;
+	justify-content: space-between;
+	margin-bottom: 10px;
+}
+
+.total-row {
+	border-top: 2px solid #4A5B97;
+	padding-top: 15px;
+	font-size: 18px;
+	font-weight: bold;
+}
+
+/* ボタン */
+.btn-submit {
+	width: 100%;
+	background-color: #007bff;
+	color: #fff;
+	border: none;
+	padding: 16px;
+	border-radius: 30px;
+	font-size: 16px;
+	font-weight: bold;
+	cursor: pointer;
+}
+
+.btn-submit:hover {
+	background-color: #0056b3;
+}

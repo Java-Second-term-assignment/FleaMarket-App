@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head th:replace="~{common/fragments :: common_head('商品一覧', ~{::link})}">
+	<link rel="stylesheet" th:href="@{/static/css/product_list.css}">
+</head>
+
+<body>
+	<div th:replace="~{common/fragments :: header}"></div>
+
+	<main class="main-content" style="margin-top: 80px;">
+		<div class="product-grid">
+			<div th:each="item : ${products}" th:replace="~{item/item :: body}">
+			</div>
+		</div>
+
+	</main>
+</body>
+
+</html>
