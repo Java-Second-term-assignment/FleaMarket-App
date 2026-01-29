@@ -17,8 +17,10 @@ public class AuthorizationConfig {
 				// 公開
 				.requestMatchers("/auth/**").permitAll()
 				.requestMatchers("/health").permitAll()
+				.requestMatchers(HttpMethod.GET, "/community/boards/**").permitAll()
 
 				// ユーザー
+				.requestMatchers(HttpMethod.POST, "/community/boards/**").hasRole("USER")
 				.requestMatchers(HttpMethod.POST, "/items/**").hasRole("USER")
 				.requestMatchers(HttpMethod.PUT, "/items/**").hasRole("USER")
 				.requestMatchers("/user/me/**").hasRole("USER")
