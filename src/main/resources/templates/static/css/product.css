@@ -1,0 +1,326 @@
+@charset "UTF-8";
+
+/* 商品一覧用：グリッドレイアウト */
+.product-grid {
+	display: grid;
+	grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+	gap: 20px;
+	padding: 20px;
+}
+
+/* 商品カード（item.htmlのパーツ） */
+/* 全体のコンテナ（紫の点線枠） */
+.item-card {
+	width: 200px;
+	border-radius: 4px;
+	overflow: hidden;
+	font-family: sans-serif;
+	border: 1px solid #ccc;
+}
+
+a {
+	text-decoration: none;
+}
+
+.item-card:last-child {
+	margin-bottom: 0;
+}
+
+/* 画像エリア */
+.item-card-image {
+	background: #d9d9d9;
+	width: 100%;
+	aspect-ratio: 1 / 0.9;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	font-size: 24px;
+	font-weight: bold;
+	position: relative;
+	overflow: hidden;
+}
+
+/* Sold out リボン */
+.soldout-badge {
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 80px;
+	height: 80px;
+	background: linear-gradient(135deg, #ef4437 50%, transparent 50%);
+
+	color: #fff;
+	font-size: 12px;
+	font-family: inherit;
+	font-weight: bold;
+
+	/* 文字の位置調整 */
+	display: flex;
+	align-items: flex-start;
+	justify-content: center;
+	padding-top: 15px;
+	/* 上からの距離 */
+
+	/* 文字を斜めにする */
+	box-sizing: border-box;
+	z-index: 2;
+	user-select: none;
+}
+
+/* 挿入した画像のデザイン */
+.item-img {
+	width: 100%;
+	height: 100%;
+	object-fit: cover;
+	/* 枠に合わせて切り抜き */
+}
+
+.soldout-badge span {
+	display: inline-block;
+	transform: rotate(-45deg);
+	/* テキストも斜めにする */
+	white-space: nowrap;
+	margin-top: 5px;
+	margin-left: -20px;
+}
+
+/* 情報エリア（デフォルト：紺背景） */
+.item-card-content {
+	background: #4e6294;
+	padding: 12px;
+	color: #fff;
+}
+
+.item-card-title {
+	font-size: 14px;
+	font-weight: bold;
+	line-height: 1.4;
+	margin-bottom: 8px;
+}
+
+.item-card-price {
+	font-size: 14px;
+	margin-bottom: 8px;
+	font-weight: bold;
+}
+
+.price-value {
+	color: #f6e05e;
+	/* 値段の数字の色 */
+}
+
+.item-card-footer {
+	display: flex;
+	align-items: center;
+	font-size: 13px;
+}
+
+.item-card-category-chip {
+	background: #e0e7ff;
+	color: #4e6294;
+	padding: 2px 10px;
+	border-radius: 20px;
+	font-size: 11px;
+	margin-left: auto;
+	border: 1px solid #4e6294;
+}
+
+/* --- ホバー状態（下のカード） --- */
+.item-card {
+	transition: border 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.item-card-content {
+	transition: background 0.6s cubic-bezier(0.4, 0, 0.2, 1), color 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.price-value {
+	transition: color 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.item-card-category-chip {
+	transition: background 0.6s cubic-bezier(0.4, 0, 0.2, 1), color 0.6s cubic-bezier(0.4, 0, 0.2, 1), border 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.item-card:hover {
+	border: 1px solid #4e6294;
+}
+
+.item-card:hover .item-card-content {
+	background: #e8efff;
+	/* 薄い青背景 */
+	color: #1a2a4e;
+}
+
+.item-card:hover .price-value {
+	color: #4e6294;
+}
+
+.item-card:hover .item-card-category-chip {
+	background: transparent;
+	border: 1px solid #1a2a4e;
+	color: #1a2a4e;
+}
+
+/* 画像エリア */
+.item-card-image {
+	background: #d9d9d9;
+	width: 100%;
+	aspect-ratio: 1 / 0.9;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	font-size: 24px;
+	font-weight: bold;
+	position: relative;
+	overflow: hidden;
+}
+
+/* Sold out リボン */
+.soldout-badge {
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 80px;
+	height: 80px;
+	background: linear-gradient(135deg, #ef4437 50%, transparent 50%);
+
+	color: #fff;
+	font-size: 12px;
+	font-family: inherit;
+	font-weight: bold;
+
+	/* 文字の位置調整 */
+	display: flex;
+	align-items: flex-start;
+	justify-content: center;
+	padding-top: 15px;
+	/* 上からの距離 */
+
+	/* 文字を斜めにする */
+	box-sizing: border-box;
+	z-index: 2;
+	user-select: none;
+}
+
+/* 挿入した画像のデザイン */
+.item-img {
+	width: 100%;
+	height: 100%;
+	object-fit: cover;
+	/* 枠に合わせて切り抜き */
+}
+
+.soldout-badge span {
+	display: inline-block;
+	transform: rotate(-45deg);
+	/* テキストも斜めにする */
+	white-space: nowrap;
+	margin-top: 5px;
+	margin-left: -20px;
+}
+
+/* 情報エリア（デフォルト：紺背景） */
+.item-card-content {
+	background: #4e6294;
+	padding: 12px;
+	color: #fff;
+}
+
+.item-card-title {
+	font-size: 14px;
+	font-weight: bold;
+	line-height: 1.4;
+	margin-bottom: 8px;
+}
+
+.item-card-price {
+	font-size: 14px;
+	margin-bottom: 8px;
+	font-weight: bold;
+}
+
+.price-value {
+	color: #f6e05e;
+	/* 値段の数字の色 */
+}
+
+.item-card-footer {
+	display: flex;
+	align-items: center;
+	font-size: 13px;
+}
+
+.item-card-category-chip {
+	background: #e0e7ff;
+	color: #4e6294;
+	padding: 2px 10px;
+	border-radius: 20px;
+	font-size: 11px;
+	margin-left: auto;
+	border: 1px solid #4e6294;
+}
+
+/* --- ホバー状態（下のカード） --- */
+.item-card {
+	transition: border 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.item-card-content {
+	transition: background 0.6s cubic-bezier(0.4, 0, 0.2, 1), color 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.price-value {
+	transition: color 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.item-card-category-chip {
+	transition: background 0.6s cubic-bezier(0.4, 0, 0.2, 1), color 0.6s cubic-bezier(0.4, 0, 0.2, 1), border 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.item-card:hover {
+	border: 1px solid #4e6294;
+}
+
+.item-card:hover .item-card-content {
+	background: #e8efff;
+	/* 薄い青背景 */
+	color: #1a2a4e;
+}
+
+.item-card:hover .price-value {
+	color: #4e6294;
+}
+
+.item-card:hover .item-card-category-chip {
+	background: transparent;
+	border: 1px solid #1a2a4e;
+	color: #1a2a4e;
+}
+
+/* 出品登録フォーム用 */
+.form-container {
+	max-width: 800px;
+	margin: 40px auto;
+	background: #fff;
+	padding: 30px;
+	border-radius: 8px;
+}
+
+.form-section {
+	margin-bottom: 30px;
+}
+
+.input50 {
+	width: 100%;
+	padding: 12px;
+	background: #f9f9f9;
+	border: 1px solid #ddd;
+	border-radius: 4px;
+}
+
+.required {
+	color: var(--accent-red);
+	font-size: 12px;
+	margin-left: 5px;
+}

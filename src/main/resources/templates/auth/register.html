@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="ja" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+	<meta charset="UTF-8">
+	<title>Registration</title>
+
+	<!-- 共通CSS -->
+	<link rel="stylesheet" th:href="@{/static/css/common.css}">
+	<!-- 認証系CSS -->
+	<link rel="stylesheet" th:href="@{/static/css/auth.css}">
+</head>
+
+<body>
+
+	<div class="container">
+		<div class="header">
+			<h1>Registration</h1>
+		</div>
+
+		<div class="content">
+			<div class="link-top-right">
+				<a th:href="@{/login}">ログインページへ</a>
+			</div>
+
+			<form th:action="@{/register}" th:object="${userForm}" method="post">
+
+				<div class="form-group">
+					<label>
+						メールアドレス<span class="required">（必須）</span>
+					</label>
+					<input type="email" th:field="*{email}" placeholder="mail@example.com">
+					<p th:if="${#fields.hasErrors('email')}" th:errors="*{email}" class="error-text"></p>
+				</div>
+
+				<div class="form-group">
+					<label>
+						パスワード<span class="required">（必須）</span>
+					</label>
+					<input type="password" th:field="*{password}" placeholder="8文字以上">
+				</div>
+
+				<div class="form-group">
+					<label>
+						パスワード確認<span class="required">（必須）</span>
+					</label>
+					<input type="password" th:field="*{confirmPassword}" placeholder="再度入力してください">
+				</div>
+
+				<button type="submit" class="btn btn-register">
+					新規作成
+				</button>
+			</form>
+
+			<div class="footer-text">
+				ご登録にはサービス利用規約にご同意頂く必要が御座います。
+				規約は<a th:href="@{/terms}">こちら</a>
+			</div>
+		</div>
+	</div>
+
+	<div class="copyright">© My Shop</div>
+
+</body>
+
+</html>

@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="ja" xmlns:th="http://www.thymeleaf.org">
+
+<head th:replace="~{common/fragments :: common_head('出品確認', ~{::link})}">
+	<link rel="stylesheet" th:href="@{/static/css/product_confirm.css}">
+</head>
+
+<body>
+	<div th:replace="~{common/fragments :: header}"></div>
+
+	<main class="main-container">
+		<h1 class="page-title">出品内容の確認</h1>
+
+		<div class="confirm-card">
+
+			<div class="confirm-section">
+				<div class="confirm-section-title">商品情報</div>
+
+				<div class="confirm-row">
+					<span class="confirm-label">商品名</span>
+					<span class="confirm-value" id="confirmName"></span>
+				</div>
+
+				<div class="confirm-row">
+					<span class="confirm-label">カテゴリー</span>
+					<span class="confirm-value" id="confirmCategory"></span>
+				</div>
+
+				<div class="confirm-row">
+					<span class="confirm-label">商品説明</span>
+					<span class="confirm-value" id="confirmDescription"></span>
+				</div>
+			</div>
+
+			<div class="confirm-section">
+				<div class="confirm-section-title">価格</div>
+				<div class="confirm-price-box">
+					<span id="confirmPrice"></span> 円
+				</div>
+			</div>
+
+			<div class="confirm-button-area">
+				<button type="button" class="btn-back">戻る</button>
+				<button type="button" class="btn-confirm">この内容で出品</button>
+			</div>
+
+			<p class="confirm-note">※ 出品後は内容を変更できません。</p>
+		</div>
+	</main>
+
+	<script th:src="@{/static/js/product_confirm.js}"></script>
+</body>
+
+</html>
