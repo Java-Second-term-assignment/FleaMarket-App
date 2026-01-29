@@ -30,7 +30,7 @@ public class ReviewService {
 	@Transactional
 	public void submitReview(UUID orderId, UUID currentUserId, ReviewRating rating, String comment) {
 		OrderEntity orderEntity = orderRepository.findById(orderId)
-				.orElseThrow(() -> NotFoundBusinessException.of(ResourceType.USER));
+				.orElseThrow(() -> NotFoundBusinessException.of(ResourceType.ORDER));
 
 		Order order = new Order(
 				orderEntity.getId(),

@@ -8,6 +8,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.example.flea_market_app.common.exception.NotFoundBusinessException;
 import com.example.flea_market_app.common.exception.ResourceType;
+import com.example.flea_market_app.engagement.notification.service.EmailNotificationSender;
 import com.example.flea_market_app.transaction.domain.Order;
 import com.example.flea_market_app.transaction.domain.OrderEntity;
 import com.example.flea_market_app.transaction.domain.OrderStatus;
@@ -20,6 +21,7 @@ import lombok.RequiredArgsConstructor;
 public class OrderService {
 
 	private final OrderRepository orderRepository;
+	private final EmailNotificationSender emailNotificationSender;
 
 	@Transactional
 	public void confirmPurchase(UUID orderId, UUID currentUserId) {
@@ -80,9 +82,22 @@ public class OrderService {
 		// - Stripe返金などは PaymentClient 経由で transaction が要求する
 	}
 
+	/**
+	 * 注文がPAIDになったタイミングで呼ぶ。売り手に取引成立メールを送る。
+	 * 呼び出し元は決済完了（Stripe Webhook等）や注文作成APIを想定。今回の実装では呼び出し元は追加しない。
+	 */
+	@Transactional(readOnly = true)
+	public void recordOrderPaid(UUID orderId) {
+		OrderEntity e = getEntity(orderId);
+		if (!OrderStatus.PAID.name().equals(e.getStatus())) {
+			return;
+		}
+		emailNotificationSender.sendTransactionEstablished(e.getSellerId(), orderId);
+	}
+
 	private OrderEntity getEntity(UUID orderId) {
 		return orderRepository.findById(orderId)
-				.orElseThrow(() -> NotFoundBusinessException.of(ResourceType.USER));
+				.orElseThrow(() -> NotFoundBusinessException.of(ResourceType.ORDER));
 	}
 
 	private Order toDomain(OrderEntity e) {
