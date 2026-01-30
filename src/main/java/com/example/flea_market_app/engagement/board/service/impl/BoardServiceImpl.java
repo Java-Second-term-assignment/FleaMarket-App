@@ -12,12 +12,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.example.flea_market_app.catalog.domain.ItemEntity;
-import com.example.flea_market_app.catalog.repository.ItemRepository;
-import com.example.flea_market_app.common.exception.NotFoundBusinessException;
-import com.example.flea_market_app.common.exception.ResourceType;
-import com.example.flea_market_app.common.exception.ValidationBusinessException;
-import com.example.flea_market_app.common.error.ErrorCode;
+import com.example.flea_market_app.catalog.service.ItemQueryService;
 import com.example.flea_market_app.engagement.board.domain.BoardPostEntity;
 import com.example.flea_market_app.engagement.board.repository.BoardPostRepository;
 import com.example.flea_market_app.engagement.board.service.BoardService;
@@ -31,21 +26,18 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class BoardServiceImpl implements BoardService {
 
-	private static final String PUBLISHED = "PUBLISHED";
-
 	private final BoardPostRepository boardPostRepository;
-	private final ItemRepository itemRepository;
+	private final ItemQueryService itemQueryService;
 	private final UserRepository userRepository;
 
 	@Override
 	@Transactional(readOnly = true)
 	public List<PostResponse> getPosts(UUID itemId, int limit) {
-		ItemEntity item = itemRepository.findById(itemId)
-				.orElseThrow(() -> NotFoundBusinessException.of(ResourceType.ITEM));
+		itemQueryService.assertExists(itemId);
 
 		int safeLimit = Math.max(1, Math.min(limit, 100));
 		List<BoardPostEntity> posts = boardPostRepository.findByItemIdOrderByCreatedAtDesc(
-				item.getId(), PageRequest.of(0, safeLimit));
+				itemId, PageRequest.of(0, safeLimit));
 
 		if (posts.isEmpty()) {
 			return List.of();
@@ -71,14 +63,7 @@ public class BoardServiceImpl implements BoardService {
 	@Override
 	@Transactional
 	public UUID createPost(UUID itemId, UUID authorId, String content) {
-		ItemEntity item = itemRepository.findById(itemId)
-				.orElseThrow(() -> NotFoundBusinessException.of(ResourceType.ITEM));
-
-		if (!PUBLISHED.equals(item.getStatus())) {
-			throw new ValidationBusinessException(
-					ErrorCode.ITEM_NOT_PUBLISHED,
-					ErrorCode.ITEM_NOT_PUBLISHED.getMessageKey());
-		}
+		itemQueryService.assertExistsAndPublished(itemId);
 
 		BoardPostEntity entity = new BoardPostEntity();
 		entity.setId(UUID.randomUUID());
