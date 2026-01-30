@@ -1,50 +1,901 @@
-@charset "UTF-8";
-
-/* ユーザー設定のレイアウト */
-.user-container {
-	max-width: 800px;
-	margin: 40px auto;
-	background: #fff;
-	border-radius: 12px;
-	overflow: hidden;
-	box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-}
-
-.user-sidebar {
-	background: #f8f9fa;
-	border-right: 1px solid #eee;
-	padding: 20px;
-}
-
-.user-menu-item {
-	display: block;
-	padding: 12px 15px;
+body {
+	background-color: #2c2c2c;
+	margin: 0;
+	font-family: "Helvetica Neue", Arial, sans-serif;
 	color: #333;
-	text-decoration: none;
-	border-radius: 6px;
-	margin-bottom: 5px;
 }
 
-.user-menu-item.active {
-	background: var(--accent-blue);
+/* ヘッダー（固定表示） */
+.header {
+	background-color: #1e2a3b;
+	color: white;
+	padding: 6px 0;
+	position: fixed;
+	top: 0;
+	left: 0;
+	width: 100vw;
+	z-index: 1000;
+}
+
+.header-inner {
+	width: 100%;
+	max-width: none;
+	margin: 0;
+	padding: 0 32px;
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	box-sizing: border-box;
+}
+
+.logo {
+	font-size: 20px;
+	font-weight: bold;
+	white-space: nowrap;
+}
+
+.nav {
+	display: flex;
+	align-items: center;
+}
+
+.nav-links {
+	display: flex;
+	align-items: center;
+	gap: 2px;
+}
+
+.nav-links a {
+	color: white;
+	text-decoration: none;
+	font-size: 14px;
+	position: relative;
+	margin-top: 10px;
+	padding: 0 6px 5px 6px;
+	display: inline-block;
+	white-space: nowrap;
+}
+
+.nav-links a::after {
+	content: '';
+	position: absolute;
+	bottom: 0;
+	left: 0;
+	width: 0;
+	height: 2px;
+	background: white;
+	transition: 0.3s;
+}
+
+.nav-links a:hover::after {
+	width: 100%;
+}
+
+.btn-post {
+	background-color: #007bff;
+	color: white;
+	border: none;
+	padding: 8px 21px;
+	border-radius: 20px;
+	font-size: 15px;
+	font-weight: bold;
+	cursor: pointer;
+	transition: background 0.2s;
+	margin-left: 12px;
+	white-space: nowrap;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	text-align: center;
+}
+
+.btn-post:hover {
+	background-color: #0056b3;
+}
+
+.btn-logout {
+	background: none;
+	border: 1px solid #ffffff99;
+	color: #fff;
+	border-radius: 20px;
+	padding: 8px 15px;
+	font-size: 14px;
+	cursor: pointer;
+	transition: background 0.2s, color 0.2s;
+	margin-left: 12px;
+	white-space: nowrap;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	text-align: center;
+}
+
+.btn-logout:hover {
+	background-color: #394963;
+	color: #ff6b6b;
+	border-color: #ff6b6b;
+}
+
+.lang-selector {
+	font-size: 13px;
+	margin-left: 15px;
+	color: #ccddf0;
+	cursor: pointer;
+	padding: 4px 8px;
+	border-radius: 8px;
+	transition: background 0.17s;
+	white-space: nowrap;
+}
+
+.lang-selector:hover {
+	background: #263247;
 	color: #fff;
 }
 
-/* パスワード変更ボタン（赤・グレー） */
-.btn-danger {
-	background-color: #e74c3c;
-	color: white;
+.main-container {
+	max-width: 1100px;
+	margin: 40px auto;
+	padding: 0 20px;
+}
+
+/* --- Profile Card Outer --- */
+.profile-setting-container {
+	margin: 62px auto 0 auto;
+	background: none;
+	padding: 0;
+}
+
+.page-title {
+	margin-top: 100px;
+	color: #F2EEB8;
+}
+
+.profile-card {
+	margin-top: 38px;
+	border-radius: 9px;
+	border: 1.5px solid #454654;
+	background: #2c2c2c;
+	padding: 32px 32px 30px 32px;
+}
+
+/* --- 共通プロファイルカードスタイル --- */
+.profile-card-main {
+	display: flex;
+	align-items: center;
+	/* 差分1: align-items: flex-start → center でデザイン維持 */
+	gap: 29px;
+	padding-bottom: 19px;
+	border-bottom: 1px solid #49494a;
+	margin-bottom: 10px;
+	/* 差分2: 編集用と共通部分を統一。下部余白をまとめる */
+	background: transparent;
+	/* 編集用のみ適用 */
+}
+
+/* ---- プロファイル画像・アイコン編集用 ---- */
+.profile-icon-wrap-edit {
+	position: relative;
+	min-width: 80px;
+	margin-right: 20px;
+}
+
+.profile-image-edit {
+	width: 80px;
+	height: 80px;
+	border-radius: 50%;
+	background: #ddd;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	font-size: 16px;
+	color: #444;
+	margin-bottom: 2px;
 	border: none;
-	padding: 10px 20px;
-	border-radius: 4px;
+}
+
+.profile-icon-edit {
+	margin-top: 6px;
+	background: #5565da;
+	color: #fff;
+	border: none;
+	border-radius: 20px;
+	padding: 3px 15px;
+	font-size: 13px;
 	cursor: pointer;
 }
 
-.btn-secondary {
-	background-color: #95a5a6;
-	color: white;
+/* ---- プロファイル画像・アイコン共通 ---- */
+.profile-icon-wrap {
+	min-width: 102px;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+}
+
+.profile-image {
+	width: 66px;
+	height: 66px;
+	border-radius: 50%;
+	background: #dfdfdf;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	font-size: 13px;
+	color: #404040;
+}
+
+.profile-icon-upload {
+	margin-top: 10px;
+	padding: 3px 14px;
+	background: #f6f6f6;
+	color: #2b2b2b;
+	border: 1px solid #bbbbbb;
+	border-radius: 11px;
+	font-size: 12px;
+	cursor: pointer;
+	transition: background 0.13s;
+}
+
+.profile-icon-upload:hover {
+	background: #ecebbb;
+}
+
+/* ---- プロファイル情報・バッジ編集用 ---- */
+.profile-info-edit {
+	flex: 1 1 auto;
+	min-width: 0;
+	position: relative;
+}
+
+.profile-info-flex {
+	display: flex;
+	align-items: flex-start;
+	justify-content: space-between;
+	width: 100%;
+}
+
+.profile-info-title-edit {
+	white-space: normal;
+	color: #fff;
+	font-size: 18px;
+	font-weight: bold;
+	margin-bottom: 2px;
+	margin-top: 7px;
+	word-break: break-all;
+}
+
+.profile-info-name-edit {
+	color: #fff;
+	font-size: 16px;
+	font-weight: bold;
+	margin-bottom: 4px;
+}
+
+.profile-info-caption-edit {
+	color: #d7d7d7;
+	font-size: 12px;
+	margin-bottom: 0;
+}
+
+.profile-badge-edit {
+	display: flex;
+	flex-direction: column;
+	align-items: flex-end;
+	margin-left: 20px;
+}
+
+.profile-badge-inner {
+	width: 75px;
+	height: 92px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	margin-bottom: 0px;
+	position: relative;
+}
+
+.profile-badge-img {
+	width: 75px;
+	height: 92px;
+	display: block;
+	margin: 0;
+	padding: 0;
+	box-shadow: 0 1.5px 6px #00000031;
+	border-radius: 18px;
+	background: none;
+}
+
+/* ---- プロファイル情報・バッジ共通 ---- */
+.profile-vip-badge {
+	display: flex;
+	align-items: center;
+	margin-top: 10px;
+}
+
+.profile-vip {
+	display: inline-block;
+	background: #ff7733;
+	color: #fff8ea;
+	padding: 2px 14px;
+	border-radius: 24px;
+	font-size: 14px;
+	font-weight: 700;
+	box-shadow: 0 3px 9px #94453638;
+	letter-spacing: .01em;
+}
+
+.profile-info {
+	flex: 1;
+	display: flex;
+	flex-direction: column;
+	gap: 6px;
+}
+
+.profile-info-title {
+	color: #f8f8f8;
+	font-size: 1em;
+	font-weight: 700;
+	line-height: 1.4;
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+}
+
+.profile-info-name {
+	color: #fff;
+	font-weight: 600;
+	font-size: 18px;
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+}
+
+.profile-info-caption {
+	color: #d2d2cd;
+	font-size: 13px;
+	margin-top: 4px;
+}
+
+.tab-bar {
+	display: flex;
+	align-items: center;
+	background: #2c2c2c;
+	border-radius: 5px 5px 0 0;
+	padding: 0 8px 0 0;
+	margin-bottom: 0;
+	margin-top: 24px;
+}
+
+.tab-bar .tab {
+	font-size: 14px;
+	color: #fffbca;
+	background: none;
 	border: none;
-	padding: 10px 20px;
-	border-radius: 4px;
+	padding: 7px 14px 6px 14px;
+	border-radius: 4px 4px 0 0;
+	font-weight: 600;
+	cursor: pointer;
+	transition: background 0.15s, color 0.13s;
+}
+
+.tab-bar .tab.active,
+.tab-bar .tab:hover {
+	background: #1D284E;
+	color: #fff;
+}
+
+.tab-bar .tab:not(.active) {
+	color: #afa942;
+}
+
+.profile-card-list-wrap {
+	background: #334180;
+	border-radius: 0 0 8px 8px;
+	padding: 36px 26px 22px 26px;
+}
+
+.profile-card-list {
+	background: #1D284E;
+	padding: 14px 16px 18px 16px;
+	display: flex;
+	flex-direction: column;
+	gap: 16px;
+}
+
+/* =============== 通知リスト専用 =============== */
+.notification-scroll-list {
+	max-height: 600px;
+	min-height: 400px;
+	overflow-y: auto;
+	scrollbar-width: thin;
+	scrollbar-color: #b0b6d6 #334180;
+	background: #1D284E;
+	border-radius: 0 0 8px 8px;
+	padding: 20px 26px 22px 26px;
+}
+
+.notification-scroll-list::-webkit-scrollbar {
+	width: 8px;
+	background: #334180;
+	border-radius: 8px;
+}
+
+.notification-scroll-list::-webkit-scrollbar-thumb {
+	background: #b0b6d6;
+	border-radius: 8px;
+}
+
+.notification-list-item {
+	background: #2d3a69;
+	border: 1.5px solid #fff2;
+	border-radius: 8px;
+	padding: 8px 16px;
+	font-size: 18px;
+	margin-bottom: 18px;
+	box-shadow: 0 2px 14px #1a1b2240;
+	transition: background 0.16s, color 0.15s, border-color 0.13s;
+	display: flex;
+	align-items: stretch;
+}
+
+.notification-list-item:hover {
+	background: #E5EBFF;
+	color: #163062;
+}
+
+.notification-list-inner {
+	flex: 1 1 auto;
+	min-width: 0;
+	display: flex;
+	flex-direction: row;
+	align-items: center;
+	position: relative;
+}
+
+.notification-red-dot {
+	display: inline-block;
+	width: 8px;
+	height: 8px;
+	border-radius: 50%;
+	background: #ff4543;
+	margin-right: 15px;
+}
+
+.notification-list-info {
+	display: flex;
+	flex-direction: column;
+	flex: 1 1 auto;
+	min-width: 0;
+}
+
+.notification-title {
+	color: #fafbfc;
+	font-size: 17px;
+	font-weight: 500;
+	white-space: pre-line;
+	line-height: 1.45;
+	margin-bottom: 4px;
+	letter-spacing: .01em;
+	transition: color 0.15s;
+}
+
+.notification-list-item:hover .notification-title {
+	color: #163062;
+}
+
+.notification-date {
+	color: #F2EEB8;
+	font-size: 13px;
+	margin-top: 2px;
+	transition: color 0.15s;
+}
+
+.notification-list-item:hover .notification-date {
+	color: #163062;
+}
+
+.notification-divider-wrap {
+	margin-top: 8px;
+	width: 100%;
+}
+
+.notification-divider {
+	border: none;
+	border-top: 2px solid #F2EEB8;
+	margin: 0;
+	transition: border-top-color 0.15s;
+}
+
+.notification-list-item:hover .notification-divider {
+	border-top-color: #163062;
+}
+
+.notification-delete-btn {
+	margin-left: 14px;
+	align-self: center;
+	background-color: #d83836;
+	border: none;
+	border-radius: 6px;
+	padding: 8px 10px;
+	cursor: pointer;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	transition: background 0.16s, color 0.16s, border-color 0.16s;
+	box-sizing: border-box;
+	font-size: 22px;
+}
+
+.notification-delete-btn:hover {
+	background-color: #fff;
+	color: #d83836;
+	box-shadow: 0 0 0 2px #d83836 inset;
+}
+
+.notification-delete-btn svg,
+.notification-delete-btn .material-symbols-outlined {
+	display: block;
+	fill: #fff;
+	color: #fff;
+	transition: fill 0.16s, color 0.16s;
+}
+
+.notification-delete-btn:hover svg,
+.notification-delete-btn:hover .material-symbols-outlined {
+	fill: #d83836;
+	color: #d83836;
+}
+
+/* =============== 商品リスト専用（注文リスト） =============== */
+.product-scroll-list {
+	min-height: 250px;
+	max-height: 470px;
+	overflow-y: auto;
+	background: #1D284E;
+	border-radius: 0 0 8px 8px;
+	padding: 24px 18px 22px 18px;
+	box-shadow: 0 4px 20px #1a1b2240;
+}
+
+.product-grid {
+	display: grid;
+	grid-template-columns: repeat(5, 1fr);
+	/* 常に5カラム */
+	gap: 18px;
+	width: 100%;
+}
+
+.product-card-link {
+	text-decoration: none;
+}
+
+.item-card {
+	width: 100%;
+	min-width: 0;
+	border-radius: 6px;
+	overflow: hidden;
+	font-family: sans-serif;
+	border: 1.5px solid #4e6294;
+	background: #fafbfe;
+	margin-bottom: 0;
+	box-shadow: 0 2px 12px #33418022;
+	display: flex;
+	flex-direction: column;
+	transition: border 0.2s, box-shadow 0.2s, background 0.2s;
+}
+
+.item-card-image {
+	background: #f3f6fa;
+	width: 100%;
+	aspect-ratio: 1 / 1;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	font-size: 24px;
+	font-weight: bold;
+	position: relative;
+	overflow: hidden;
+}
+
+.soldout-badge {
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 80px;
+	height: 80px;
+	background: linear-gradient(135deg, #ef4437 50%, transparent 50%);
+	color: #fff;
+	font-size: 12px;
+	font-family: inherit;
+	font-weight: bold;
+	display: flex;
+	align-items: flex-start;
+	justify-content: center;
+	padding-top: 15px;
+	box-sizing: border-box;
+	z-index: 2;
+	user-select: none;
+}
+
+.item-img {
+	width: 100%;
+	height: 100%;
+	object-fit: cover;
+}
+
+.soldout-badge span {
+	display: inline-block;
+	transform: rotate(-45deg);
+	white-space: nowrap;
+	margin-top: 5px;
+	margin-left: -20px;
+}
+
+.item-card-content {
+	background: #4e6294;
+	padding: 12px;
+	color: #fff;
+}
+
+.item-card-title {
+	font-size: 14px;
+	font-weight: bold;
+	line-height: 1.4;
+	margin-bottom: 8px;
+}
+
+.item-card-price {
+	font-size: 14px;
+	margin-bottom: 8px;
+	font-weight: bold;
+}
+
+.price-value {
+	color: #f6e05e;
+	transition: color 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.item-card-footer {
+	display: flex;
+	align-items: center;
+	font-size: 13px;
+}
+
+.item-card-category-chip {
+	background: #e0e7ff;
+	color: #4e6294;
+	padding: 2px 10px;
+	border-radius: 20px;
+	font-size: 11px;
+	margin-left: auto;
+	border: 1px solid #4e6294;
+}
+
+.item-card {
+	transition: border 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.item-card-content {
+	transition: background 0.6s cubic-bezier(0.4, 0, 0.2, 1), color 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.item-card:hover {
+	border: 1.5px solid #e8efff;
+}
+
+.item-card:hover .item-card-content {
+	background: #e8efff;
+	color: #1a2a4e;
+}
+
+.item-card:hover .price-value {
+	color: #4e6294;
+}
+
+.item-card:hover .item-card-category-chip {
+	background: transparent;
+	border: 1px solid #1a2a4e;
+	color: #1a2a4e;
+}
+
+/* =============== ユーザー設定 =============== */
+.tab-settings {
+	display: none;
+}
+
+.settings-card {
+	background: #1D284E;
+	border-radius: 0 0 8px 8px;
+	padding: 36px 26px 22px 26px;
+	color: #fffefa;
+	min-height: 260px;
+}
+
+.settings-title {
+	font-size: 17px;
+	font-weight: 700;
+	margin-bottom: 18px;
+}
+
+.settings-title-icon {
+	font-size: 16px;
+}
+
+.settings-checkbox-wrap {
+	margin: 0 0 11px 0;
+}
+
+.settings-checkbox-label {
+	display: flex;
+	align-items: center;
+}
+
+.settings-checkbox-input {
+	margin-right: 7px;
+}
+
+.settings-save-btn-wrap {
+	margin-top: 34px;
+}
+
+.settings-save-btn {
+	background: #ffd743;
+	color: #223364;
+	font-weight: bold;
+	border: none;
+	border-radius: 5px;
+	padding: 9px 28px;
+	font-size: 15px;
+	cursor: pointer;
+}
+
+/* =============== ★お気に入りリスト専用 =============== */
+.favorite-scroll-list {
+	min-height: 250px;
+	max-height: 470px;
+	overflow-y: auto;
+	background: #1D284E;
+	border-radius: 0 0 8px 8px;
+	padding: 24px 18px 22px 18px;
+	box-shadow: 0 4px 20px #1a1b2240;
+}
+
+/* ----- 共通 ----- */
+a {
+	text-decoration: none;
+}
+
+/* ===== モーダル用スタイル ===== */
+.modal-backdrop {
+	position: fixed;
+	top: 0;
+	left: 0;
+	width: 100vw;
+	height: 100vh;
+	background: rgba(20, 23, 46, 0.5);
+	z-index: 2000;
+	display: none;
+}
+
+.modal-profile-edit {
+	position: fixed;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+	background: #222a45;
+	color: #fafafa;
+	border-radius: 14px;
+	box-shadow: 0 4px 48px #001024cc;
+	width: 380px;
+	max-width: 90vw;
+	padding: 34px 34px 28px 34px;
+	z-index: 2100;
+	display: none;
+}
+
+.modal-profile-edit h2 {
+	margin-top: 0;
+	color: #ffd743;
+	letter-spacing: .01em;
+	font-weight: bold;
+	font-size: 20px;
+	margin-bottom: 16px;
+}
+
+.modal-profile-edit label {
+	color: #ffd743;
+	font-size: 15px;
+}
+
+.modal-profile-edit input,
+.modal-profile-edit textarea {
+	display: block;
+	width: 100%;
+	margin-top: 5px;
+	margin-bottom: 17px;
+	padding: 9px 12px;
+	border-radius: 6px;
+	border: 1px solid #bdbee8;
+	font-size: 14px;
+	background: #fcfdff;
+	color: #222;
+	box-sizing: border-box;
+}
+
+.modal-profile-edit textarea {
+	min-height: 68px;
+	resize: vertical;
+}
+
+.modal-profile-edit .modal-btn-row {
+	display: flex;
+	justify-content: flex-end;
+	gap: 8px;
+}
+
+.modal-profile-edit .modal-btn {
+	padding: 7px 22px;
+	font-size: 15px;
+	border-radius: 5px;
+	border: none;
+	cursor: pointer;
+	font-weight: bold;
+}
+
+.modal-profile-edit .modal-cancel-btn {
+	background: #ddd;
+	color: #2a2c50;
+}
+
+.modal-profile-edit .modal-save-btn {
+	background: #ffd743;
+	color: #222a45;
+}
+
+.modal-profile-edit .modal-profile-uploadlabel {
+	display: inline-block;
+	margin-bottom: 12px;
+	cursor: pointer;
+	background: #3c479b;
+	color: #ffd743;
+	font-size: 14px;
+	padding: 7px 16px;
+	border-radius: 20px;
+	font-weight: bold;
+	border: none;
+	transition: background 0.18s;
+}
+
+.modal-profile-edit .modal-profile-uploadlabel:hover {
+	background: #263247;
+}
+
+.modal-profile-edit .modal-profile-icon-preview {
+	width: 60px;
+	height: 60px;
+	border-radius: 50%;
+	object-fit: cover;
+	display: block;
+	margin-bottom: 12px;
+	background: #ddd;
+	border: 2px solid #ffd743;
+}
+
+.modal-profile-edit .modal-profile-icon-preview.initial {
+	object-fit: contain;
+	line-height: 60px;
+	text-align: center;
+	color: #222;
+}
+
+.modal-profile-edit .modal-close-x {
+	position: absolute;
+	right: 15px;
+	top: 16px;
+	font-size: 21px;
+	line-height: 24px;
+	color: #ffd743;
+	background: none;
+	border: none;
 	cursor: pointer;
 }
