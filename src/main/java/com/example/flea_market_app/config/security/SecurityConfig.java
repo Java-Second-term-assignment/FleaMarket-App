@@ -22,12 +22,12 @@ public class SecurityConfig {
 	private final AuthorizationConfig authorizationConfig;
 
 	@Bean
-	public PasswordEncoder passwordEncoder() {
+	PasswordEncoder passwordEncoder() {
 		return new BCryptPasswordEncoder();
 	}
 
 	@Bean
-	public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+	SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 
 		http
 				.csrf(csrf -> csrf.disable())
