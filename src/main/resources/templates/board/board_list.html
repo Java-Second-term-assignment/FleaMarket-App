@@ -1,10 +1,59 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html lang="ja" xmlns:th="http://www.thymeleaf.org">
+
 <head>
-<meta charset="UTF-8">
-<title>Insert title here</title>
+	<meta charset="UTF-8">
+	<title>掲示板一覧</title>
+
+	<!-- Google Icons -->
+	<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" />
+
+	<!-- CSS -->
+	<link rel="stylesheet" th:href="@{/css/board-list.css}">
 </head>
+
 <body>
 
+	<!-- ヘッダー -->
+	<div th:replace="~{ui/fragments :: header}"></div>
+
+
+	<main>
+		<h1 class="page-title">掲示板一覧</h1>
+
+		<!-- 掲示板リスト -->
+		<div class="board-list-container">
+			<a th:each="board : ${boards}" th:href="@{/board/{id}(id=${board.id})}" class="board-item-link">
+
+				<div class="board-item">
+					<div class="board-content">
+						<div class="board-title" th:text="${board.title}">タイトル</div>
+
+						<div class="board-meta">
+							<span th:text="${board.createdAt}">2025/01/01</span>
+							<span class="category-chip-small" th:text="${board.category}">カテゴリ</span>
+							<span th:text="|返信数: ${board.replyCount}|"></span>
+						</div>
+					</div>
+
+					<div class="action-buttons">
+						<button class="btn-icon btn-edit">
+							<span class="material-symbols-outlined">border_color</span>
+						</button>
+						<button class="btn-icon btn-delete">
+							<span class="material-symbols-outlined">delete</span>
+						</button>
+					</div>
+				</div>
+
+			</a>
+		</div>
+	</main>
+
+	<footer>&copy;</footer>
+
+	<!-- JS -->
+	<script th:src="@{/js/board-list.js}"></script>
 </body>
+
 </html>

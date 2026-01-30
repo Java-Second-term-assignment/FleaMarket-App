@@ -1,0 +1,88 @@
+@charset "UTF-8";
+
+/* 変数・共通 */
+:root {
+	--bg-dark: #2c2c2c;
+	--text-main: #fff;
+	--text-sub: #ccc;
+	--accent-blue: #4a5d99;
+	--reply-line: #bfc6e5;
+}
+
+body {
+	background: var(--bg-dark);
+	color: var(--text-main);
+	margin: 0;
+}
+
+/* コメント */
+.comments-list {
+	border: 1px solid #444;
+	padding: 20px;
+	border-radius: 8px;
+}
+
+.comment-item {
+	position: relative;
+	padding: 20px 0;
+	border-bottom: 1px solid #F2EEB8;
+}
+
+.comment-item.is-reply {
+	display: flex;
+	margin-left: 32px;
+}
+
+/* 返信ライン（L字） */
+.reply-line {
+	position: relative;
+	width: 20px;
+	margin-right: 14px;
+}
+
+.reply-line::before {
+	content: "";
+	position: absolute;
+	top: -20px;
+	bottom: 0;
+	left: 9px;
+	width: 2px;
+	background: var(--reply-line);
+}
+
+.reply-line::after {
+	content: "";
+	position: absolute;
+	top: 26px;
+	left: 9px;
+	width: 14px;
+	height: 2px;
+	background: var(--reply-line);
+}
+
+/* コメント本文 */
+.comment-content {
+	flex: 1;
+}
+
+.comment-title {
+	font-weight: bold;
+	margin-bottom: 6px;
+}
+
+.comment-body {
+	font-size: 13px;
+	color: var(--text-sub);
+}
+
+.comment-footer {
+	font-size: 12px;
+	display: flex;
+	gap: 16px;
+}
+
+.reply-link {
+	color: #F2EEB8;
+	font-weight: bold;
+	text-decoration: none;
+}
