@@ -7,7 +7,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class ForceDeleteItemRequest {
+public class FreezeUserRequest {
 	@NotBlank
 	private String reason;
 }
