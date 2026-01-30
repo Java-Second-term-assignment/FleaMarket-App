@@ -10,9 +10,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.example.flea_market_app.catalog.domain.ItemEntity;
-import com.example.flea_market_app.catalog.repository.ItemRepository;
 import com.example.flea_market_app.catalog.service.ItemImageService;
+import com.example.flea_market_app.catalog.service.ItemService;
 import com.example.flea_market_app.listing.domain.ItemCondition;
 import com.example.flea_market_app.listing.domain.Listing;
 import com.example.flea_market_app.listing.domain.ShippingFeePayer;
@@ -24,7 +23,7 @@ import lombok.RequiredArgsConstructor;
 
 /**
  * 商品出品に関するサービスの実装クラス。
- * 
+ *
  * @author FleaMarket-App Team
  * @since 1.0.0
  */
@@ -34,7 +33,7 @@ public class ListingServiceImpl implements ListingService {
 
 	private static final Logger log = LoggerFactory.getLogger(ListingServiceImpl.class);
 
-	private final ItemRepository itemRepository;
+	private final ItemService itemService;
 	private final ItemImageService itemImageService;
 
 	@Override
@@ -42,12 +41,10 @@ public class ListingServiceImpl implements ListingService {
 	public CreateItemResponse createItem(UUID sellerId, CreateItemRequest request, List<MultipartFile> images) {
 		log.info("Creating item for seller: {}, name: {}", sellerId, request.getName());
 
-		// リクエストの condition / shippingFeePayer を Enum に変換（事前バリデーション済み想定）
 		ItemCondition condition = ItemCondition.valueOf(request.getCondition());
 		ShippingFeePayer shippingFeePayer = ShippingFeePayer.valueOf(request.getShippingFeePayer());
 
-		// ドメインオブジェクトを生成し、Entity に変換して保存
-		Listing listing = Listing.createDraft(
+		Listing draft = Listing.createDraft(
 				sellerId,
 				request.getCategoryId(),
 				request.getName(),
@@ -55,23 +52,29 @@ public class ListingServiceImpl implements ListingService {
 				request.getPriceAmount(),
 				condition,
 				shippingFeePayer);
-		ItemEntity item = listing.toEntity();
-		item = itemRepository.save(item);
-		log.info("Successfully created item: {}", item.getId());
 
-		// 画像のアップロード（最低1枚必須）
+		UUID itemId = itemService.createDraftItem(
+				draft.getSellerId(),
+				draft.getCategoryId(),
+				draft.getName(),
+				draft.getDescription(),
+				draft.getPriceAmount(),
+				draft.getCondition().name(),
+				draft.getShippingFeePayer().name());
+
+		log.info("Successfully created item: {}", itemId);
+
 		List<String> imageUrls = new ArrayList<>();
 		try {
-			itemImageService.uploadItemImages(item.getId(), images);
-			imageUrls = itemImageService.getItemImageUrls(item.getId());
-			log.info("Successfully uploaded {} images for item: {}", imageUrls.size(), item.getId());
+			itemImageService.uploadItemImages(itemId, images);
+			imageUrls = itemImageService.getItemImageUrls(itemId);
+			log.info("Successfully uploaded {} images for item: {}", imageUrls.size(), itemId);
 		} catch (Exception e) {
-			log.error("Failed to upload images for item: {}", item.getId(), e);
-			// 画像アップロード失敗時は商品も削除（トランザクションロールバック）
+			log.error("Failed to upload images for item: {}", itemId, e);
 			throw e;
 		}
 
-		log.info("Successfully created item with {} images: {}", imageUrls.size(), item.getId());
-		return new CreateItemResponse(item.getId(), imageUrls);
+		log.info("Successfully created item with {} images: {}", imageUrls.size(), itemId);
+		return new CreateItemResponse(itemId, imageUrls);
 	}
 }
