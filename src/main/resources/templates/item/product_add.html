@@ -6,8 +6,11 @@
 </head>
 
 <body>
+
+	<!-- ヘッダー -->
 	<div th:replace="~{ui/fragments :: header}"></div>
 
+	<!-- ================= メイン ================= -->
 	<main class="main-container">
 		<h1 class="page-title">出品内容の確認</h1>
 
@@ -28,7 +31,9 @@
 					<span class="confirm-label">カテゴリー</span>
 					<div class="confirm-value">
 						<ul class="confirm-list">
-							<li th:each="cat : *{categories}" th:text="${cat}">カテゴリー</li>
+							<li th:each="cat : *{categories}" th:text="${cat}">
+								カテゴリー
+							</li>
 						</ul>
 					</div>
 				</div>
@@ -37,7 +42,9 @@
 					<span class="confirm-label">商品状態</span>
 					<div class="confirm-value">
 						<ul class="confirm-list">
-							<li th:each="cond : *{conditions}" th:text="${cond}">状態</li>
+							<li th:each="cond : *{conditions}" th:text="${cond}">
+								状態
+							</li>
 						</ul>
 					</div>
 				</div>
@@ -49,7 +56,6 @@
 					</p>
 				</div>
 			</div>
-
 
 			<!-- ================= 価格 ================= -->
 			<div class="form-section price-section">
@@ -66,6 +72,7 @@
 					<div class="price-input-area">
 						<input class="input50 price-input" type="text" inputmode="numeric" pattern="\d*"
 							placeholder="例）3000" th:field="*{price}" required>
+
 						<div class="input-hint price-input-hint">
 							半角数字で入力してください（例：3000）
 						</div>
@@ -90,16 +97,179 @@
 			<!-- ================= ボタン ================= -->
 			<div class="confirm-button-area">
 				<a th:href="@{/product/add}" class="btn-back">戻る</a>
-				<button type="submit" class="btn-confirm">
+
+				<!-- モーダル表示用 -->
+				<button type="button" class="btn-confirm" onclick="openModal()">
 					この内容で出品
 				</button>
 			</div>
 
-			<p class="confirm-note">※ 出品後は内容を変更できません。</p>
+			<p class="confirm-note">
+				※ 出品後は内容を変更できません。
+			</p>
 		</form>
 	</main>
 
+	<!-- ================= 利用規約モーダル ================= -->
+	<div id="welcomeModal" class="modal-overlay" style="display:none;">
+		<div class="modal-content">
+			<h3>利用規約・プライバシーポリシー</h3>
+
+			<div class="modal-body">
+				<p>
+					下記内容をよくお読みいただき、同意いただける場合のみ「同意する」を押してご利用ください。
+				</p>
+
+				<p><strong>【利用規約】</strong></p>
+
+				<div style="white-space: pre-wrap; font-size: 13px; line-height: 1.7;">
+					本利用規約（以下「本規約」といいます。）は、株式会社〇〇（以下「当社」）が提供する
+					フリマアプリ「〇〇」（以下「本サービス」）の利用条件を定めるものです。
+
+					<br>
+					<strong>第1章　総則</strong>
+
+					<strong>第1条（適用）</strong><br>
+					本規約は、本サービスの利用に関する当社とユーザーとの間の関係に適用されます。<br>
+					当社は必要に応じて本規約を改定することができ、変更後の規約は本サービス上で表示された時点で効力を生じます。
+
+					<strong>第2条（定義）</strong><br>
+					本規約における用語の定義は次のとおりとします。<br>
+					「ユーザー」：本サービスを利用するすべての者<br>
+					「出品者」：本サービス上で商品を出品するユーザー<br>
+					「購入者」：本サービス上で商品を購入するユーザー<br>
+					「取引」：出品者と購入者の間で行われる商品売買に関する一連の手続き<br>
+					「チャット機能」：ユーザー間がメッセージで連絡するための機能<br>
+					「コンテンツ」：ユーザーが投稿した画像、文章、データ等の情報<br>
+					「個人情報」：個人情報保護法が定める個人に関する情報
+
+					<strong>第3条（利用資格）</strong><br>
+					本サービスを利用できるのは 18歳以上の個人に限ります。<br>
+					未成年者の利用は禁止します。ユーザーは自身が成年であることを保証します。<br>
+					当社は、必要に応じて年齢確認を行うことがあります。
+
+					<br>
+					<strong>第2章　アカウントおよび通知</strong>
+
+					<strong>第4条（アカウント登録）</strong><br>
+					ユーザーは、当社所定の方法によりアカウント登録を行うものとします。<br>
+					登録情報に虚偽があった場合、当社はアカウントを停止または削除する権利を有します。<br>
+					メールアドレスは本サービスからの通知手段として使用します。
+
+					<strong>第5条（通知）</strong><br>
+					当社からの通知は、ユーザーが登録したメールアドレスへの送信、アプリ内通知、またはWebサイトの掲載により行います。<br>
+					通知は、当社が送信した時点でユーザーに到達したものとみなします。<br>
+					メールアドレスが無効で受信不能となった場合は、ユーザーの責任となり、当社は一切責任を負いません。
+
+					<br>
+					<strong>第3章　決済・手数料・ランク制度</strong>
+
+					<strong>第6条（決済方法）</strong><br>
+					本サービスでの決済は Stripe の決済機能を使用します。<br>
+					返金や決済に関する一部処理はStripeの規約に従います。
+
+					<strong>第7条（販売手数料およびランク）</strong><br>
+					出品者は、販売手数料として以下の割合を負担します。<br>
+					プラチナ：3%<br>
+					ゴールド：5%<br>
+					シルバー：7%<br>
+					ブロンズ：10%<br>
+					ランク条件は以下のとおりとします。<br>
+					プラチナ：過去3ヶ月連続で10回以上かつ月額50,000円の取引<br>
+					ゴールド：3ヶ月連続で5回以上かつ月額10,000円の取引<br>
+					シルバー：2ヶ月連続で3回以上かつ月額5,000円の取引<br>
+					ブロンズ：シルバー基準を満たさない場合<br>
+					手数料およびランク制度は事前告知の上、変更される場合があります。
+
+					<br>
+					<strong>第4章　禁止事項・監視・違法商品の取り扱い</strong>
+
+					<strong>第8条（禁止事項）</strong><br>
+					ユーザーは以下の行為をしてはなりません。<br>
+					【1. 商品・出品に関する禁止行為】<br>
+					・法令に違反する商品、危険物、偽造品、盗品などの出品<br>
+					・著作権・商標権など第三者の知的財産権を侵害する商品の出品<br>
+					・公序良俗に反する商品の出品<br>
+					【2. スパム・迷惑行為】<br>
+					・過度な連続投稿、架空アカウントの作成、ランキング操作などの不正行為<br>
+					・他ユーザーへの誹謗中傷・脅迫・嫌がらせ<br>
+					・当社システムに対する不正アクセスや操作<br>
+					【3. チャット機能における禁止事項】<br>
+					・出品者・購入者間のチャットにおける以下の行為<br>
+					&nbsp;&nbsp;├ 取引と無関係な迷惑メッセージ<br>
+					&nbsp;&nbsp;├ 違法・暴力的・性的な内容の送信<br>
+					&nbsp;&nbsp;├ 個人情報の不適切な要求<br>
+					&nbsp;&nbsp;├ 外部サイトへの誘導、詐欺行為<br>
+					&nbsp;&nbsp;└ 決済機能を回避して直接取引を持ちかける行為（いわゆる“直取引”）<br>
+					・当社が不適切と判断するすべての行為
+
+					<strong>第9条（監視・対応措置）</strong><br>
+					当社は、スパム対策・違法行為防止のため、AIまたは人の目による チャット内容の確認 を行う場合があります。<br>
+					違反が疑われる場合、当社は以下の措置を講じることができます。<br>
+					・出品停止、商品の削除<br>
+					・アカウントの一時停止・永久停止<br>
+					・必要に応じた捜査機関への通報<br>
+					当社は、その判断理由をユーザーに開示する義務を負いません。
+
+					<br>
+					<strong>第5章　権利関係（知的財産等）</strong>
+
+					<strong>第10条（知的財産権）</strong><br>
+					本サービスおよび提供されるアプリケーション、画像、文章、プログラム等に関する知的財産権は、当社または正当な権利者に帰属します。<br>
+					ユーザーは、当社の許可なく本サービスの内容を複製、改変、送信、解析等してはなりません。
+
+					<strong>第11条（ユーザー投稿コンテンツの扱い）</strong><br>
+					ユーザーが投稿したコンテンツの著作権はユーザーに帰属します。<br>
+					ただしユーザーは当社に対し、サービス運営に必要な範囲でコンテンツを無償で利用する権利を許諾します。<br>
+					ユーザーは、投稿したコンテンツが第三者の権利を侵害しないことを保証します。
+
+					<br>
+					<strong>第6章　個人情報</strong>
+
+					<strong>第12条（個人情報の取り扱い）</strong><br>
+					当社は、個人情報を個人情報保護法その他関連法令に従って適切に取り扱います。<br>
+					本サービスにおける個人情報の利用目的は次のとおりです。<br>
+					・アカウント管理、本人確認<br>
+					・商品取引、商品の発送に関する連絡<br>
+					・不正利用の監視および対応<br>
+					・本サービスの改善・新機能の開発<br>
+					当社は、ユーザーの同意なく第三者へ個人情報を提供しません（法令上の例外を除く）。<br>
+					個別の詳細は、別途定める「プライバシーポリシー」に従うものとします。
+
+					<br>
+					<strong>第7章　免責事項・その他</strong>
+
+					<strong>第13条（免責事項）</strong><br>
+					商品の品質、安全性、合法性について当社は一切保証しません。<br>
+					ユーザー間のトラブルに当社は関与せず、一切の責任を負いません。<br>
+					システム障害、Stripe側のトラブル等により損害が生じても、当社は責任を負いません。
+
+					<strong>第14条（退会）</strong><br>
+					ユーザーは所定の方法により退会できます。ただし取引中の商品がある場合は退会できません。
+
+					<strong>第15条（準拠法・裁判管轄）</strong><br>
+					本規約は日本法を準拠法とし、本サービスに関する一切の紛争は当社所在地の裁判所を第一審の専属管轄裁判所とします。
+				</div>
+			</div>
+			<button type="button" class="btn-confirm" onclick="submitForm()">
+				同意して進む
+			</button>
+		</div>
+	</div>
+
+	<!-- ================= JS ================= -->
 	<script th:src="@{/static/js/product_confirm.js}"></script>
+
+	<script>
+		function openModal() {
+			document.getElementById("welcomeModal").style.display = "flex";
+		}
+
+		function submitForm() {
+			document.querySelector("form.confirm-card").submit();
+		}
+	</script>
+
 </body>
 
 </html>

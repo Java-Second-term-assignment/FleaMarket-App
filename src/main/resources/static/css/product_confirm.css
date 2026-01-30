@@ -384,6 +384,23 @@ textarea.input50 {
 	color: #222;
 }
 
+.confirm-agree-area {
+	margin-top: 24px;
+	text-align: center;
+	color: #eee;
+	font-size: 14px;
+}
+
+.agree-label input {
+	margin-right: 6px;
+}
+
+button[disabled] {
+	opacity: 0.5;
+	cursor: not-allowed;
+}
+
+
 /* Responsive */
 @media (max-width: 700px) {
 	.main-container {
