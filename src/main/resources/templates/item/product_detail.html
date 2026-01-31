@@ -174,7 +174,7 @@
 		</div>
 
 		<!-- ================= 関連商品 ================= -->
-		<section class="related-section">
+		<section class="related-section" th:if="${relatedProducts != null and !relatedProducts.isEmpty()}">
 			<h2 class="section-title">関連商品</h2>
 			<div class="product-grid">
 				<div th:each="item : ${relatedProducts}" th:replace="~{item/item :: body}">

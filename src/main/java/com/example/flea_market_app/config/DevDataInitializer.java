@@ -115,7 +115,7 @@ public class DevDataInitializer implements ApplicationRunner {
 		// 子カテゴリ（findActiveLeafCategories 用）
 		saveCategory(CAT_LEAF_MENS, CAT_ROOT_FASHION, "メンズ");
 		saveCategory(CAT_LEAF_LADIES, CAT_ROOT_FASHION, "レディース");
-		saveCategory(CAT_LEAF_SMARTPHONE, CAT_ROOT_FUN, "スマホ");
+		saveCategory(CAT_LEAF_SMARTPHONE, CAT_ROOT_FUN, "デバイス");
 	}
 
 	private void saveCategory(UUID id, UUID parentId, String name) {

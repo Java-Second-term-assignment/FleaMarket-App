@@ -3,7 +3,7 @@
 <body>
 
 <!-- 商品カード -->
-<div th:fragment="body">
+<div th:fragment="body" th:if="${item != null}">
 
     <a th:href="@{/products/{id}(id=${item.id})}">
         <div class="item-card">

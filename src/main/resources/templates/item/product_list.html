@@ -31,19 +31,19 @@
 			<div class="product-search-card wider-search-card">
 				<div class="search-card-header">商品検索</div>
 
-				<div class="search-input-row">
-					<span class="material-symbols-outlined search-icon">search</span>
-					<input type="text" name="keyword" th:value="${param.keyword}" class="search-input"
-						placeholder="キーワードで検索">
-				</div>
-
-				<div class="search-row">
-					<label class="search-label">並び替え:</label>
-					<select name="sort" class="search-select">
-						<option value="new">新しい順</option>
-						<option value="low_price">価格の安い順</option>
-						<option value="popular">人気順</option>
-					</select>
+				<div class="search-row-with-sort">
+					<div class="search-input-row">
+						<span class="material-symbols-outlined search-icon">search</span>
+						<input type="text" name="keyword" th:value="${param.keyword}" class="search-input"
+							placeholder="キーワードで検索">
+					</div>
+					<div class="search-row">
+						<select name="sort" class="search-select">
+							<option value="new" th:selected="${param.sort == null || param.sort[0] == 'new'}">新しい順</option>
+							<option value="low_price" th:selected="${param.sort != null && param.sort[0] == 'low_price'}">価格の安い順</option>
+							<option value="popular" th:selected="${param.sort != null && param.sort[0] == 'popular'}">人気順</option>
+						</select>
+					</div>
 				</div>
 
 				<!-- カテゴリー -->
