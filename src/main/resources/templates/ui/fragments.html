@@ -1,63 +1,62 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org"
-      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 
 <head th:fragment="common_head(title, links)">
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title th:replace="${title}">My Shop</title>
-    <link rel="stylesheet" th:href="@{/static/css/common.css}">
-    <th:block th:replace="${links}" />
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title th:replace="${title}">My Shop</title>
+	<link rel="stylesheet" th:href="@{/static/css/common.css}">
+	<th:block th:replace="${links}" />
 </head>
 
 <body>
-<div th:fragment="header" class="header">
-    <div class="header-inner">
+	<div th:fragment="header" class="header">
+		<div class="header-inner">
 
-        <!-- ロゴ -->
-        <div class="logo">
-            <a th:href="@{/}" style="color:white; text-decoration:none;">LOGO</a>
-        </div>
+			<!-- ロゴ -->
+			<div class="logo">
+				<a th:href="@{/}" style="color:white; text-decoration:none;">LOGO</a>
+			</div>
 
-        <nav class="nav">
-            <div class="nav-links">
+			<nav class="nav">
+				<div class="nav-links">
 
-                <!-- 共通（ログイン有無問わず） -->
-                <a th:href="@{/items}">商品リスト</a>
-                <a th:href="@{/board}">掲示板一覧</a>
+					<!-- 共通（ログイン有無問わず） -->
+					<a th:href="@{/items}">商品リスト</a>
+					<a th:href="@{/board}">掲示板一覧</a>
 
-                <!-- 未ログイン時 -->
-                <a sec:authorize="isAnonymous()" th:href="@{/login}">
-                    ログイン
-                </a>
-                <a sec:authorize="isAnonymous()" th:href="@{/register}">
-                    新規作成
-                </a>
+					<!-- 未ログイン時 -->
+					<a sec:authorize="isAnonymous()" th:href="@{/login}">
+						ログイン
+					</a>
+					<a sec:authorize="isAnonymous()" th:href="@{/register}">
+						新規作成
+					</a>
 
-                <!-- ログイン時 -->
-                <a sec:authorize="isAuthenticated()" th:href="@{/user/settings}">
-                    ユーザー設定
-                </a>
-				<span class="material-symbols-outlined">
-					notifications
-				</span>
-            </div>
+					<!-- ログイン時 -->
+					<a sec:authorize="isAuthenticated()" th:href="@{/user/settings}">
+						ユーザー設定
+					</a>
+					<span class="material-symbols-outlined">
+						notifications
+					</span>
+					<a sec:authorize="hasRole('ADMIN')" th:href="@{/admin/dashboard}">
+						管理画面
+					</a>
+				</div>
 
-            <!-- ログイン時のみ -->
-            <button sec:authorize="isAuthenticated()"
-                    class="btn-post"
-                    th:onclick="|location.href='@{/items/add}'|">
-                出品する
-            </button>
+				<!-- ログイン時のみ -->
+				<button sec:authorize="isAuthenticated()" class="btn-post" th:onclick="|location.href='@{/items/add}'|">
+					出品する
+				</button>
 
-            <a sec:authorize="isAuthenticated()"
-               th:href="@{/logout}"
-               class="btn-logout">
-                ログアウト
-            </a>
+				<a sec:authorize="isAuthenticated()" th:href="@{/logout}" class="btn-logout">
+					ログアウト
+				</a>
 
-        </nav>
-    </div>
-</div>
+			</nav>
+		</div>
+	</div>
 </body>
+
 </html>
