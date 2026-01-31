@@ -24,7 +24,7 @@ public class SecurityConfig {
 	private final AuthorizationConfig authorizationConfig;
 
 	@Bean
-	public PasswordEncoder passwordEncoder() {
+	PasswordEncoder passwordEncoder() {
 		return new BCryptPasswordEncoder();
 	}
 
@@ -33,13 +33,12 @@ public class SecurityConfig {
 	 */
 	@Bean
 	@Order(1)
-	public SecurityFilterChain apiSecurityFilterChain(HttpSecurity http) throws Exception {
+	SecurityFilterChain apiSecurityFilterChain(HttpSecurity http) throws Exception {
 		http
 				.securityMatcher("/api/**", "/auth/**", "/community/**", "/orders/**")
 				.csrf(AbstractHttpConfigurer::disable)
 				.cors(Customizer.withDefaults())
-				.sessionManagement(session ->
-						session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+				.sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
 				.authorizeHttpRequests(auth -> authorizationConfig.configureApi(auth))
 				.addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
 				.exceptionHandling(ex -> ex
@@ -77,8 +76,8 @@ public class SecurityConfig {
 				.securityMatcher("/**")
 				.csrf(AbstractHttpConfigurer::disable)
 				.cors(Customizer.withDefaults())
-				.sessionManagement(session ->
-						session.sessionCreationPolicy(org.springframework.security.config.http.SessionCreationPolicy.IF_REQUIRED))
+				.sessionManagement(session -> session.sessionCreationPolicy(
+						org.springframework.security.config.http.SessionCreationPolicy.IF_REQUIRED))
 				.authorizeHttpRequests(auth -> authorizationConfig.configureWeb(auth))
 				.formLogin(form -> form
 						.loginPage("/login")

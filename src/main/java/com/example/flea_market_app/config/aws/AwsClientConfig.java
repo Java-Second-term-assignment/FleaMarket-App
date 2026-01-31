@@ -29,7 +29,7 @@ public class AwsClientConfig {
 	 * @return RekognitionClientインスタンス
 	 */
 	@Bean
-	public RekognitionClient rekognitionClient() {
+	RekognitionClient rekognitionClient() {
 		return RekognitionClient.builder()
 				.region(Region.AP_NORTHEAST_1) // 現在は東京リージョンだが、修正必須(おそらく北バージニア)
 				.build();
@@ -44,7 +44,7 @@ public class AwsClientConfig {
 	 * @return S3Clientインスタンス
 	 */
 	@Bean
-	public S3Client s3Client() {
+	S3Client s3Client() {
 		return S3Client.builder()
 				.region(Region.of(s3Region))
 				.build();
