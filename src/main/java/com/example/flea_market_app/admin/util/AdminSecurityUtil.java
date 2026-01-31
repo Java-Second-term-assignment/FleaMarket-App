@@ -4,6 +4,7 @@ import java.util.UUID;
 
 import org.springframework.stereotype.Component;
 
+import com.example.flea_market_app.admin.service.port.AdminAuthQueryPort;
 import com.example.flea_market_app.common.error.ErrorCode;
 import com.example.flea_market_app.common.exception.AccessDeniedBusinessException;
 import com.example.flea_market_app.common.exception.NotFoundBusinessException;
@@ -25,34 +26,12 @@ public class AdminSecurityUtil {
 	private final AdminAuthQueryPort adminAuthQueryPort;
 
 	public UUID requireAdminAndGetAuthUserId(UUID currentUserId) {
-		AdminAuthInfo info = adminAuthQueryPort.findByUserId(currentUserId)
+		AdminAuthQueryPort.AdminAuthInfo info = adminAuthQueryPort.findByUserId(currentUserId)
 				.orElseThrow(() -> NotFoundBusinessException.of(ErrorCode.RESOURCE_NOT_FOUND));
 
 		if (!info.isAdmin()) {
 			throw new AccessDeniedBusinessException();
 		}
 		return info.getAuthUserId();
-	}
-
-	public interface AdminAuthQueryPort {
-		java.util.Optional<AdminAuthInfo> findByUserId(UUID userId);
-	}
-
-	public static class AdminAuthInfo {
-		private final UUID authUserId;
-		private final boolean admin;
-
-		public AdminAuthInfo(UUID authUserId, boolean admin) {
-			this.authUserId = authUserId;
-			this.admin = admin;
-		}
-
-		public UUID getAuthUserId() {
-			return authUserId;
-		}
-
-		public boolean isAdmin() {
-			return admin;
-		}
 	}
 }

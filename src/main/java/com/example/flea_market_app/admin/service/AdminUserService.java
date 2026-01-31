@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.example.flea_market_app.admin.domain.TargetType;
+import com.example.flea_market_app.admin.service.port.AdminUserWritePort;
 import com.example.flea_market_app.admin.util.AdminSecurityUtil;
 import com.example.flea_market_app.common.error.ErrorCode;
 import com.example.flea_market_app.common.exception.NotFoundBusinessException;
@@ -60,11 +61,5 @@ public class AdminUserService {
 				TargetType.USER.name(),
 				targetUserId,
 				reason);
-	}
-
-	public interface AdminUserWritePort {
-		boolean setActive(UUID userId, boolean active);
-
-		boolean setAdminByUserId(UUID userId, boolean admin);
 	}
 }
