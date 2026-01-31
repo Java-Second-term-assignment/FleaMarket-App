@@ -11,4 +11,6 @@ import com.example.flea_market_app.engagement.board.domain.BoardPostEntity;
 public interface BoardPostRepository extends JpaRepository<BoardPostEntity, UUID> {
 
 	List<BoardPostEntity> findByItemIdOrderByCreatedAtDesc(UUID itemId, Pageable pageable);
+
+	long countByItemId(UUID itemId);
 }

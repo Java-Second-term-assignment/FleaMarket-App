@@ -6,9 +6,9 @@
 	<title>Registration</title>
 
 	<!-- 共通CSS -->
-	<link rel="stylesheet" th:href="@{/static/css/common.css}">
+	<link rel="stylesheet" th:href="@{/css/common.css}">
 	<!-- 認証系CSS -->
-	<link rel="stylesheet" th:href="@{/static/css/auth.css}">
+	<link rel="stylesheet" th:href="@{/css/auth.css}">
 </head>
 
 <body>
@@ -22,6 +22,8 @@
 			<div class="link-top-right">
 				<a th:href="@{/login}">ログインページへ</a>
 			</div>
+
+			<p th:if="${errorMessage}" th:text="${errorMessage}" class="error-text"></p>
 
 			<form th:action="@{/register}" th:object="${userForm}" method="post">
 
@@ -37,7 +39,7 @@
 					<label>
 						パスワード<span class="required">（必須）</span>
 					</label>
-					<input type="password" th:field="*{password}" placeholder="8文字以上">
+					<input type="password" th:field="*{password}" placeholder="10文字以上、英数字・記号を含む">
 				</div>
 
 				<div class="form-group">

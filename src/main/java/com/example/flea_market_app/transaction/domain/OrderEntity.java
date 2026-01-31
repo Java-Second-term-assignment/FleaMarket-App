@@ -61,7 +61,7 @@ public class OrderEntity {
 	@Column(nullable = false, length = 3)
 	private String currency;
 
-	@Column(name = "shipping_address_snapshot", nullable = false, columnDefinition = "jsonb")
+	@Column(name = "shipping_address_snapshot", nullable = false, length = 4096)
 	private String shippingAddressSnapshot;
 
 	@Column(name = "created_at", nullable = false)
