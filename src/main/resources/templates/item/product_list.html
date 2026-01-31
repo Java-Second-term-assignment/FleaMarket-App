@@ -1,17 +1,112 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html lang="ja" xmlns:th="http://www.thymeleaf.org">
 
-<head th:replace="~{common/fragments :: common_head('商品一覧', ~{::link})}">
-	<link rel="stylesheet" th:href="@{/static/css/product_list.css}">
+<head>
+	<meta charset="UTF-8">
+	<title>商品一覧</title>
+
+	<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" />
+	<!-- 共通CSS -->
+	<link rel="stylesheet" th:href="@{/css/common.css}">
+	<!-- 画面専用CSS -->
+	<link rel="stylesheet" th:href="@{/css/product-list.css}">
+	<!-- 画面専用JS -->
+	<script th:src="@{/js/product-list.js}" defer></script>
 </head>
 
-<body>
-	<div th:replace="~{common/fragments :: header}"></div>
+<!-- ここがトップページです -->
 
-	<main class="main-content" style="margin-top: 80px;">
-		<div class="product-grid">
-			<div th:each="item : ${products}" th:replace="~{item/item :: body}">
+<body>
+
+	<!-- ヘッダー -->
+	<div th:replace="~{ui/fragments :: header}"></div>
+
+	<main class="main-container">
+
+		<h1 class="page-title">商品一覧</h1>
+
+		<!-- 検索フォーム -->
+		<form th:action="@{/products}" method="get" class="horizontal-search-ranking">
+
+			<div class="product-search-card wider-search-card">
+				<div class="search-card-header">商品検索</div>
+
+				<div class="search-input-row">
+					<span class="material-symbols-outlined search-icon">search</span>
+					<input type="text" name="keyword" th:value="${param.keyword}" class="search-input"
+						placeholder="キーワードで検索">
+				</div>
+
+				<div class="search-row">
+					<label class="search-label">並び替え:</label>
+					<select name="sort" class="search-select">
+						<option value="new">新しい順</option>
+						<option value="low_price">価格の安い順</option>
+						<option value="popular">人気順</option>
+					</select>
+				</div>
+
+				<!-- カテゴリー -->
+				<div class="category-chips category-chips-scroll horizontal-category-chips">
+					<button type="submit" name="category" value="" class="category-chip selected_all">全て</button>
+
+					<button th:each="cat : ${categories}" type="submit" name="category" th:value="${cat}"
+						class="category-chip" th:text="|# ${cat}|">
+					</button>
+				</div>
 			</div>
+
+			<!-- ランキング -->
+			<section class="ranking-section">
+				<div class="ranking-title">人気ランキング</div>
+
+				<ol class="ranking-list">
+					<li class="ranking-item" th:each="rank, stat : ${rankings}">
+						<span class="ranking-rank" th:text="${stat.count}"></span>
+						<img th:src="${rank.imageUrl}" class="ranking-thumb" onerror="this.src='/img/no-image.png'">
+
+						<div class="ranking-info">
+							<span class="ranking-item-title" th:text="${rank.name}"></span>
+							<span class="ranking-item-price" th:text="|${rank.price}円|"></span>
+						</div>
+					</li>
+				</ol>
+			</section>
+
+		</form>
+
+		<!-- 商品グリッド -->
+		<div class="product-grid">
+
+			<a th:each="product : ${products}" th:href="@{/products/{id}(id=${product.id})}">
+
+				<div class="item-card">
+
+					<div class="item-card-image">
+						<img th:src="${product.imageUrl}" class="item-img" onerror="this.src='/img/no-image.png'">
+
+						<div class="soldout-badge" th:if="${product.soldOut}">
+							<span>Sold out</span>
+						</div>
+					</div>
+
+					<div class="item-card-content">
+						<div class="item-card-title" th:text="${product.name}"></div>
+
+						<div class="item-card-price">
+							値段:
+							<span class="price-value" th:text="|${product.price}円|"></span>
+						</div>
+
+						<div class="item-card-footer">
+							ジャンル:
+							<span class="item-card-category-chip" th:text="${product.category}"></span>
+						</div>
+					</div>
+
+				</div>
+			</a>
+
 		</div>
 
 	</main>

@@ -1,40 +1,125 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html lang="ja" xmlns:th="http://www.thymeleaf.org">
 
-<head th:replace="~{common/fragments :: common_head('ユーザー設定', ~{::link})}">
-	<link rel="stylesheet" th:href="@{/css/user.css}">
+<head th:replace="~{ui/fragments :: common_head('プロフィール設定', ~{::link})}">
+    <link rel="stylesheet" th:href="@{/css/user.css}">
 </head>
 
-<body>
-	<div th:replace="~{common/fragments :: header}"></div>
 
-	<main class="main-container" style="margin-top: 80px;">
-		<div class="user-container">
-			<div style="display: flex;">
-				<div class="user-sidebar" style="width: 250px;">
-					<a th:href="@{/user/settings}" class="user-menu-item active">プロフィール設定</a>
-					<a th:href="@{/user/password}" class="user-menu-item">パスワード変更</a>
-					<a th:href="@{/user/items}" class="user-menu-item">出品した商品</a>
+<body>
+	<div th:replace="~{ui/fragments :: header}"></div>
+
+
+	<main class="main-container">
+		<div class="profile-setting-container">
+
+			<h1 class="page-title">プロフィール設定</h1>
+
+			<div class="profile-card">
+
+				<!-- ================= プロフィール表示 ================= -->
+				<div class="profile-card-main">
+
+					<div class="profile-icon-wrap profile-icon-wrap-edit">
+						<div class="profile-image profile-image-edit" id="profileIconDisplay"
+							th:data-imgsrc="${user.iconUrl}">
+							<span th:if="${user.iconUrl == null}">アイコン画像</span>
+							<img th:if="${user.iconUrl != null}" th:src="${user.iconUrl}" alt="icon">
+						</div>
+						<button class="profile-icon-edit" id="openProfileEditModalBtn">編集</button>
+					</div>
+
+					<div class="profile-info profile-info-edit">
+						<div class="profile-info-flex">
+							<div>
+								<div class="profile-info-title" id="profileDisplayTitle" th:text="${user.displayTitle}">
+									表示名
+								</div>
+								<div class="profile-info-name" id="profileDisplayName" th:text="${user.username}">
+									ユーザー名
+								</div>
+								<div class="profile-info-caption" id="profileDisplayCaption" th:text="${user.caption}">
+									プロフィールはまだ未記入です。
+								</div>
+							</div>
+
+							<div class="profile-badge">
+								<img th:src="@{/img/Bronze1.png}" alt="badge">
+							</div>
+						</div>
+					</div>
 				</div>
 
-				<div style="flex: 1; padding: 30px;">
-					<h3>プロフィール編集</h3>
-					<form th:action="@{/user/update}" th:object="${user}" method="post">
-						<div class="form-section">
-							<label>ユーザー名</label>
-							<input type="text" th:field="*{username}" class="input50">
+				<!-- ================= モーダル ================= -->
+				<div class="modal-backdrop" id="modalProfileBackdrop"></div>
+
+				<div class="modal-profile-edit" id="modalProfileEdit">
+					<button class="modal-close-x" id="modalProfileCloseBtn">&times;</button>
+					<h2>プロフィール編集</h2>
+
+					<form id="profileEditForm">
+						<label>アイコン画像</label><br>
+						<img id="modalProfileIconPreview" class="modal-profile-icon-preview" style="display:none;">
+						<span id="modalProfileIconNoImage">（画像が未設定）</span>
+
+						<label class="modal-profile-uploadlabel">画像アップロード</label>
+						<input type="file" id="modalProfileIconFile" accept="image/*">
+
+						<label>表示名</label>
+						<input type="text" id="modalProfileEditTitle" th:value="${user.displayTitle}" maxlength="18">
+
+						<label>ユーザー名</label>
+						<input type="text" id="modalProfileEditName" th:value="${user.username}" maxlength="12">
+
+						<label>自己紹介</label>
+						<textarea id="modalProfileEditCaption" th:text="${user.caption}" maxlength="80"></textarea>
+
+						<div class="modal-btn-row">
+							<button type="button" id="modalProfileCancelBtn">キャンセル</button>
+							<button type="submit">保存</button>
 						</div>
-						<div class="form-section">
-							<label>メールアドレス</label>
-							<input type="email" th:field="*{email}" class="input50" readonly>
-							<small>※メールアドレスは変更できません</small>
-						</div>
-						<button type="submit" class="btn-blue">設定を保存する</button>
 					</form>
 				</div>
+
+				<!-- ================= タブ ================= -->
+				<div class="tab-bar">
+					<button class="tab active" data-tab="favorite">お気に入り</button>
+					<button class="tab" data-tab="history">商品</button>
+					<button class="tab" data-tab="notification">通知</button>
+					<button class="tab" data-tab="settings">設定</button>
+				</div>
+
+				<div class="profile-tab-content" id="tab-favorite" style="display:block;">
+					<div class="product-grid">
+						<a th:each="item : ${favorites}" th:href="@{/products/{id}(id=${item.id})}"
+							class="product-card-link">
+							<div class="item-card">
+								<img th:src="${item.imageUrl}" class="item-img">
+								<div class="item-card-title" th:text="${item.title}"></div>
+								<div class="item-card-price" th:text="${item.price} + '円'"></div>
+							</div>
+						</a>
+					</div>
+				</div>
+
+				<div class="profile-tab-content" id="tab-history" style="display:none;">
+					<!-- 同様に th:each -->
+				</div>
+
+				<div class="profile-tab-content" id="tab-notification" style="display:none;">
+					<!-- 通知 -->
+				</div>
+
+				<div class="profile-tab-content" id="tab-settings" style="display:none;">
+					<!-- 設定 -->
+				</div>
+
 			</div>
 		</div>
 	</main>
+
+	<script th:src="@{/js/user_settings.js}"></script>
+
 </body>
 
 </html>

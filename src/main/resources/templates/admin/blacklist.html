@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="ja" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+	<meta charset="UTF-8">
+	<title>ブラックリスト管理</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+	<!-- Google Icons -->
+	<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" />
+
+	<!-- CSS -->
+	<link rel="stylesheet" th:href="@{/css/common.css}">
+	<link rel="stylesheet" th:href="@{/css/blacklist.css}">
+
+	<!-- JS -->
+	<script th:src="@{/js/blacklist.js}" defer></script>
+</head>
+
+<body>
+	<!-- 共通ヘッダー -->
+	<div th:replace="ui/header :: header"></div>
+
+	<main>
+		<h1 class="page-title">
+			<span class="material-symbols-outlined danger-icon">gavel</span>
+			ブラックリスト統合管理
+		</h1>
+
+		<!-- フィルター -->
+		<div class="filter-bar">
+			<span class="filter-label">表示対象:</span>
+			<button class="filter-btn active" onclick="filterList('all', this)">
+				ALL
+			</button>
+			<button class="filter-btn" onclick="filterList('user', this)">
+				ユーザー
+			</button>
+			<button class="filter-btn" onclick="filterList('product', this)">
+				商品
+			</button>
+		</div>
+
+		<section class="admin-card">
+			<table>
+				<thead>
+					<tr>
+						<th>種別</th>
+						<th>ID</th>
+						<th>名称</th>
+						<th>詳細</th>
+						<th>操作</th>
+					</tr>
+				</thead>
+				<tbody id="blacklistTable"></tbody>
+			</table>
+
+			<div id="emptyMessage" class="empty-msg hidden">
+				該当するブラックリスト項目はありません
+			</div>
+		</section>
+	</main>
+</body>
+
+</html>
