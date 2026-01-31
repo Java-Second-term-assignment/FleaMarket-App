@@ -1,10 +1,114 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html lang="ja" xmlns:th="http://www.thymeleaf.org">
+
 <head>
-<meta charset="UTF-8">
-<title>Insert title here</title>
+	<meta charset="UTF-8">
+	<title>掲示板詳細ページ</title>
+
+	<!-- Google Icons -->
+	<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" />
+
+	<!-- CSS -->
+	<link rel="stylesheet" th:href="@{/css/board-detail.css}">
 </head>
+
 <body>
 
+	<!-- ヘッダー -->
+	<div th:replace="~{ui/fragments :: header}"></div>
+
+	<main>
+		<!-- 投稿詳細 -->
+		<section class="post-detail">
+			<h1 class="page-title" th:text="|詳細: ${post.title}|">詳細タイトル</h1>
+			<p class="post-content" th:text="${post.content}">
+				投稿内容
+			</p>
+		</section>
+
+		<!-- コメント投稿 -->
+		<section class="comment-form-container">
+			<form th:action="@{/comments}" method="post">
+				<input type="hidden" name="postId" th:value="${post.id}">
+
+				<div class="form-group">
+					<label>タイトル</label>
+					<input type="text" name="title" required>
+				</div>
+
+				<div class="form-group">
+					<label>コメント</label>
+					<textarea name="body" required></textarea>
+				</div>
+
+				<button class="btn-submit">投稿する</button>
+			</form>
+		</section>
+
+		<!-- コメント一覧 -->
+		<section class="comments-list">
+			<div th:each="comment : ${comments}" class="comment-item"
+				th:classappend="${comment.parent != null} ? 'is-reply'">
+
+				<!-- 返信ライン -->
+				<div th:if="${comment.parent != null}" class="reply-line"></div>
+
+				<div class="comment-content">
+					<div class="comment-title" th:text="${comment.title}"></div>
+					<div class="comment-body" th:text="${comment.body}"></div>
+
+					<div class="comment-footer">
+						<span th:text="${comment.createdAt}"></span>
+						<span th:text="|返信数: ${comment.replyCount}|"></span>
+						<a href="#" class="reply-link" th:attr="data-id=${comment.id},
+                                data-user=${comment.userName}">
+							<span th:text="|@${comment.userName}に返信|"></span>
+						</a>
+					</div>
+				</div>
+
+				<!-- 編集/削除 -->
+				<div class="comment-actions" th:if="${comment.editable}">
+					<button class="icon-btn btn-edit">
+						<span class="material-symbols-outlined">border_color</span>
+					</button>
+					<button class="icon-btn btn-delete">
+						<span class="material-symbols-outlined">delete</span>
+					</button>
+				</div>
+			</div>
+		</section>
+	</main>
+
+	<!-- 返信モーダル -->
+	<div class="modal-backdrop" id="replyModalBackdrop"></div>
+	<div class="reply-modal" id="replyModal">
+		<div class="reply-modal-dialog">
+			<button class="reply-modal-close-btn" id="replyModalCloseBtn">&times;</button>
+			<div class="reply-modal-title" id="replyModalTitle"></div>
+
+			<form th:action="@{/comments/reply}" method="post">
+				<input type="hidden" name="parentId" id="replyParentId">
+
+				<div class="form-group">
+					<label>タイトル</label>
+					<input type="text" name="title" required>
+				</div>
+
+				<div class="form-group">
+					<label>返信コメント</label>
+					<textarea name="body" maxlength="500" required></textarea>
+				</div>
+
+				<button class="reply-modal-submit-btn">投稿する</button>
+			</form>
+		</div>
+	</div>
+
+	<footer>&copy;</footer>
+
+	<!-- JS -->
+	<script th:src="@{/js/board-detail.js}"></script>
 </body>
+
 </html>

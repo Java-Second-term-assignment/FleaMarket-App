@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="ja" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+	<meta charset="UTF-8">
+	<title>管理者ダッシュボード</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+	<!-- Google Icons -->
+	<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" />
+
+	<!-- CSS -->
+	<link rel="stylesheet" th:href="@{/css/common.css}">
+	<link rel="stylesheet" th:href="@{/css/admin.css}">
+
+	<!-- JS -->
+	<script th:src="@{/js/admin.js}" defer></script>
+</head>
+
+<body>
+	<!-- 共通ヘッダー -->
+	<div th:replace="ui/header :: header"></div>
+
+	<main>
+		<h1 class="page-title">管理者ダッシュボード</h1>
+
+		<!-- タブ -->
+		<div class="admin-tabs">
+			<button class="tab-btn active" onclick="showSection('user-section', this)">
+				ユーザー管理
+			</button>
+			<button class="tab-btn" onclick="showSection('product-section', this)">
+				商品管理
+			</button>
+			<button class="tab-btn" onclick="location.href='/admin/blacklist'">
+				ブラックリスト管理
+			</button>
+		</div>
+
+		<!-- ユーザー管理 -->
+		<section id="user-section" class="admin-card">
+			<div class="card-header">
+				<h3>ユーザー一覧</h3>
+			</div>
+
+			<table>
+				<thead>
+					<tr>
+						<th>ID</th>
+						<th>ユーザー名</th>
+						<th>メール</th>
+						<th>状態</th>
+						<th>操作</th>
+					</tr>
+				</thead>
+				<tbody id="userTable"></tbody>
+			</table>
+		</section>
+
+		<!-- 商品管理 -->
+		<section id="product-section" class="admin-card hidden">
+			<div class="card-header">
+				<h3>商品一覧</h3>
+			</div>
+
+			<table>
+				<thead>
+					<tr>
+						<th>ID</th>
+						<th>商品名</th>
+						<th>価格</th>
+						<th>出品者</th>
+						<th>状態</th>
+						<th>操作</th>
+					</tr>
+				</thead>
+				<tbody id="productTable"></tbody>
+			</table>
+		</section>
+	</main>
+</body>
+
+</html>
