@@ -28,6 +28,7 @@ public class AuthorizationConfig {
 	public void configureWeb(
 			AuthorizeHttpRequestsConfigurer<HttpSecurity>.AuthorizationManagerRequestMatcherRegistry auth) {
 		auth
+				.requestMatchers("/css/**", "/js/**", "/img/**", "/fonts/**", "/*.ico").permitAll()
 				.requestMatchers("/login", "/register", "/password/forgot", "/password-reset-request", "/terms").permitAll()
 				.requestMatchers("/", "/products", "/products/**", "/board", "/board/**").permitAll()
 				.requestMatchers("/user/settings", "/product/add", "/items/add", "/product/submit", "/order/confirm").authenticated()

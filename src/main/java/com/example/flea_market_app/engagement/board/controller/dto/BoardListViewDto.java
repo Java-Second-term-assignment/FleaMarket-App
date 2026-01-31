@@ -1,6 +1,5 @@
 package com.example.flea_market_app.engagement.board.controller.dto;
 
-import java.time.OffsetDateTime;
 import java.util.UUID;
 
 import lombok.AllArgsConstructor;
