@@ -1,5 +1,7 @@
 package com.example.flea_market_app.config.security;
 
+import jakarta.servlet.DispatcherType;
+
 import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configurers.AuthorizeHttpRequestsConfigurer;
@@ -28,8 +30,10 @@ public class AuthorizationConfig {
 	public void configureWeb(
 			AuthorizeHttpRequestsConfigurer<HttpSecurity>.AuthorizationManagerRequestMatcherRegistry auth) {
 		auth
+				.dispatcherTypeMatchers(DispatcherType.FORWARD, DispatcherType.ERROR).permitAll()
 				.requestMatchers("/css/**", "/js/**", "/img/**", "/fonts/**", "/*.ico").permitAll()
 				.requestMatchers("/login", "/register", "/password/forgot", "/password-reset-request", "/terms").permitAll()
+				.requestMatchers(HttpMethod.GET, "/products", "/products/**").permitAll()
 				.requestMatchers("/", "/products", "/products/**", "/board", "/board/**").permitAll()
 				.requestMatchers("/user/settings", "/product/add", "/items/add", "/product/submit", "/order/confirm").authenticated()
 				.requestMatchers("/admin/**").hasRole("ADMIN")
