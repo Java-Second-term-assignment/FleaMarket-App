@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html lang="ja" xmlns:th="http://www.thymeleaf.org">
+<head>
+	<meta charset="UTF-8">
+	<title>エラー</title>
+	<link rel="stylesheet" th:href="@{/css/common.css}">
+</head>
+<body>
+	<div th:replace="~{ui/fragments :: header}"></div>
+	<main class="main-container" style="padding: 2rem; text-align: center;">
+		<h1 th:text="${status}">エラー</h1>
+		<p th:text="${message}">エラーが発生しました。</p>
+		<p><a th:href="@{/products}">商品一覧へ戻る</a></p>
+	</main>
+</body>
+</html>

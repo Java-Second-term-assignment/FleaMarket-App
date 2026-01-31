@@ -3,7 +3,7 @@
 
 <head th:replace="~{ui/fragments :: common_head(~{::title}, ~{::link})}">
 	<title th:text="${product.name} + ' | 商品詳細'">商品詳細</title>
-	<link rel="stylesheet" th:href="@{/static/css/product.css}">
+	<link rel="stylesheet" th:href="@{/css/product.css}">
 </head>
 
 <body>
@@ -71,7 +71,6 @@
 					<!-- ================= カート ================= -->
 					<div class="button-group">
 						<form th:action="@{/cart/add}" method="post" style="flex:2;">
-							<input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
 							<input type="hidden" name="productId" th:value="${product.id}">
 							<button type="submit" class="btn-blue" th:disabled="${product.stock == 0}">
 								カートに入れる
@@ -129,7 +128,6 @@
 							th:action="@{/product/{id}/review(id=${product.id})}" method="post"
 							th:object="${reviewForm}">
 
-							<input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
 
 							<div class="review-form-group">
 								<label class="review-form-label">
@@ -185,7 +183,7 @@
 		</section>
 	</main>
 
-	<script th:src="@{/static/js/script.js}"></script>
+	<script th:src="@{/js/script.js}"></script>
 </body>
 
 </html>

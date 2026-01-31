@@ -11,25 +11,28 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class AuthorizationConfig {
 
-	public void configure(
+	public void configureApi(
 			AuthorizeHttpRequestsConfigurer<HttpSecurity>.AuthorizationManagerRequestMatcherRegistry auth) {
 		auth
-				// 公開
 				.requestMatchers("/auth/**").permitAll()
 				.requestMatchers("/health").permitAll()
 				.requestMatchers(HttpMethod.GET, "/community/boards/**").permitAll()
-
-				// ユーザー
 				.requestMatchers(HttpMethod.POST, "/community/boards/**").hasRole("USER")
-				.requestMatchers(HttpMethod.POST, "/items/**").hasRole("USER")
-				.requestMatchers(HttpMethod.PUT, "/items/**").hasRole("USER")
+				// 商品出品APIは /api/listings（ListingController）で提供
 				.requestMatchers("/user/me/**").hasRole("USER")
 				.requestMatchers("/api/favorites/**").hasRole("USER")
-
-				// 管理者
 				.requestMatchers("/admin/**").hasRole("ADMIN")
-
 				.anyRequest().authenticated();
 	}
 
+	public void configureWeb(
+			AuthorizeHttpRequestsConfigurer<HttpSecurity>.AuthorizationManagerRequestMatcherRegistry auth) {
+		auth
+				.requestMatchers("/login", "/register", "/password/forgot", "/password-reset-request", "/terms").permitAll()
+				.requestMatchers("/", "/products", "/products/**", "/board", "/board/**").permitAll()
+				.requestMatchers("/user/settings", "/product/add", "/items/add", "/product/submit", "/order/confirm").authenticated()
+				.requestMatchers("/admin/**").hasRole("ADMIN")
+				.requestMatchers("/password/change", "/password-change").authenticated()
+				.anyRequest().authenticated();
+	}
 }

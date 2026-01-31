@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 
-<head th:replace="~{common/fragments :: common_head('出品確認', ~{::link})}">
-	<link rel="stylesheet" th:href="@{/static/css/detail.css}">
+<head th:replace="~{ui/fragments :: common_head('出品確認', ~{::link})}">
+	<link rel="stylesheet" th:href="@{/css/detail.css}">
 </head>
 
 <body>
@@ -56,7 +56,7 @@
 		</div>
 	</main>
 
-	<script th:src="@{/static/js/product_confirm.js}"></script>
+	<script th:src="@{/js/product_confirm.js}"></script>
 </body>
 
 </html>
