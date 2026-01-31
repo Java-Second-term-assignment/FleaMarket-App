@@ -4,6 +4,7 @@
 <head th:replace="~{ui/fragments :: common_head(~{::title}, ~{::link})}">
 	<title th:text="${product.name} + ' | 商品詳細'">商品詳細</title>
 	<link rel="stylesheet" th:href="@{/css/product.css}">
+	<link rel="stylesheet" th:href="@{/css/detail.css}">
 </head>
 
 <body>
@@ -19,7 +20,7 @@
 				<aside class="image-aside">
 					<div class="sticky-wrapper">
 						<div class="main-image-container">
-							<img id="target-main-image" class="main-image" th:src="${product.mainImageUrl}" alt="商品画像">
+							<img id="target-main-image" class="main-image" th:src="${product.mainImageUrl}" alt="商品画像" onerror="this.src='/img/no-image.png'">
 						</div>
 
 						<ul class="thumbnail-list">
