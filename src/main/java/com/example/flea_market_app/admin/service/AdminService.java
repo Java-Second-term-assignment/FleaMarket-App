@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.example.flea_market_app.admin.domain.TargetType;
+import com.example.flea_market_app.admin.service.port.AdminItemWritePort;
 import com.example.flea_market_app.admin.util.AdminSecurityUtil;
 import com.example.flea_market_app.common.error.ErrorCode;
 import com.example.flea_market_app.common.exception.NotFoundBusinessException;
@@ -50,12 +51,4 @@ public class AdminService {
 				reason);
 	}
 
-	/**
-	 * AdminServiceが「itemsへの書き込み」をどこに委譲するかを隠すポート。
-	 * - 将来: ListingService へ差し替え
-	 * - いま: 直SQL / JPA更新でOK
-	 */
-	public interface AdminItemWritePort {
-		boolean markDeleted(UUID itemId);
-	}
 }
