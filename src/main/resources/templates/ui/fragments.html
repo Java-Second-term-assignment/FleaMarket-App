@@ -5,7 +5,7 @@
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<title th:replace="${title}">My Shop</title>
-	<link rel="stylesheet" th:href="@{/static/css/common.css}">
+	<link rel="stylesheet" th:href="@{/css/common.css}">
 	<th:block th:replace="${links}" />
 </head>
 
@@ -22,7 +22,7 @@
 				<div class="nav-links">
 
 					<!-- 共通（ログイン有無問わず） -->
-					<a th:href="@{/items}">商品リスト</a>
+					<a th:href="@{/products}">商品リスト</a>
 					<a th:href="@{/board}">掲示板一覧</a>
 
 					<!-- 未ログイン時 -->
@@ -46,7 +46,7 @@
 				</div>
 
 				<!-- ログイン時のみ -->
-				<button sec:authorize="isAuthenticated()" class="btn-post" th:onclick="|location.href='@{/items/add}'|">
+				<button sec:authorize="isAuthenticated()" class="btn-post" th:onclick="|location.href='@{/product/add}'|">
 					出品する
 				</button>
 

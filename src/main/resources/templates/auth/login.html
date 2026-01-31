@@ -6,9 +6,9 @@
 	<title>Login</title>
 
 	<!-- 共通CSS -->
-	<link rel="stylesheet" th:href="@{/static/css/common.css}">
+	<link rel="stylesheet" th:href="@{/css/common.css}">
 	<!-- ログイン専用CSS -->
-	<link rel="stylesheet" th:href="@{/static/css/login.css}">
+	<link rel="stylesheet" th:href="@{/css/login.css}">
 </head>
 
 <body>
@@ -22,6 +22,8 @@
 			<div class="link-top-right">
 				<a th:href="@{/register}">会員登録はこちら</a>
 			</div>
+
+			<p th:if="${successMessage}" th:text="${successMessage}" style="color: green; margin-bottom: 1em;"></p>
 
 			<!-- ログインフォーム -->
 			<form th:action="@{/login}" method="post">

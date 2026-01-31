@@ -48,7 +48,7 @@ public class BoardController {
 	@GetMapping("/{boardId}/posts")
 	public ResponseEntity<ApiResponse<List<PostResponse>>> getPosts(
 			@PathVariable UUID boardId,
-			@RequestParam(defaultValue = "50") @Min(1) @Max(100) int limit) {
+			@RequestParam(defaultValue = "" + DEFAULT_POST_LIMIT) @Min(1) @Max(100) int limit) {
 		log.info("Getting posts for board: {}, limit={}", boardId, limit);
 
 		List<PostResponse> posts = boardService.getPosts(boardId, limit);

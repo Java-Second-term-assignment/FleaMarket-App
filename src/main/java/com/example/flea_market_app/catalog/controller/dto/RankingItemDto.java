@@ -1,0 +1,15 @@
+package com.example.flea_market_app.catalog.controller.dto;
+
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+public class RankingItemDto {
+
+	private String imageUrl;
+	private String name;
+	private String price;
+}

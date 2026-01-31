@@ -50,8 +50,8 @@
 				<div class="category-chips category-chips-scroll horizontal-category-chips">
 					<button type="submit" name="category" value="" class="category-chip selected_all">全て</button>
 
-					<button th:each="cat : ${categories}" type="submit" name="category" th:value="${cat}"
-						class="category-chip" th:text="|# ${cat}|">
+					<button th:each="cat : ${categories}" type="submit" name="category" th:value="${cat.id}"
+						class="category-chip" th:text="|# ${cat.name}|">
 					</button>
 				</div>
 			</div>

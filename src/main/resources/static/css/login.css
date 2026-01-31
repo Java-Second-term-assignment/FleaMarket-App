@@ -1,0 +1,4 @@
+@charset "UTF-8";
+
+/* ログイン画面用 - auth.css のスタイルを利用 */
+@import "auth.css";

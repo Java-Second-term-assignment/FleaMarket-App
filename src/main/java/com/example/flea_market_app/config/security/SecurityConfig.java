@@ -2,9 +2,11 @@ package com.example.flea_market_app.config.security;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.annotation.Order;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -26,44 +28,67 @@ public class SecurityConfig {
 		return new BCryptPasswordEncoder();
 	}
 
+	/**
+	 * API用: JWT認証、stateless、JSONエラーレスポンス
+	 */
 	@Bean
-	public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-
+	@Order(1)
+	public SecurityFilterChain apiSecurityFilterChain(HttpSecurity http) throws Exception {
 		http
-				.csrf(csrf -> csrf.disable())
+				.securityMatcher("/api/**", "/auth/**", "/community/**", "/orders/**")
+				.csrf(AbstractHttpConfigurer::disable)
 				.cors(Customizer.withDefaults())
-				.sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-
-				// 認可ルール(同階層のファイルに一任する)
-				.authorizeHttpRequests(auth -> authorizationConfig.configure(auth))
-
-				// JWTの認証フィルタ
-				.addFilterBefore(
-						jwtAuthenticationFilter,
-						UsernamePasswordAuthenticationFilter.class)
-
-				// 例外ハンドリング（401 / 403）
+				.sessionManagement(session ->
+						session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+				.authorizeHttpRequests(auth -> authorizationConfig.configureApi(auth))
+				.addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
 				.exceptionHandling(ex -> ex
 						.authenticationEntryPoint((request, response, authException) -> {
 							response.setStatus(401);
 							response.setContentType("application/json;charset=UTF-8");
 							response.getWriter().write("""
-									    {
-									      "error": "UNAUTHORIZED",
-									      "message": "認証が必要です"
-									    }
+									{
+									  "error": "UNAUTHORIZED",
+									  "message": "認証が必要です"
+									}
 									""");
 						})
 						.accessDeniedHandler((request, response, accessDeniedException) -> {
 							response.setStatus(403);
 							response.setContentType("application/json;charset=UTF-8");
 							response.getWriter().write("""
-									    {
-									      "error": "FORBIDDEN",
-									      "message": "権限がありません"
-									    }
+									{
+									  "error": "FORBIDDEN",
+									  "message": "権限がありません"
+									}
 									""");
 						}));
+
+		return http.build();
+	}
+
+	/**
+	 * Web用: フォーム認証、セッション、Thymeleafページ
+	 */
+	@Bean
+	@Order(2)
+	public SecurityFilterChain webSecurityFilterChain(HttpSecurity http) throws Exception {
+		http
+				.securityMatcher("/**")
+				.csrf(AbstractHttpConfigurer::disable)
+				.cors(Customizer.withDefaults())
+				.sessionManagement(session ->
+						session.sessionCreationPolicy(org.springframework.security.config.http.SessionCreationPolicy.IF_REQUIRED))
+				.authorizeHttpRequests(auth -> authorizationConfig.configureWeb(auth))
+				.formLogin(form -> form
+						.loginPage("/login")
+						.defaultSuccessUrl("/", true)
+						.usernameParameter("email")
+						.passwordParameter("password"))
+				.logout(logout -> logout
+						.logoutUrl("/logout")
+						.logoutSuccessUrl("/login")
+						.invalidateHttpSession(true));
 
 		return http.build();
 	}

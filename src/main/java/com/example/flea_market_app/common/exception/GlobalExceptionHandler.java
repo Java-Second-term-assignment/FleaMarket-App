@@ -7,12 +7,15 @@ import org.slf4j.LoggerFactory;
 import org.springframework.context.MessageSource;
 import org.springframework.context.NoSuchMessageException;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.servlet.ModelAndView;
 
 import com.example.flea_market_app.common.response.ErrorResponse;
 
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 
 /**
@@ -21,6 +24,9 @@ import lombok.RequiredArgsConstructor;
  * <p>BusinessExceptionのみをハンドリングします。その他の例外（RuntimeException、
  * NullPointerException、外部API例外など）は意図的に未処理とし、Springの
  * デフォルトエラーハンドリングに委譲します。
+ * 
+ * <p>Accept: text/html のリクエストの場合はHTMLエラーページを返し、
+ * それ以外（APIクライアント）の場合はJSONレスポンスを返します。
  * 
  * @author FleaMarket-App Team
  * @since 1.0.0
@@ -39,19 +45,44 @@ public class GlobalExceptionHandler {
 	/**
 	 * BusinessExceptionをハンドリングします。
 	 * 
+	 * <p>Accept に text/html が含まれる場合はHTMLエラーページを返し、
+	 * それ以外はJSONを返します。
+	 * 
 	 * @param ex 発生した例外
+	 * @param request リクエスト
 	 * @param locale リクエストのロケール
-	 * @return 適切なHTTPステータスとErrorResponseを含むResponseEntity
+	 * @return 適切なHTTPステータスとErrorResponse、またはModelAndView
 	 */
 	@ExceptionHandler(BusinessException.class)
-	public ResponseEntity<ErrorResponse> handleBusinessException(
-			BusinessException ex, Locale locale) {
-		
+	public Object handleBusinessException(
+			BusinessException ex,
+			HttpServletRequest request,
+			Locale locale) {
+
 		HttpStatus httpStatus = ex.getErrorCode().getHttpStatus();
-		
+
 		logException(ex, httpStatus);
-		
+
+		if (acceptsHtml(request)) {
+			String message = getLocalizedMessage(ex.getMessageKey(), resolveLocale(locale));
+			ModelAndView mav = new ModelAndView();
+			mav.setStatus(httpStatus);
+			mav.addObject("status", httpStatus.value());
+			mav.addObject("message", message);
+			if (httpStatus == HttpStatus.NOT_FOUND) {
+				mav.setViewName("error/404");
+			} else {
+				mav.setViewName("error/error");
+			}
+			return mav;
+		}
+
 		return buildResponse(ex, locale, httpStatus);
+	}
+
+	private boolean acceptsHtml(HttpServletRequest request) {
+		String accept = request.getHeader("Accept");
+		return accept != null && accept.contains(MediaType.TEXT_HTML_VALUE);
 	}
 
 	private void logException(BusinessException ex, HttpStatus httpStatus) {
