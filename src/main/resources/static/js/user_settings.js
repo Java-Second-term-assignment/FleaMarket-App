@@ -1,36 +1,70 @@
 document.addEventListener("DOMContentLoaded", () => {
+	// 汎用的な要素取得ヘルパー
+	const getEl = (id) => document.getElementById(id);
 
-	// ===== タブ切り替え =====
+	// ===== 1. タブ切り替え =====
 	document.querySelectorAll(".tab").forEach(tab => {
 		tab.addEventListener("click", () => {
+			const tabName = tab.dataset.tab;
+			if (!tabName) return;
+
 			document.querySelectorAll(".tab").forEach(t => t.classList.remove("active"));
-			document.querySelectorAll(".profile-tab-content")
-				.forEach(c => c.style.display = "none");
+			document.querySelectorAll(".profile-tab-content").forEach(c => c.style.display = "none");
 
 			tab.classList.add("active");
-			document.getElementById("tab-" + tab.dataset.tab).style.display = "block";
+			const targetContent = getEl("tab-" + tabName);
+			if (targetContent) targetContent.style.display = "block";
 		});
 	});
 
-	// ===== モーダル =====
-	const modal = document.getElementById("modalProfileEdit");
-	const backdrop = document.getElementById("modalProfileBackdrop");
+	// ===== 2. モーダル制御 =====
+	const modal = getEl("modalProfileEdit");
+	const backdrop = getEl("modalProfileBackdrop");
+	const openBtn = getEl("openProfileEditModalBtn");
 
-	document.getElementById("openProfileEditModalBtn")
-		.onclick = () => {
+	const closeModal = () => {
+		if (modal) modal.style.display = "none";
+		if (backdrop) backdrop.style.display = "none";
+	};
+
+	if (openBtn) {
+		openBtn.onclick = () => {
 			modal.style.display = "block";
 			backdrop.style.display = "block";
 		};
-
-	["modalProfileCloseBtn", "modalProfileCancelBtn"].forEach(id => {
-		document.getElementById(id).onclick = closeModal;
-	});
-
-	backdrop.onclick = closeModal;
-
-	function closeModal() {
-		modal.style.display = "none";
-		backdrop.style.display = "none";
 	}
 
+	["modalProfileCloseBtn", "modalProfileCancelBtn"].forEach(id => {
+		const btn = getEl(id);
+		if (btn) btn.onclick = closeModal;
+	});
+
+	if (backdrop) backdrop.onclick = closeModal;
+
+	// ===== 3. 画像プレビュー & ラベル連携 =====
+	const fileInput = getEl("modalProfileIconFile");
+	const previewImg = getEl("modalProfileIconPreview");
+	const noImageSpan = getEl("modalProfileIconNoImage");
+	const uploadLabel = document.querySelector('.modal-profile-uploadlabel');
+
+	if (uploadLabel && fileInput) {
+		uploadLabel.onclick = () => fileInput.click();
+	}
+
+	if (fileInput) {
+		fileInput.addEventListener("change", (e) => {
+			const file = e.target.files[0];
+			if (file) {
+				const reader = new FileReader();
+				reader.onload = (event) => {
+					if (previewImg) {
+						previewImg.src = event.target.result;
+						previewImg.style.display = "block";
+					}
+					if (noImageSpan) noImageSpan.style.display = "none";
+				};
+				reader.readAsDataURL(file);
+			}
+		});
+	}
 });
