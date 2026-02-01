@@ -21,7 +21,86 @@ body {
 	color: #333;
 }
 
-/* ヘッダー再現 */
+/* --- モーダルのスタイル --- */
+.modal-overlay {
+	position: fixed;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	background: rgba(0, 0, 0, 0.85);
+	/* 暗幕 */
+	display: none;
+	/* 初期は非表示 */
+	justify-content: center;
+	align-items: center;
+	z-index: 2000;
+	backdrop-filter: blur(4px);
+}
+
+.modal-content {
+	background: #fff;
+	width: 90%;
+	max-width: 500px;
+	padding: 30px;
+	border-radius: 12px;
+	text-align: center;
+	box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+	animation: modalFadeIn 0.3s ease-out;
+}
+
+@keyframes modalFadeIn {
+	from {
+		opacity: 0;
+		transform: translateY(-20px);
+	}
+
+	to {
+		opacity: 1;
+		transform: translateY(0);
+	}
+}
+
+.modal-content h3 {
+	color: var(--accent-blue);
+	margin-top: 0;
+}
+
+.modal-body {
+	text-align: left;
+	font-size: 14px;
+	color: #444;
+	line-height: 1.6;
+	margin: 20px 0;
+	max-height: 300px;
+	overflow-y: auto;
+	border-top: 1px solid #eee;
+	border-bottom: 1px solid #eee;
+	padding: 15px 0;
+}
+
+.btn-confirm {
+	background: var(--accent-blue);
+	color: white;
+	border: none;
+	padding: 12px 30px;
+	border-radius: 25px;
+	font-weight: bold;
+	cursor: pointer;
+	width: 100%;
+	transition: 0.2s;
+}
+
+.btn-confirm:hover {
+	background: #29447a;
+}
+
+/* スクロール禁止用クラス */
+body.no-scroll {
+	overflow: hidden;
+}
+
+/* --- 既存のスタイル --- */
 .header {
 	background-color: #1e2a3b;
 	color: white;
@@ -47,7 +126,6 @@ body {
 .logo {
 	font-size: 20px;
 	font-weight: bold;
-	white-space: nowrap;
 }
 
 .nav {
@@ -204,11 +282,6 @@ textarea.input50 {
 	margin-left: 2px;
 }
 
-.file-area {
-	margin: 0;
-	/* 個別マージンを除去し .form-section のみで統一 */
-}
-
 .custom-file-btn {
 	background: var(--main-bg);
 	border: 1.5px solid var(--input-border);
@@ -229,15 +302,7 @@ textarea.input50 {
 	background: var(--accent-blue);
 }
 
-.category-area {
-	border: 1px solid var(--accent-blue);
-	border-radius: 6px;
-	padding: 9px 11px;
-	color: var(--gray600);
-	font-size: 14px;
-	margin-bottom: 9px;
-}
-
+.category-area,
 .condition-area {
 	border: 1px solid var(--accent-blue);
 	border-radius: 6px;
@@ -247,7 +312,6 @@ textarea.input50 {
 	margin-bottom: 9px;
 }
 
-/* === 値段エリアの新しいスタイル === */
 .price-section {
 	background: #e3e3e5;
 	border-radius: 8px;
@@ -356,7 +420,6 @@ textarea.input50 {
 	background: #29447a;
 }
 
-/* scrollbar */
 ::-webkit-scrollbar {
 	width: 7px;
 	background: #222;
@@ -367,41 +430,6 @@ textarea.input50 {
 	border-radius: 12px;
 }
 
-.confirm-list {
-	margin: 0;
-	padding-left: 18px;
-}
-
-.confirm-list li {
-	margin-bottom: 4px;
-	color: #222;
-}
-
-.confirm-description {
-	margin: 0;
-	white-space: pre-wrap;
-	line-height: 1.7;
-	color: #222;
-}
-
-.confirm-agree-area {
-	margin-top: 24px;
-	text-align: center;
-	color: #eee;
-	font-size: 14px;
-}
-
-.agree-label input {
-	margin-right: 6px;
-}
-
-button[disabled] {
-	opacity: 0.5;
-	cursor: not-allowed;
-}
-
-
-/* Responsive */
 @media (max-width: 700px) {
 	.main-container {
 		margin: 65px 2vw 0 2vw;
@@ -412,5 +440,192 @@ button[disabled] {
 
 	.header-inner {
 		padding: 0 8px;
+	}
+}
+
+.modal-overlay {
+	position: fixed;
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	background: rgba(32, 32, 32, 0.97);
+	z-index: 1000;
+	width: 100vw;
+	height: 100vh;
+	display: flex;
+	align-items: flex-start;
+	justify-content: center;
+	padding-top: 36px;
+	overflow-y: auto;
+}
+
+.modal-content {
+	background: #2b2b2b;
+	color: #e9e9e9;
+	border-radius: 8px;
+	max-width: 550px;
+	width: 97vw;
+	box-shadow: 0 6px 32px 0 rgba(0, 0, 0, 0.28);
+	padding: 42px 28px 32px 28px;
+	margin-bottom: 36px;
+}
+
+.modal-content h2,
+.modal-content h3 {
+	color: #d4d4aa;
+	font-size: 16px;
+	margin-bottom: 11px;
+	font-weight: bold;
+	letter-spacing: 0.06em;
+}
+
+.modal-body {
+	font-size: 13px;
+	color: #e9e9e9;
+}
+
+.modal-body strong {
+	font-size: 13px;
+	color: #ffe366;
+}
+
+.modal-body ul {
+	list-style: disc inside;
+	padding-left: 1em;
+	margin-bottom: 11px;
+	margin-top: 7px;
+}
+
+.modal-body li {
+	font-size: 13px;
+	margin-bottom: 4px;
+	line-height: 1.6;
+}
+
+.modal-content p {
+	margin-top: 10px;
+	margin-bottom: 9px;
+	color: #bfbfbf;
+	font-size: 13px;
+}
+
+.btn-confirm {
+	display: block;
+	margin: 38px auto 0 auto;
+	width: 90%;
+	background: #6a84ca;
+	color: #fff;
+	border: none;
+	border-radius: 5px;
+	font-size: 15px;
+	font-weight: bold;
+	padding: 8px 0;
+	cursor: pointer;
+	letter-spacing: 0.12em;
+	transition: background 0.17s;
+}
+
+.btn-confirm:hover {
+	background: #365292;
+}
+
+#images {
+	display: none;
+}
+
+.custom-file-btn {
+	margin-bottom: 5px;
+}
+
+#selected-image-names {
+	display: inline-block;
+	margin-left: 10px;
+	color: #6487cc;
+	font-size: 14px;
+}
+
+
+.category-select-section {
+	margin-top: 22px;
+}
+
+.category-select-section h2 {
+	margin-bottom: 0;
+}
+
+.category-select-section .input-hint {
+	margin-bottom: 2px;
+}
+
+.custom-category-select-wrapper {
+	display: flex;
+	align-items: center;
+	gap: 10px;
+}
+
+#categoryId {
+	flex: 1;
+	appearance: none;
+	background: #fff;
+	border: 1.5px solid #ccd4ee;
+	border-radius: 6px;
+	padding: 8px 38px 8px 15px;
+	font-size: 15px;
+	color: #38436f;
+	font-family: inherit;
+	transition: border 0.18s;
+	box-shadow: 0 2px 8px rgba(100, 100, 160, 0.01);
+	outline: none;
+}
+
+.custom-category-select-wrapper .material-symbols-outlined {
+	position: relative;
+	right: 42px;
+	color: #6471a788;
+	font-size: 23px;
+	pointer-events: none;
+}
+
+.condition-select-section {
+	margin-bottom: 18px;
+}
+
+.condition-select-section .input-hint {
+	margin-bottom: 6px;
+	font-weight: 500;
+}
+
+.condition-select-row {
+	display: flex;
+	gap: 14px;
+	flex-wrap: wrap;
+}
+
+.condition-radio-label {
+	display: flex;
+	align-items: center;
+	background: #f6f7fa;
+	border: 1.3px solid #e3e3ed;
+	border-radius: 18px;
+	padding: 8px 18px;
+	cursor: pointer;
+	transition: box-shadow 0.16s;
+}
+
+.condition-radio-label input[type="radio"] {
+	accent-color: #5662e7;
+	margin-right: 7px;
+}
+
+.condition-radio-label span {
+	font-size: 15px;
+	font-weight: 500;
+	color: #333;
+}
+
+@media (max-width: 550px) {
+	.modal-content {
+		padding: 22px 7vw 22px 7vw;
 	}
 }
