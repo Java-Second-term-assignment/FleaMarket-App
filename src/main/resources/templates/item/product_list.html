@@ -10,8 +10,6 @@
 	<link rel="stylesheet" th:href="@{/css/common.css}">
 	<!-- 画面専用CSS -->
 	<link rel="stylesheet" th:href="@{/css/product-list.css}">
-	<!-- 画面専用JS -->
-	<script th:src="@{/js/product-list.js}" defer></script>
 </head>
 
 <!-- ここがトップページです -->
@@ -128,20 +126,20 @@
 		<!-- ページネーション -->
 		<nav class="pagination-wrapper" th:if="${totalPages > 1}">
 			<ul class="pagination">
-		
+
 				<!-- 前へ -->
 				<li class="page-item" th:classappend="${currentPage == 0} ? 'disabled'">
 					<a th:href="@{/products(page=${currentPage - 1}, size=${pageSize})}">
 						‹
 					</a>
 				</li>
-		
+
 				<!-- ページ番号 -->
 				<li class="page-item" th:each="i : ${#numbers.sequence(0, totalPages - 1)}"
 					th:classappend="${i == currentPage} ? 'active'">
 					<a th:href="@{/products(page=${i}, size=${pageSize})}" th:text="${i + 1}"></a>
 				</li>
-		
+
 				<!-- 次へ -->
 				<li class="page-item" th:classappend="${currentPage == totalPages - 1} ? 'disabled'">
 					<a th:href="@{/products(page=${currentPage + 1}, size=${pageSize})}">
@@ -152,6 +150,8 @@
 		</nav>
 
 	</main>
+	<!-- 画面専用JS -->
+	<script th:src="@{/js/product_confirm.js}"></script>
 </body>
 
 </html>

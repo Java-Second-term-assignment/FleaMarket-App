@@ -85,6 +85,7 @@
 }
 
 
+
 .horizontal-search-ranking {
 	display: flex;
 	flex-direction: row;
@@ -106,7 +107,7 @@
 }
 
 .wider-search-card {
-	max-width: 640px;
+	max-width: 710px;
 	min-width: 340px;
 }
 
