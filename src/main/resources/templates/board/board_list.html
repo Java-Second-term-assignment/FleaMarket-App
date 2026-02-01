@@ -8,7 +8,9 @@
 	<!-- Google Icons -->
 	<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" />
 
-	<!-- CSS -->
+	<!-- 共通CSS -->
+	<link rel="stylesheet" th:href="@{/css/common.css}">
+	<!-- 専用CSS -->
 	<link rel="stylesheet" th:href="@{/css/board-list.css}">
 </head>
 
@@ -20,6 +22,118 @@
 
 	<main>
 		<h1 class="page-title">掲示板一覧</h1>
+
+		<div class="top-forms">
+			<div class="product-search-card wider-search-card">
+				<div class="search-card-header">商品検索</div>
+				<form class="search-form">
+					<div class="search-input-row">
+						<span class="search-icon material-symbols-outlined">
+							search
+						</span>
+						<input type="text" class="search-input" placeholder="キーワードで検索">
+						<button type="button" class="clear-btn" aria-label="検索をクリア">✗</button>
+					</div>
+					<div class="search-row">
+						<label class="search-label" for="sort-select">並べ替え:</label>
+						<select name="sort" class="search-select">
+							<option value="new" th:selected="${param.sort == null || param.sort[0] == 'new'}">新しい順
+							</option>
+							<option value="low_price"
+								th:selected="${param.sort != null && param.sort[0] == 'low_price'}">価格の安い順</option>
+							<option value="popular" th:selected="${param.sort != null && param.sort[0] == 'popular'}">
+								人気順</option>
+						</select>
+						<button type="button" class="search-icon-right">
+							<span class="material-symbols-outlined"
+								style="font-size:20px; position: absolute; right: 23px; margin:0;">arrow_downward</span>
+							<span class="material-symbols-outlined"
+								style="font-size:25px; position: relative; right: -8px; margin:0;">manage_search</span>
+						</button>
+					</div>
+					<div class="search-row category-row">
+						<span class="category-label">
+							カテゴリーで絞る
+						</span>
+						<span class="category-icon material-symbols-outlined">
+							sell
+						</span>
+					</div>
+					<div class="category-chips category-chips-scroll horizontal-category-chips">
+						<button type="submit" name="category" value="" class="category-chip selected_all">全て</button>
+
+						<button th:each="cat : ${categories}" type="submit" name="category" th:value="${cat.id}"
+							class="category-chip" th:text="|# ${cat.name}|">
+						</button>
+					</div>
+				</form>
+			</div>
+
+			<section class="post-box">
+				<input type="text" placeholder="タイトルを入力してください">
+				<div style="display: flex; gap: 15px;">
+					<textarea placeholder="内容を記入してください"></textarea>
+					<div class="category-select-trigger"
+						style="min-width: 200px; padding: 16px 18px; border: 1px solid #e7eafd; border-radius: 8px; background: #fff; box-shadow: 0 2px 8px #aab1cb22; font-size: 15px; color: #38436f; font-weight: 500; cursor: pointer; display: flex; flex-direction: column; align-items: flex-start; gap: 7px;">
+						<div style="font-size: 12px; color: #636986; margin-bottom: 6px;">
+							カテゴリー
+						</div>
+						<span style="font-size: 14px; color: #3763b6; font-weight: 500; margin-bottom: 2px;">
+							+ カテゴリーを選択する
+						</span>
+					</div>
+				</div>
+				<div>
+					<span style="font-size: 12px; margin-right:10px; color: #fff;">商品選択</span>
+					<button type="button" class="btn-select-product" id="btnSelectProduct">商品選択</button>
+				</div>
+				<button type="button" class="btn-submit-post">投稿する</button>
+			</section>
+		</div>
+
+		<!-- 商品選択モーダル（新デザイン・見た目改良） -->
+		<div id="productSelectModal" class="modal-product-select" style="display:none;">
+		    <div class="modal-backdrop" id="modalBackdrop"></div>
+		    <div class="modal-content new-modal-content">
+		        <span class="modal-close" id="modalCloseBtn" title="閉じる">&times;</span>
+		        <h2 class="modal-title">商品を選択</h2>
+		        <div class="modal-description-box">
+		            <div class="desc-title">説明</div>
+		            <div class="desc-text">商品を選択すると、投稿に商品リンクを追加できます</div>
+		        </div>
+
+		        <div class="modal-products-flex grid-scroll">
+		            <div th:each="product : ${products}" 
+		                 class="item-card" 
+		                 th:data-id="${product.id}" 
+		                 th:data-name="${product.name}"
+		                 onclick="selectProduct(this)">
+		                
+		                <div class="item-card-image">
+		                    <img th:src="${product.imageUrl != null ? product.imageUrl : '/images/no-image.png'}" class="item-img" alt="商品画像">
+		                    <div th:if="${product.stock <= 0}" class="soldout-badge">
+		                        <span>Sold out</span>
+		                    </div>
+		                </div>
+		                
+		                <div class="item-card-content">
+		                    <div class="item-card-title" th:text="${product.name}">商品タイトル</div>
+		                    <div class="item-card-price">
+		                        値段: <span class="price-value" th:text="${#numbers.formatInteger(product.price, 1, 'COMMA') + '円'}">3,000円</span>
+		                    </div>
+		                    <div class="item-card-footer">
+		                        ジャンル:
+		                        <span class="item-card-category-chip" th:text="${product.category}">カテゴリー名</span>
+		                    </div>
+		                </div>
+		            </div>
+		            
+		            <div th:if="${#lists.isEmpty(products)}" style="color: #666; padding: 20px;">
+		                選択可能な商品がありません。
+		            </div>
+		        </div>
+		    </div>
+		</div>
 
 		<!-- 掲示板リスト -->
 		<div class="board-list-container">

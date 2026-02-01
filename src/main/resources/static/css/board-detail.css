@@ -1,23 +1,224 @@
 @charset "UTF-8";
 
-/* 変数・共通 */
 :root {
 	--bg-dark: #2c2c2c;
-	--text-main: #fff;
-	--text-sub: #ccc;
+	--card-bg: #2a2a2a;
+	--form-bg: #e0e6ff;
+	--text-main: #ffffff;
+	--text-sub: #cccccc;
 	--accent-blue: #4a5d99;
-	--reply-line: #bfc6e5;
+	--accent-red: #d32f2f;
+	--accent-green: #4caf50;
+	--border-color: #444;
 }
 
 body {
-	background: var(--bg-dark);
-	color: var(--text-main);
 	margin: 0;
+	padding: 0;
+	font-family: "Helvetica Neue", Arial, "Hiragino Kaku Gothic ProN", "Hiragino Sans", Meiryo, sans-serif;
+	background-color: var(--bg-dark);
+	color: var(--text-main);
+	line-height: 1.6;
 }
 
-/* コメント */
+/* ヘッダー（固定表示） */
+.header {
+	background-color: #1e2a3b;
+	color: white;
+	padding: 6px 0;
+	position: fixed;
+	top: 0;
+	left: 0;
+	width: 100vw;
+	z-index: 1000;
+}
+
+.header-inner {
+	width: 100%;
+	max-width: none;
+	margin: 0;
+	padding: 0 32px;
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	box-sizing: border-box;
+}
+
+.logo {
+	font-size: 20px;
+	font-weight: bold;
+	white-space: nowrap;
+}
+
+.nav {
+	display: flex;
+	align-items: center;
+}
+
+.nav-links {
+	display: flex;
+	align-items: center;
+	gap: 2px;
+}
+
+.nav-links a {
+	color: white;
+	text-decoration: none;
+	font-size: 14px;
+	position: relative;
+	margin-top: 10px;
+	padding: 0 6px 5px 6px;
+	display: inline-block;
+	white-space: nowrap;
+}
+
+.nav-links a::after {
+	content: '';
+	position: absolute;
+	bottom: 0;
+	left: 0;
+	width: 0;
+	height: 2px;
+	background: white;
+	transition: 0.3s;
+}
+
+.nav-links a:hover::after {
+	width: 100%;
+}
+
+.btn-post {
+	background-color: #007bff;
+	color: white;
+	border: none;
+	padding: 8px 21px;
+	border-radius: 20px;
+	font-size: 15px;
+	font-weight: bold;
+	cursor: pointer;
+	transition: background 0.2s;
+	margin-left: 12px;
+	white-space: nowrap;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	text-align: center;
+}
+
+.btn-post:hover {
+	background-color: #0056b3;
+}
+
+.btn-logout {
+	background: none;
+	border: 1px solid #ffffff99;
+	color: #fff;
+	border-radius: 20px;
+	padding: 8px 15px;
+	font-size: 14px;
+	cursor: pointer;
+	transition: background 0.2s, color 0.2s;
+	margin-left: 12px;
+	white-space: nowrap;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	text-align: center;
+}
+
+.btn-logout:hover {
+	background-color: #394963;
+	color: #ff6b6b;
+	border-color: #ff6b6b;
+}
+
+.lang-selector {
+	font-size: 13px;
+	margin-left: 15px;
+	color: #ccddf0;
+	cursor: pointer;
+	padding: 4px 8px;
+	border-radius: 8px;
+	transition: background 0.17s;
+	white-space: nowrap;
+}
+
+.lang-selector:hover {
+	background: #263247;
+	color: #fff;
+}
+
+/* メインコンテンツ */
+main {
+	max-width: 900px;
+	margin: 40px auto;
+	padding: 0 20px;
+}
+
+.page-title {
+	margin-top: 100px;
+	color: #F2EEB8;
+}
+
+.post-content {
+	font-size: 14px;
+	margin-bottom: 40px;
+	word-wrap: break-word;
+}
+
+/* 投稿フォームエリア */
+.comment-form-container {
+	background-color: var(--form-bg);
+	padding: 30px;
+	border-radius: 12px;
+	margin-bottom: 50px;
+	color: #333;
+}
+
+.form-group {
+	margin-bottom: 15px;
+}
+
+.form-group label {
+	display: block;
+	font-weight: bold;
+	margin-bottom: 5px;
+	font-size: 14px;
+}
+
+.form-group input,
+.form-group textarea {
+	width: 100%;
+	padding: 10px;
+	border: 1px solid #ccc;
+	border-radius: 4px;
+	box-sizing: border-box;
+}
+
+.form-group textarea {
+	height: 120px;
+	resize: vertical;
+}
+
+.btn-submit {
+	width: 100%;
+	background-color: var(--accent-blue);
+	color: white;
+	border: none;
+	padding: 12px;
+	border-radius: 6px;
+	font-size: 16px;
+	cursor: pointer;
+	transition: opacity 0.2s;
+}
+
+.btn-submit:hover {
+	opacity: 0.9;
+}
+
+/* コメント一覧 */
 .comments-list {
-	border: 1px solid #444;
+	border: 1px solid var(--border-color);
 	padding: 20px;
 	border-radius: 8px;
 }
@@ -28,61 +229,221 @@ body {
 	border-bottom: 1px solid #F2EEB8;
 }
 
-.comment-item.is-reply {
-	display: flex;
-	margin-left: 32px;
-}
-
-/* 返信ライン（L字） */
-.reply-line {
-	position: relative;
-	width: 20px;
-	margin-right: 14px;
-}
-
-.reply-line::before {
-	content: "";
-	position: absolute;
-	top: -20px;
-	bottom: 0;
-	left: 9px;
-	width: 2px;
-	background: var(--reply-line);
-}
-
-.reply-line::after {
-	content: "";
-	position: absolute;
-	top: 26px;
-	left: 9px;
-	width: 14px;
-	height: 2px;
-	background: var(--reply-line);
-}
-
-/* コメント本文 */
-.comment-content {
-	flex: 1;
+.comment-item:last-child {
+	border-bottom: none;
 }
 
 .comment-title {
 	font-weight: bold;
-	margin-bottom: 6px;
+	font-size: 16px;
+	margin-bottom: 8px;
+	padding-right: 40px;
 }
 
 .comment-body {
 	font-size: 13px;
 	color: var(--text-sub);
+	margin-bottom: 10px;
 }
 
 .comment-footer {
-	font-size: 12px;
 	display: flex;
-	gap: 16px;
+	justify-content: flex-start;
+	gap: 20px;
+	font-size: 12px;
+	color: #888;
+	margin-left: 10px;
 }
 
-.reply-link {
-	color: #F2EEB8;
+/* 返信するボタンを黄色にする */
+.comment-footer .reply-link {
+	color: #F2EEB8 !important;
 	font-weight: bold;
 	text-decoration: none;
+	transition: color 0.2s;
+}
+
+.comment-footer .reply-link:hover {
+	color: #ffbb00 !important;
+	text-decoration: underline;
+}
+
+/* 操作アイコン */
+.comment-actions {
+	position: absolute;
+	right: 0;
+	top: 20px;
+	display: flex;
+	flex-direction: column;
+	gap: 5px;
+}
+
+.icon-btn {
+	width: 34px;
+	height: 34px;
+	border-radius: 4px;
+	border: none;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	cursor: pointer;
+	color: white;
+	font-size: 12px;
+	transition: background 0.2s, color 0.2s, border 0.2s;
+}
+
+.btn-edit {
+	background-color: var(--accent-green);
+	border: 1.5px solid transparent;
+}
+
+.btn-delete {
+	background-color: var(--accent-red);
+	border: 1.5px solid transparent;
+}
+
+.btn-edit:hover {
+	background-color: var(--text-main);
+	color: var(--accent-green);
+	border: 1.5px solid var(--bg-dark);
+}
+
+.btn-delete:hover {
+	background-color: var(--text-main);
+	color: var(--accent-red);
+	border: 1.5px solid var(--bg-dark);
+}
+
+/* ////////////////////// */
+/* 返信モーダル部分 */
+.modal-backdrop {
+	display: none;
+	position: fixed;
+	z-index: 2000;
+	left: 0;
+	top: 0;
+	width: 100vw;
+	height: 100vh;
+	background: rgba(20, 29, 64, 0.23);
+}
+
+.modal-backdrop.active {
+	display: block;
+}
+
+.reply-modal {
+	display: none;
+	position: fixed;
+	z-index: 2010;
+	left: 0;
+	top: 0;
+	width: 100vw;
+	height: 100vh;
+	justify-content: center;
+	align-items: center;
+}
+
+.reply-modal.active {
+	display: flex;
+}
+
+.reply-modal-dialog {
+	background: #e0e6ff;
+	border-radius: 14px;
+	box-shadow: 0 4px 24px rgba(30, 42, 70, 0.17);
+	border: 2px solid #bfc6e5;
+	width: 420px;
+	max-width: 94vw;
+	padding: 32px 34px 26px 34px;
+	margin: 0 auto;
+	position: relative;
+	color: #21243a;
+}
+
+.reply-modal-close-btn {
+	position: absolute;
+	top: 20px;
+	right: 20px;
+	width: 36px;
+	height: 36px;
+	background: none;
+	border: 1.5px solid #1D284E;
+	border-radius: 8px;
+	font-size: 26px;
+	color: #4A5B97;
+	cursor: pointer;
+	display: flex;
+	align-items: flex-start;
+	justify-content: center;
+	text-align: center;
+	transition: background 0.15s;
+	padding-top: 0;
+}
+
+.reply-modal-close-btn:hover {
+	background: #1D284E;
+	border-color: #4A5B97;
+	color: #E5EBFF;
+}
+
+.reply-modal-title {
+	font-size: 1.6rem;
+	font-weight: bold;
+	margin-bottom: 23px;
+}
+
+.reply-modal .form-group label {
+	color: #21243a;
+	font-weight: 700;
+}
+
+.reply-modal .form-group input,
+.reply-modal .form-group textarea {
+	background: #fff;
+	border: 1px solid #bfc6e5;
+	color: #21243a;
+}
+
+.reply-modal .form-group input:focus,
+.reply-modal .form-group textarea:focus {
+	outline: 2px solid #5057a3;
+}
+
+.reply-modal .form-group textarea {
+	height: 120px;
+	font-size: 16px;
+}
+
+.reply-modal .reply-char-count {
+	width: 100%;
+	text-align: right;
+	color: #8790a4;
+	font-size: 14px;
+	padding-top: 4px;
+	margin-bottom: 10px;
+}
+
+.reply-modal-submit-btn {
+	width: 100%;
+	background-color: #4a5d99;
+	color: #fff;
+	padding: 16px;
+	border: none;
+	border-radius: 8px;
+	font-weight: bold;
+	font-size: 18px;
+	margin-top: 16px;
+	cursor: pointer;
+	transition: opacity 0.17s;
+}
+
+.reply-modal-submit-btn:hover {
+	opacity: 0.92;
+}
+
+footer {
+	text-align: left;
+	padding: 20px 40px;
+	font-size: 18px;
+	color: var(--text-sub);
 }
