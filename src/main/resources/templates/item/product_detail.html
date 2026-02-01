@@ -57,8 +57,16 @@
 					</div>
 
 					<div class="action-row">
-						<button class="icon-btn" title="お気に入り"></button>
-						<button class="icon-btn" title="通報"></button>
+						<button class="icon-btn" title="お気に入り">
+							<span class="material-symbols-outlined">
+							favorite
+							</span>
+						</button>
+						<button class="icon-btn" title="通報">
+							<span class="material-symbols-outlined">
+							error
+							</span>
+						</button>
 					</div>
 
 					<button class="btn-purchase" th:disabled="${product.stock == 0}">
@@ -156,7 +164,7 @@
 								<div class="review-rating-row">
 									<span id="single-star" class="star">★</span>
 									<select id="review-rating" class="review-form-select" th:field="*{rating}" required>
-										<option value="" disabled>選択してください</option>
+										<option value="" disabled>選択</option>
 										<option th:each="r : ${ratings}" th:value="${r}" th:text="${r}">
 										</option>
 									</select>
