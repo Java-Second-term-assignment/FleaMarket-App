@@ -155,6 +155,11 @@ main {
 	padding: 0 20px;
 }
 
+.danger-icon {
+	color: var(--accent-red);
+	font-size: 32px;
+}
+
 .page-title {
 	color: var(--accent-yellow);
 	font-size: 24px;
@@ -289,4 +294,46 @@ td {
 	text-align: center;
 	padding: 40px;
 	color: var(--text-sub);
+}
+
+/* モーダルの初期状態：画面から隠す */
+#blacklistModal,
+#blacklistModalBackdrop {
+	display: none;
+	/* 最初は存在させない */
+	opacity: 0;
+	/* 透明にする */
+	transition: opacity 0.3s ease;
+}
+
+/* activeクラスがついた時だけ表示する */
+#blacklistModal.active,
+#blacklistModalBackdrop.active {
+	display: block;
+	/* または flex */
+	opacity: 1;
+}
+
+/* モーダルの配置（中央寄せなど） */
+#blacklistModal {
+	position: fixed;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+	z-index: 2001;
+	background: #1e2a3b;
+	padding: 24px;
+	border-radius: 12px;
+	width: 90%;
+	max-width: 400px;
+}
+
+#blacklistModalBackdrop {
+	position: fixed;
+	top: 0;
+	left: 0;
+	width: 100vw;
+	height: 100vh;
+	background: rgba(0, 0, 0, 0.7);
+	z-index: 2000;
 }
