@@ -26,54 +26,72 @@
 		<h1 class="page-title">商品一覧</h1>
 
 		<!-- 検索フォーム -->
-		<form th:action="@{/products}" method="get" class="horizontal-search-ranking">
-
+		<div class="horizontal-search-ranking">
 			<div class="product-search-card wider-search-card">
 				<div class="search-card-header">商品検索</div>
-
-				<div class="search-row-with-sort">
+				<form class="search-form">
 					<div class="search-input-row">
-						<span class="material-symbols-outlined search-icon">search</span>
+						<span class="search-icon material-symbols-outlined">
+							search
+						</span>
 						<input type="text" name="keyword" th:value="${param.keyword}" class="search-input"
 							placeholder="キーワードで検索">
+						<button type="button" class="clear-btn" aria-label="検索をクリア">✗</button>
 					</div>
+
 					<div class="search-row">
+						<label class="search-label" for="sort-select">並べ替え:</label>
 						<select name="sort" class="search-select">
-							<option value="new" th:selected="${param.sort == null || param.sort[0] == 'new'}">新しい順</option>
-							<option value="low_price" th:selected="${param.sort != null && param.sort[0] == 'low_price'}">価格の安い順</option>
-							<option value="popular" th:selected="${param.sort != null && param.sort[0] == 'popular'}">人気順</option>
+							<option value="new" th:selected="${param.sort == null || param.sort[0] == 'new'}">新しい順
+							</option>
+							<option value="low_price"
+								th:selected="${param.sort != null && param.sort[0] == 'low_price'}">価格の安い順</option>
+							<option value="popular" th:selected="${param.sort != null && param.sort[0] == 'popular'}">
+								人気順</option>
 						</select>
+						<button type="button" class="search-icon-right">
+							<span class="material-symbols-outlined"
+								style="font-size:20px; position: absolute; right: 23px; margin:0;">arrow_downward</span>
+							<span class="material-symbols-outlined"
+								style="font-size:25px; position: relative; right: -8px; margin:0;">manage_search</span>
+						</button>
 					</div>
-				</div>
+					<div class="search-row category-row">
+						<span class="category-label">
+							カテゴリーで絞る
+						</span>
+						<span class="category-icon material-symbols-outlined">
+							sell
+						</span>
+					</div>
+					<div class="category-chips category-chips-scroll horizontal-category-chips">
+						<button type="submit" name="category" value="" class="category-chip selected_all">全て</button>
 
-				<!-- カテゴリー -->
-				<div class="category-chips category-chips-scroll horizontal-category-chips">
-					<button type="submit" name="category" value="" class="category-chip selected_all">全て</button>
-
-					<button th:each="cat : ${categories}" type="submit" name="category" th:value="${cat.id}"
-						class="category-chip" th:text="|# ${cat.name}|">
-					</button>
-				</div>
+						<button th:each="cat : ${categories}" type="submit" name="category" th:value="${cat.id}"
+							class="category-chip" th:text="|# ${cat.name}|">
+						</button>
+					</div>
+				</form>
 			</div>
 
 			<!-- ランキング -->
-			<section class="ranking-section">
+			<div class="ranking-title-cover">
 				<div class="ranking-title">人気ランキング</div>
+				<section class="ranking-section">
+					<ol class="ranking-list">
+						<li class="ranking-item" th:each="rank, stat : ${rankings}">
+							<span class="ranking-rank" th:text="${stat.count}"></span>
+							<img th:src="${rank.imageUrl}" class="ranking-thumb" onerror="this.src='/img/no-image.png'">
 
-				<ol class="ranking-list">
-					<li class="ranking-item" th:each="rank, stat : ${rankings}">
-						<span class="ranking-rank" th:text="${stat.count}"></span>
-						<img th:src="${rank.imageUrl}" class="ranking-thumb" onerror="this.src='/img/no-image.png'">
-
-						<div class="ranking-info">
-							<span class="ranking-item-title" th:text="${rank.name}"></span>
-							<span class="ranking-item-price" th:text="|${rank.price}円|"></span>
-						</div>
-					</li>
-				</ol>
-			</section>
-
-		</form>
+							<div class="ranking-info">
+								<span class="ranking-item-title" th:text="${rank.name}"></span>
+								<span class="ranking-item-price" th:text="|${rank.price}円|"></span>
+							</div>
+						</li>
+					</ol>
+				</section>
+			</div>
+		</div>
 
 		<!-- 商品グリッド -->
 		<div class="product-grid">
@@ -106,8 +124,32 @@
 
 				</div>
 			</a>
-
 		</div>
+		<!-- ページネーション -->
+		<nav class="pagination-wrapper" th:if="${totalPages > 1}">
+			<ul class="pagination">
+		
+				<!-- 前へ -->
+				<li class="page-item" th:classappend="${currentPage == 0} ? 'disabled'">
+					<a th:href="@{/products(page=${currentPage - 1}, size=${pageSize})}">
+						‹
+					</a>
+				</li>
+		
+				<!-- ページ番号 -->
+				<li class="page-item" th:each="i : ${#numbers.sequence(0, totalPages - 1)}"
+					th:classappend="${i == currentPage} ? 'active'">
+					<a th:href="@{/products(page=${i}, size=${pageSize})}" th:text="${i + 1}"></a>
+				</li>
+		
+				<!-- 次へ -->
+				<li class="page-item" th:classappend="${currentPage == totalPages - 1} ? 'disabled'">
+					<a th:href="@{/products(page=${currentPage + 1}, size=${pageSize})}">
+						›
+					</a>
+				</li>
+			</ul>
+		</nav>
 
 	</main>
 </body>
