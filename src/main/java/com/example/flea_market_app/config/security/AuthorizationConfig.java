@@ -33,6 +33,7 @@ public class AuthorizationConfig {
 				.dispatcherTypeMatchers(DispatcherType.FORWARD, DispatcherType.ERROR).permitAll()
 				.requestMatchers("/css/**", "/js/**", "/img/**", "/fonts/**", "/*.ico").permitAll()
 				.requestMatchers("/login", "/register", "/password/forgot", "/password-reset-request", "/terms").permitAll()
+				.requestMatchers("/admin/login").permitAll()
 				.requestMatchers(HttpMethod.GET, "/products", "/products/**").permitAll()
 				.requestMatchers("/", "/products", "/products/**", "/board", "/board/**").permitAll()
 				.requestMatchers("/user/settings", "/product/add", "/items/add", "/product/submit", "/order/confirm", "/payment", "/address").authenticated()

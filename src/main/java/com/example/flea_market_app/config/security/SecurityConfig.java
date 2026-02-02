@@ -28,11 +28,40 @@ public class SecurityConfig {
 		return new BCryptPasswordEncoder();
 	}
 
+	@Bean
+	AdminLoginSuccessHandler adminLoginSuccessHandler() {
+		return new AdminLoginSuccessHandler();
+	}
+
+	/**
+	 * 管理者用フォームログイン: /admin/login のみを扱う（一般ユーザーとエントリーポイントを分離）
+	 */
+	@Bean
+	@Order(1)
+	SecurityFilterChain adminLoginSecurityFilterChain(HttpSecurity http) throws Exception {
+		http
+				.securityMatcher("/admin/login", "/admin/login*")
+				.csrf(AbstractHttpConfigurer::disable)
+				.cors(Customizer.withDefaults())
+				.sessionManagement(session -> session.sessionCreationPolicy(
+						org.springframework.security.config.http.SessionCreationPolicy.IF_REQUIRED))
+				.authorizeHttpRequests(auth -> auth.anyRequest().permitAll())
+				.formLogin(form -> form
+						.loginPage("/admin/login")
+						.loginProcessingUrl("/admin/login")
+						.usernameParameter("email")
+						.passwordParameter("password")
+						.successHandler(adminLoginSuccessHandler())
+						.failureUrl("/admin/login?error"));
+
+		return http.build();
+	}
+
 	/**
 	 * API用: JWT認証、stateless、JSONエラーレスポンス
 	 */
 	@Bean
-	@Order(1)
+	@Order(2)
 	SecurityFilterChain apiSecurityFilterChain(HttpSecurity http) throws Exception {
 		http
 				.securityMatcher("/api/**", "/auth/**", "/community/**", "/orders/**")
@@ -67,10 +96,10 @@ public class SecurityConfig {
 	}
 
 	/**
-	 * Web用: フォーム認証、セッション、Thymeleafページ
+	 * Web用: フォーム認証、セッション、Thymeleafページ（一般ユーザーは /login）
 	 */
 	@Bean
-	@Order(2)
+	@Order(3)
 	public SecurityFilterChain webSecurityFilterChain(HttpSecurity http) throws Exception {
 		http
 				.securityMatcher("/**")

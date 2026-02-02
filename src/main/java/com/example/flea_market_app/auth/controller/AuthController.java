@@ -22,11 +22,16 @@ public class AuthController {
 
 	private final AuthService authService;
 
+	/** 一般ユーザー用ログイン（API） */
 	@PostMapping("/login")
 	public LoginResponse login(@Valid @RequestBody LoginRequest request) {
-
 		return authService.login(request);
+	}
 
+	/** 管理者用ログイン（API）。非管理者は 403。一般ユーザーとはエントリーポイントを分離。 */
+	@PostMapping("/admin/login")
+	public LoginResponse adminLogin(@Valid @RequestBody LoginRequest request) {
+		return authService.adminLogin(request);
 	}
 
 	@PostMapping("/refresh")

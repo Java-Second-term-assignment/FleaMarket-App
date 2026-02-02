@@ -29,6 +29,12 @@ public class AuthPageController {
 		return "auth/login";
 	}
 
+	/** 管理者用ログインページ（一般ユーザーとは別エントリーポイント） */
+	@GetMapping("/admin/login")
+	public String adminLoginPage() {
+		return "auth/admin_login";
+	}
+
 	@GetMapping("/register")
 	public String registerPage(Model model) {
 		model.addAttribute("userForm", new RegisterForm());
