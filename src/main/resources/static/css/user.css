@@ -1,3 +1,5 @@
+@charset "UTF-8";
+
 body {
 	background-color: #2c2c2c;
 	margin: 0;
@@ -898,4 +900,28 @@ a {
 	background: none;
 	border: none;
 	cursor: pointer;
+}
+
+/* 商品一覧のコンテナが空でも高さを確保する */
+.favorites-list, /* お気に入りリストにも同じ高さを指定 */
+.notification-list, /* 通知リストにも同じ高さを指定 */
+.profile-tab-content { /* プロファイルのタブ内容コンテナがあれば同じに */
+	list-style: none;
+	padding: 15px;
+	min-height: 10px;
+	margin: 0;
+	/* データがなくても高さを出す */
+	background-color: #1D284E;
+	border-radius: 0 0 8px 8px;
+}
+
+/* メッセージのスタイル */
+.empty-message,
+.empty-notification, /* 通知・お気に入りでも共通に */
+.notification-item,
+.empty-favorites {
+	grid-column: 1 / -1;
+	/* グリッド全体を使って中央に表示 */
+	text-align: center;
+	color: #888;
 }

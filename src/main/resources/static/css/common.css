@@ -8,6 +8,10 @@
 	--text-white: #ffffff;
 }
 
+a {
+	text-decoration: none;
+}
+
 body {
 	background-color: var(--bg-color);
 	margin: 0;

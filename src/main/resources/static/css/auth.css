@@ -110,6 +110,10 @@ input {
 
 a {
 	color: #4a69bd;
+	text-decoration: none;
+}
+
+a:hover {
 	text-decoration: underline;
 }
 
@@ -139,4 +143,81 @@ a {
 
 .btn-change {
 	background-color: #54649b;
+}
+
+.modal-overlay {
+	position: fixed;
+	inset: 0;
+	background: rgba(32, 32, 32, 0.97);
+	z-index: 1000;
+
+	display: flex;
+	align-items: flex-start;
+	justify-content: flex-start;
+
+	padding: 36px 16px;
+	overflow-y: auto;
+}
+
+/* モーダル本体 */
+.modal-content {
+	background: #2b2b2b;
+	color: #2c2c2c;
+	/* ← 全体を白文字に */
+	border-radius: 8px;
+
+	max-width: 550px;
+	width: 100%;
+
+	box-shadow: 0 6px 32px rgba(0, 0, 0, 0.28);
+	padding: 42px 28px 32px;
+
+	margin-left: 0;
+	/* 左寄せ固定 */
+	margin-right: auto;
+	/* 右に余白を出す */
+	margin-bottom: 36px;
+
+	text-align: left;
+	/* 念のため */
+}
+
+/* 見出し */
+.modal-content h2,
+.modal-content h3 {
+	color: #2c2c2c;
+	font-size: 16px;
+	margin-bottom: 11px;
+	font-weight: bold;
+	letter-spacing: 0.06em;
+}
+
+/* 本文 */
+.modal-body {
+	font-size: 13px;
+	color: #2c2c2c;
+}
+
+.modal-body strong {
+	color: #365292;
+}
+
+/* リスト */
+.modal-body ul {
+	list-style: disc;
+	padding-left: 1.2em;
+	margin: 7px 0 11px;
+}
+
+.modal-body li {
+	font-size: 13px;
+	margin-bottom: 4px;
+	line-height: 1.6;
+}
+
+/* 段落 */
+.modal-content p {
+	margin: 9px 0 10px;
+	color: #2c2c2c;
+	font-size: 13px;
 }

@@ -1,30 +1,28 @@
 <!DOCTYPE html>
 <html lang="ja" xmlns:th="http://www.thymeleaf.org">
 
-<head th:replace="~{ui/fragments :: common_head('プロフィール設定', ~{::link})}">
-    <link rel="stylesheet" th:href="@{/css/user.css}">
+<head>
+	<meta charset="UTF-8">
+	<title>ユーザー設定</title>
+	<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" />
+	<link rel="stylesheet" th:href="@{/css/user.css}">
 </head>
-
 
 <body>
 	<div th:replace="~{ui/fragments :: header}"></div>
 
-
 	<main class="main-container">
 		<div class="profile-setting-container">
-
 			<h1 class="page-title">プロフィール設定</h1>
 
 			<div class="profile-card">
-
-				<!-- ================= プロフィール表示 ================= -->
 				<div class="profile-card-main">
-
 					<div class="profile-icon-wrap profile-icon-wrap-edit">
 						<div class="profile-image profile-image-edit" id="profileIconDisplay"
 							th:data-imgsrc="${user.iconUrl}">
-							<span th:if="${user.iconUrl == null}">アイコン画像</span>
-							<img th:if="${user.iconUrl != null}" th:src="${user.iconUrl}" alt="icon">
+							<span th:if="${user.iconUrl == null || user.iconUrl == ''}">アイコン画像</span>
+							<img th:if="${user.iconUrl != null && user.iconUrl != ''}" th:src="${user.iconUrl}"
+								alt="icon">
 						</div>
 						<button class="profile-icon-edit" id="openProfileEditModalBtn">編集</button>
 					</div>
@@ -33,16 +31,14 @@
 						<div class="profile-info-flex">
 							<div>
 								<div class="profile-info-title" id="profileDisplayTitle" th:text="${user.displayTitle}">
-									表示名
+									表示名</div>
+								<div class="profile-info-name" id="profileDisplayName" th:text="${user.username}">ユーザー名
 								</div>
-								<div class="profile-info-name" id="profileDisplayName" th:text="${user.username}">
-									ユーザー名
-								</div>
-								<div class="profile-info-caption" id="profileDisplayCaption" th:text="${user.caption}">
+								<div class="profile-info-caption" id="profileDisplayCaption"
+									th:text="${user.caption != null && user.caption != '' ? user.caption : 'プロフィールはまだ未記入です。'}">
 									プロフィールはまだ未記入です。
 								</div>
 							</div>
-
 							<div class="profile-badge">
 								<img th:src="@{/img/Bronze1.png}" alt="badge">
 							</div>
@@ -50,9 +46,7 @@
 					</div>
 				</div>
 
-				<!-- ================= モーダル ================= -->
 				<div class="modal-backdrop" id="modalProfileBackdrop"></div>
-
 				<div class="modal-profile-edit" id="modalProfileEdit">
 					<button class="modal-close-x" id="modalProfileCloseBtn">&times;</button>
 					<h2>プロフィール編集</h2>
@@ -72,7 +66,7 @@
 						<input type="text" id="modalProfileEditName" th:value="${user.username}" maxlength="12">
 
 						<label>自己紹介</label>
-						<textarea id="modalProfileEditCaption" th:text="${user.caption}" maxlength="80"></textarea>
+						<textarea id="modalProfileEditCaption" maxlength="80">[[${user.caption}]]</textarea>
 
 						<div class="modal-btn-row">
 							<button type="button" id="modalProfileCancelBtn">キャンセル</button>
@@ -81,7 +75,6 @@
 					</form>
 				</div>
 
-				<!-- ================= タブ ================= -->
 				<div class="tab-bar">
 					<button class="tab active" data-tab="favorite">お気に入り</button>
 					<button class="tab" data-tab="history">商品</button>
@@ -91,27 +84,154 @@
 
 				<div class="profile-tab-content" id="tab-favorite" style="display:block;">
 					<div class="product-grid">
-						<a th:each="item : ${favorites}" th:href="@{/products/{id}(id=${item.id})}"
-							class="product-card-link">
-							<div class="item-card">
-								<img th:src="${item.imageUrl}" class="item-img">
-								<div class="item-card-title" th:text="${item.title}"></div>
-								<div class="item-card-price" th:text="${item.price} + '円'"></div>
-							</div>
-						</a>
+
+						<th:block th:if="${favorites != null and !favorites.empty}">
+							<a th:each="item : ${favorites}" th:href="@{/products/{id}(id=${item.id})}"
+								class="product-card-link">
+								<div class="item-card">
+									<img th:src="${item.imageUrl}" class="item-img" alt="商品画像">
+									<div class="item-card-title" th:text="${item.name}">商品名</div>
+									<div class="item-card-price" th:text="${item.price + '円'}">0円</div>
+								</div>
+							</a>
+						</th:block>
+
+						<p th:if="${favorites == null or favorites.empty}" class="empty-message">
+							お気に入りはまだありません。
+						</p>
 					</div>
 				</div>
 
 				<div class="profile-tab-content" id="tab-history" style="display:none;">
-					<!-- 同様に th:each -->
+					<div class="product-grid">
+						<th:block th:if="${userProducts != null and !userProducts.empty}">
+							<a th:each="item : ${userProducts}" th:href="@{/products/{id}(id=${item.id})}"
+								class="product-card-link">
+								<div class="item-card">
+									<img th:src="${item.imageUrl}" class="item-img" alt="商品画像">
+									<div class="item-card-title" th:text="${item.name}">商品名</div>
+								</div>
+							</a>
+						</th:block>
+						<p th:if="${userProducts == null or userProducts.empty}" class="empty-message">
+							投稿した商品はありません。
+						</p>
+					</div>
 				</div>
 
 				<div class="profile-tab-content" id="tab-notification" style="display:none;">
-					<!-- 通知 -->
+					<ul class="notification-list">
+
+						<th:block th:if="${notifications != null and !notifications.empty}">
+							<li th:each="notif : ${notifications}" class="notification-item">
+								<span class="notif-message" th:text="${notif.message}">通知メッセージ</span>
+								<small class="notif-date"
+									th:text="${#temporals.format(notif.createdAt, 'yyyy/MM/dd')}">2024/01/01</small>
+							</li>
+						</th:block>
+
+						<li th:if="${notifications == null or notifications.empty}" class="empty-notification">
+							現在、新しい通知はありません。
+						</li>
+
+					</ul>
 				</div>
 
-				<div class="profile-tab-content" id="tab-settings" style="display:none;">
-					<!-- 設定 -->
+				<!-- 設定 -->
+				<div class="profile-tab-content tab-settings" id="tab-settings" style="display: none;">
+
+					<div class="settings-card">
+
+						<!-- 通知設定 -->
+						<div class="settings-title">
+							通知設定 <span class="settings-title-icon">🔔</span>
+						</div>
+						<div class="settings-checkbox-wrap">
+							<label class="settings-checkbox-label">
+								<input type="checkbox" class="settings-checkbox-input" name="notificationEnabled"
+									th:checked="${userSettings.notificationEnabled}">
+								通知を受け取る
+							</label>
+						</div>
+
+						<!-- 支払い状況 -->
+						<div class="settings-title" style="margin-top:32px;">
+							現在の支払い状況 <span class="settings-title-icon">💳</span>
+						</div>
+
+						<div class="settings-card-section" style="margin-bottom:18px;">
+							<div style="display:flex;align-items:center;gap:10px;margin-bottom:8px;">
+								<span style="color:#ffd743;margin-right:14px;">登録クレジットカード:</span>
+
+								<span style="font-weight:bold;color:#fff;"
+									th:text="${creditCard.maskedNumber ?: '未登録'}">
+									**** **** **** 1234
+								</span>
+
+								<button class="profile-icon-edit" style="padding:2px 12px;font-size:12px;margin:0 2px;">
+									変更
+								</button>
+
+								<button class="profile-icon-edit"
+									style="padding:2px 12px;background:#e55d5d;color:#fff;font-size:12px;margin:0 2px;">
+									削除
+								</button>
+							</div>
+
+							<div>
+								<span style="color:#ffd743;margin-right:14px;">有効期限:</span>
+								<span style="color:#fff;"
+									th:text="${creditCard.expireMonth + '/' + creditCard.expireYear}">
+									04/27
+								</span>
+							</div>
+						</div>
+
+						<!-- 配送先情報 -->
+						<div class="settings-title">
+							配送先情報 <span class="settings-title-icon">🚚</span>
+						</div>
+
+						<div class="settings-card-section">
+							<form id="address-edit-form" th:action="@{/user/address/update}" method="post"
+								style="display:flex;flex-direction:column;gap:10px;">
+
+								<div>
+									<label style="color:#ffd743;">お名前</label><br>
+									<input type="text" name="recipientName" th:value="${address.recipientName}"
+										style="padding:6px 12px;border-radius:5px;border:1px solid #bdbdbd;width:240px;">
+								</div>
+
+								<div>
+									<label style="color:#ffd743;">郵便番号</label><br>
+									<input type="text" name="postalCode" th:value="${address.postalCode}"
+										style="padding:6px 12px;border-radius:5px;border:1px solid #bdbdbd;width:120px;">
+								</div>
+
+								<div>
+									<label style="color:#ffd743;">住所</label><br>
+									<input type="text" name="address" th:value="${address.address}"
+										style="padding:6px 12px;border-radius:5px;border:1px solid #bdbdbd;width:340px;">
+								</div>
+
+								<div>
+									<label style="color:#ffd743;">電話番号</label><br>
+									<input type="text" name="phone" th:value="${address.phone}"
+										style="padding:6px 12px;border-radius:5px;border:1px solid #bdbdbd;width:180px;">
+								</div>
+
+								<button class="profile-icon-edit" type="submit"
+									style="width:max-content;padding:4px 20px;font-size:13px;margin-top:10px;">
+									配送先情報を保存
+								</button>
+							</form>
+						</div>
+
+						<div class="settings-save-btn-wrap">
+							<button class="settings-save-btn">全体の設定を保存</button>
+						</div>
+
+					</div>
 				</div>
 
 			</div>
@@ -119,7 +239,6 @@
 	</main>
 
 	<script th:src="@{/js/user_settings.js}"></script>
-
 </body>
 
 </html>
