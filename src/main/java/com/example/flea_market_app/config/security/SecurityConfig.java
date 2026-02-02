@@ -115,7 +115,7 @@ public class SecurityConfig {
 						.passwordParameter("password"))
 				.logout(logout -> logout
 						.logoutUrl("/logout")
-						.logoutSuccessUrl("/login")
+						.logoutSuccessUrl("/products")
 						.invalidateHttpSession(true));
 
 		return http.build();
