@@ -12,9 +12,11 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 
+import com.example.flea_market_app.catalog.service.ItemViewService;
 import com.example.flea_market_app.catalog.service.ProductListService.ProductListResult;
 import com.example.flea_market_app.catalog.service.ProductListService;
 import com.example.flea_market_app.common.exception.NotFoundBusinessException;
+import com.example.flea_market_app.config.security.SecurityUtil;
 
 import lombok.RequiredArgsConstructor;
 
@@ -25,6 +27,7 @@ public class ProductPageController {
 	private static final Logger log = LoggerFactory.getLogger(ProductPageController.class);
 
 	private final ProductListService productListService;
+	private final ItemViewService itemViewService;
 
 	@Value("${app.product-list.page-size:50}")
 	private int defaultPageSize;
@@ -64,6 +67,8 @@ public class ProductPageController {
 		log.info("Product detail requested: itemId={}", id);
 		return productListService.getProductDetail(id)
 				.map(product -> {
+					SecurityUtil.getCurrentUserIdOptional()
+							.ifPresent(userId -> itemViewService.recordViewIfNew(userId, id));
 					model.addAttribute("product", product);
 					model.addAttribute("reviewSummary", new ReviewSummaryStub());
 					model.addAttribute("reviews", List.<ReviewStub>of());

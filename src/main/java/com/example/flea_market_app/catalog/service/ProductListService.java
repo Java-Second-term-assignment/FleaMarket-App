@@ -1,7 +1,9 @@
 package com.example.flea_market_app.catalog.service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
@@ -38,6 +40,7 @@ public class ProductListService {
 	private final ItemRepository itemRepository;
 	private final CategoryRepository categoryRepository;
 	private final ItemImageService itemImageService;
+	private final ItemViewService itemViewService;
 
 	@Transactional(readOnly = true)
 	public ProductListResult getProducts(
@@ -88,8 +91,27 @@ public class ProductListService {
 
 	@Transactional(readOnly = true)
 	public List<RankingItemDto> getRankings() {
-		List<ItemEntity> items = itemRepository.findByStatus(STATUS_PUBLISHED,
-				PageRequest.of(0, RANKING_SIZE, Sort.by("createdAt").descending())).getContent();
+		List<UUID> viewedIds = itemViewService.findTopViewedItemIds(STATUS_PUBLISHED, RANKING_SIZE);
+		List<UUID> orderedIds = new ArrayList<>(viewedIds);
+		if (orderedIds.size() < RANKING_SIZE) {
+			Set<UUID> viewedSet = Set.copyOf(viewedIds);
+			List<ItemEntity> fallback = itemRepository.findByStatus(STATUS_PUBLISHED,
+					PageRequest.of(0, RANKING_SIZE * 2, Sort.by("createdAt").descending())).getContent();
+			fallback.stream()
+					.map(ItemEntity::getId)
+					.filter(id -> !viewedSet.contains(id))
+					.limit(RANKING_SIZE - orderedIds.size())
+					.forEach(orderedIds::add);
+		}
+		if (orderedIds.isEmpty()) {
+			return List.of();
+		}
+		Map<UUID, ItemEntity> byId = itemRepository.findAllById(orderedIds).stream()
+				.collect(Collectors.toMap(ItemEntity::getId, e -> e));
+		List<ItemEntity> items = orderedIds.stream()
+				.map(byId::get)
+				.filter(Objects::nonNull)
+				.toList();
 		return items.stream()
 				.map(this::toRankingDto)
 				.toList();

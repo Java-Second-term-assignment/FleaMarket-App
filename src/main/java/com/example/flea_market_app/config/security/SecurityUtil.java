@@ -1,5 +1,6 @@
 package com.example.flea_market_app.config.security;
 
+import java.util.Optional;
 import java.util.UUID;
 
 import org.springframework.security.core.Authentication;
@@ -8,6 +9,23 @@ import org.springframework.security.core.context.SecurityContextHolder;
 public final class SecurityUtil {
 
 	private SecurityUtil() {
+	}
+
+	public static Optional<UUID> getCurrentUserIdOptional() {
+		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+		if (auth == null || auth.getPrincipal() == null || !auth.isAuthenticated()) {
+			return Optional.empty();
+		}
+		if (auth.getPrincipal() instanceof UUID uuid) {
+			return Optional.of(uuid);
+		}
+		if (auth.getPrincipal() instanceof org.springframework.security.core.userdetails.UserDetails ud) {
+			return Optional.of(UUID.fromString(ud.getUsername()));
+		}
+		if (auth.getPrincipal() instanceof String s) {
+			return Optional.of(UUID.fromString(s));
+		}
+		return Optional.empty();
 	}
 
 	public static UUID getCurrentUserId() {
