@@ -37,7 +37,7 @@
 			<div class="section-card">
 				<div class="section-title">
 					お支払い方法
-					<a th:href="@{/payment}" class="edit-link">変更</a>
+					<a th:href="${productId != null} ? @{/payment(productId=${productId})} : @{/payment}" class="edit-link">変更</a>
 				</div>
 
 				<div class="info-grid">
@@ -53,7 +53,7 @@
 			<div class="section-card">
 				<div class="section-title">
 					お届け先
-					<a th:href="@{/address}" class="edit-link">変更</a>
+					<a th:href="${productId != null} ? @{/address(productId=${productId})} : @{/address}" class="edit-link">変更</a>
 				</div>
 
 				<div class="info-grid">

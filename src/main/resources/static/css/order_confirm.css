@@ -48,6 +48,74 @@ body {
 	margin-bottom: 16px;
 }
 
+.section-desc {
+	margin-bottom: 16px;
+	color: #666;
+	font-size: 14px;
+}
+
+.back-link {
+	margin-top: 24px;
+}
+
+.back-link a {
+	color: #007bff;
+	text-decoration: none;
+}
+
+.back-link a:hover {
+	text-decoration: underline;
+}
+
+/* フォーム（支払い・届け先変更） */
+.form-group {
+	margin-bottom: 18px;
+}
+
+.form-group .info-label {
+	display: block;
+	margin-bottom: 6px;
+}
+
+.form-input,
+.form-select {
+	width: 100%;
+	max-width: 400px;
+	padding: 10px 12px;
+	font-size: 14px;
+	border: 1px solid #ddd;
+	border-radius: 8px;
+	background: #fff;
+	color: #222;
+	box-sizing: border-box;
+}
+
+.form-input:focus,
+.form-select:focus {
+	outline: none;
+	border-color: #007bff;
+}
+
+.form-actions {
+	margin-top: 24px;
+	margin-bottom: 8px;
+}
+
+.btn-save {
+	background-color: #007bff;
+	color: #fff;
+	border: none;
+	padding: 12px 24px;
+	border-radius: 8px;
+	font-size: 14px;
+	font-weight: 600;
+	cursor: pointer;
+}
+
+.btn-save:hover {
+	background-color: #0056b3;
+}
+
 /* 商品 */
 .item-row {
 	display: flex;
