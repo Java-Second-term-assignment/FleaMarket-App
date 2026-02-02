@@ -41,6 +41,13 @@ body {
 	box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
 }
 
+.section-card .section-title {
+	font-weight: bold;
+	font-size: 16px;
+	color: #333;
+	margin-bottom: 16px;
+}
+
 /* 商品 */
 .item-row {
 	display: flex;
@@ -66,16 +73,37 @@ body {
 	color: #888;
 }
 
-/* 情報 */
+/* 情報（お支払い方法・お届け先） */
 .info-grid {
 	display: grid;
 	grid-template-columns: 100px 1fr;
-	gap: 10px;
+	row-gap: 14px;
+	column-gap: 12px;
 	font-size: 14px;
+	align-items: baseline;
+}
+
+.info-grid > .info-value {
+	border-bottom: 1px solid #eee;
+	padding-bottom: 12px;
+}
+
+.info-grid > .info-value:last-child {
+	border-bottom: none;
+	padding-bottom: 0;
 }
 
 .info-label {
-	color: #888;
+	font-size: 13px;
+	color: #666;
+	font-weight: 500;
+}
+
+.info-value {
+	font-weight: 600;
+	color: #222;
+	line-height: 1.5;
+	word-break: break-all;
 }
 
 /* サマリー */
