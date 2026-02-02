@@ -1,0 +1,46 @@
+@charset "UTF-8";
+
+/* エラーページ用レイアウト・視認性 */
+.error-container {
+	max-width: 600px;
+	margin: 40px auto;
+	padding: 2rem;
+	text-align: center;
+}
+
+.error-status {
+	font-size: 3rem;
+	font-weight: bold;
+	color: var(--text-white);
+	margin: 0 0 1rem 0;
+}
+
+.error-message {
+	color: #e0e0e0;
+	font-size: 1rem;
+	line-height: 1.5;
+	margin: 0 0 1.5rem 0;
+}
+
+.error-actions {
+	margin-top: 1.5rem;
+}
+
+.error-actions a,
+.btn-back {
+	display: inline-block;
+	background-color: #007bff;
+	color: white;
+	padding: 10px 24px;
+	border-radius: 20px;
+	font-size: 15px;
+	font-weight: bold;
+	text-decoration: none;
+	transition: background 0.2s;
+}
+
+.error-actions a:hover,
+.btn-back:hover {
+	background-color: #0056b3;
+	color: white;
+}
