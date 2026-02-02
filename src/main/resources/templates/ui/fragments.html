@@ -33,6 +33,9 @@
 					<a sec:authorize="isAnonymous()" th:href="@{/register}">
 						新規作成
 					</a>
+					<a sec:authorize="isAnonymous()" th:href="@{/admin/login}" class="nav-admin-link">
+						管理者はこちら
+					</a>
 
 					<!-- ログイン時 -->
 					<a sec:authorize="isAuthenticated()" th:href="@{/user/settings}">
