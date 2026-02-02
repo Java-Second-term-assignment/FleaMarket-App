@@ -1,8 +1,7 @@
 <!DOCTYPE html>
 <html lang="ja" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 
-<head th:replace="~{ui/fragments :: common_head(~{::title}, ~{::link})}">
-	<title th:text="${product.name} + ' | 商品詳細'">商品詳細</title>
+<head th:replace="~{ui/fragments :: common_head(${product.name + ' | 商品詳細'}, ~{::link})}">
 	<link rel="stylesheet" th:href="@{/css/product.css}">
 	<link rel="stylesheet" th:href="@{/css/detail.css}">
 </head>
