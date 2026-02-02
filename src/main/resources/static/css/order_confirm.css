@@ -27,7 +27,8 @@ body {
 
 .confirm-sidebar {
 	flex: 1;
-	margin-top: 60px;
+	/* 左カラムの「注文確認」見出し＋余白の高さ分下げて、注文商品カードと上端を揃える */
+	margin-top: 90px;
 }
 
 /* カード */
