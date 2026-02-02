@@ -4,9 +4,8 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-import com.example.flea_market_app.integration.aws.ComprehendClient;
-
 import software.amazon.awssdk.regions.Region;
+import software.amazon.awssdk.services.comprehend.ComprehendClient;
 import software.amazon.awssdk.services.rekognition.RekognitionClient;
 // FraudDetectorは環境により service 名が異なるため、ここは仮。実採用SDKに合わせて差し替え。
 
