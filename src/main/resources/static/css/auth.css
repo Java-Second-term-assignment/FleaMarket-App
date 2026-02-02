@@ -221,3 +221,33 @@ a:hover {
 	color: #2c2c2c;
 	font-size: 13px;
 }
+
+/* 利用規約ページ */
+.terms-body {
+	font-size: 13px;
+	line-height: 1.7;
+}
+
+.terms-body .terms-section {
+	margin-bottom: 1.5em;
+}
+
+.terms-body .terms-section h2 {
+	margin: 1.2em 0 0.6em;
+	font-size: 1.1em;
+	color: #365292;
+}
+
+.terms-body .terms-section h3 {
+	margin: 0.8em 0 0.3em;
+	font-size: 1em;
+	color: #333;
+}
+
+.terms-body .terms-section p {
+	margin: 0.4em 0;
+}
+
+.terms-body .terms-section ul {
+	margin: 0.4em 0 0.8em;
+}
