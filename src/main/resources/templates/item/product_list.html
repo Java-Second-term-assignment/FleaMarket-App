@@ -94,7 +94,7 @@
 		<!-- 商品グリッド -->
 		<div class="product-grid">
 
-			<a th:each="product : ${products}" th:href="@{/products/{id}(id=${product.id})}">
+			<a th:each="product : ${products}" th:with="productId=${product.id != null ? product.id.toString() : ''}" th:href="@{/products/{id}(id=${productId})}">
 
 				<div class="item-card">
 

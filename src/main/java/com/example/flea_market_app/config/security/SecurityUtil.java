@@ -23,7 +23,12 @@ public final class SecurityUtil {
 			return Optional.of(UUID.fromString(ud.getUsername()));
 		}
 		if (auth.getPrincipal() instanceof String s) {
-			return Optional.of(UUID.fromString(s));
+			try {
+				return Optional.of(UUID.fromString(s));
+			} catch (IllegalArgumentException e) {
+				// 未ログイン時は principal が "anonymousUser" になるため UUID として解釈できない
+				return Optional.empty();
+			}
 		}
 		return Optional.empty();
 	}
