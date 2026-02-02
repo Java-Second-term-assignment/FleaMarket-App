@@ -16,6 +16,15 @@ public abstract class BusinessException extends RuntimeException {
 		this.messageKey = messageKey;
 	}
 
+	protected BusinessException(
+			ErrorCode errorCode,
+			String messageKey,
+			Throwable cause) {
+		super(messageKey, cause);
+		this.errorCode = errorCode;
+		this.messageKey = messageKey;
+	}
+
 	public ErrorCode getErrorCode() {
 		return errorCode;
 	}
