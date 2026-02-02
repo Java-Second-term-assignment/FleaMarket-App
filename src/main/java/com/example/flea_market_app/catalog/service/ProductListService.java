@@ -166,6 +166,17 @@ public class ProductListService {
 	}
 
 	@Transactional(readOnly = true)
+	public List<ProductListViewDto> getRelatedProducts(UUID currentItemId, int limit) {
+		return itemRepository.findById(currentItemId)
+				.filter(item -> item.getCategoryId() != null)
+				.map(item -> itemRepository.findByStatusAndCategoryIdAndIdNot(
+						STATUS_PUBLISHED, item.getCategoryId(), currentItemId,
+						PageRequest.of(0, limit, Sort.by("createdAt").descending())))
+				.map(page -> toProductListDtos(page.getContent()))
+				.orElse(List.of());
+	}
+
+	@Transactional(readOnly = true)
 	public Optional<ProductDetailViewDto> getProductDetail(UUID itemId) {
 		return itemRepository.findById(itemId)
 				.filter(item -> STATUS_PUBLISHED.equals(item.getStatus()) || "SOLD".equals(item.getStatus()))

@@ -74,7 +74,7 @@ public class ProductPageController {
 					model.addAttribute("reviews", List.<ReviewStub>of());
 					model.addAttribute("reviewForm", new com.example.flea_market_app.catalog.controller.dto.ReviewFormStub());
 					model.addAttribute("ratings", List.of(1, 2, 3, 4, 5));
-					model.addAttribute("relatedProducts", List.of());
+					model.addAttribute("relatedProducts", productListService.getRelatedProducts(product.getId(), 8));
 					return "item/product_detail";
 				})
 				.orElseThrow(() -> NotFoundBusinessException.of(com.example.flea_market_app.common.exception.ResourceType.ITEM));

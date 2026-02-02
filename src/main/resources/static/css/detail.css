@@ -361,23 +361,29 @@
 	color: #5662a6;
 }
 
-/* 関連商品 */
+/* 関連商品（商品一覧と同じフォーマット） */
 .related-section {
 	border-top: 1px solid #dee2e6;
 	padding-top: 50px;
 }
 
-.section-title {
+.related-section .section-title {
 	text-align: center;
 	font-size: 24px;
 	margin-bottom: 30px;
 	color: #fff;
 }
 
-.product-grid {
+.related-section .product-grid {
 	display: grid;
-	grid-template-columns: repeat(4, 1fr);
-	gap: 20px;
+	grid-template-columns: repeat(5, 1fr);
+	gap: 15px;
+}
+
+.related-section .item-card-title {
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
 }
 
 /* カードのコンテナ（紫の点線枠） */

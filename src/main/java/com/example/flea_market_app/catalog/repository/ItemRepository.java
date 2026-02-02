@@ -20,6 +20,10 @@ public interface ItemRepository extends JpaRepository<ItemEntity, UUID> {
 	Page<ItemEntity> findByStatusAndCategoryId(@Param("status") String status, @Param("categoryId") UUID categoryId,
 			Pageable pageable);
 
+	@Query("SELECT i FROM ItemEntity i WHERE i.status = :status AND i.categoryId = :categoryId AND i.id <> :excludeId")
+	Page<ItemEntity> findByStatusAndCategoryIdAndIdNot(@Param("status") String status,
+			@Param("categoryId") UUID categoryId, @Param("excludeId") UUID excludeId, Pageable pageable);
+
 	@Query("SELECT i FROM ItemEntity i WHERE i.status = :status " +
 			"AND (LOWER(i.name) LIKE LOWER(CONCAT('%', :keyword, '%')) " +
 			"OR LOWER(i.description) LIKE LOWER(CONCAT('%', :keyword, '%')))")
