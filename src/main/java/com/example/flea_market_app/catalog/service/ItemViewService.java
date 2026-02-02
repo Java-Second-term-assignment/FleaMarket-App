@@ -1,5 +1,6 @@
 package com.example.flea_market_app.catalog.service;
 
+import java.nio.ByteBuffer;
 import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.UUID;
@@ -34,10 +35,24 @@ public class ItemViewService {
 
 	@Transactional(readOnly = true)
 	public List<UUID> findTopViewedItemIds(String status, int limit) {
-		return itemViewRepository.findTopViewedItemIds(status, PageRequest.of(0, limit))
-				.getContent()
-				.stream()
-				.map(row -> (UUID) row[0])
+		List<?> content = itemViewRepository.findTopViewedItemIds(status, PageRequest.of(0, limit))
+				.getContent();
+		return content.stream()
+				.map(row -> toUuid(row instanceof Object[] ? ((Object[]) row)[0] : row))
 				.toList();
+	}
+
+	private static UUID toUuid(Object value) {
+		if (value instanceof UUID u) {
+			return u;
+		}
+		if (value instanceof byte[] bytes && bytes.length >= 16) {
+			ByteBuffer bb = ByteBuffer.wrap(bytes);
+			return new UUID(bb.getLong(), bb.getLong());
+		}
+		if (value instanceof String s) {
+			return UUID.fromString(s);
+		}
+		throw new IllegalArgumentException("Cannot convert to UUID: " + (value != null ? value.getClass() : "null"));
 	}
 }
