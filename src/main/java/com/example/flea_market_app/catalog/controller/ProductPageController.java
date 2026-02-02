@@ -6,11 +6,13 @@ import java.util.UUID;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 
+import com.example.flea_market_app.catalog.service.ProductListService.ProductListResult;
 import com.example.flea_market_app.catalog.service.ProductListService;
 import com.example.flea_market_app.common.exception.NotFoundBusinessException;
 
@@ -24,19 +26,35 @@ public class ProductPageController {
 
 	private final ProductListService productListService;
 
+	@Value("${app.product-list.page-size:50}")
+	private int defaultPageSize;
+
+	private static final int MAX_PAGE_SIZE = 100;
+
 	@GetMapping({ "/", "/products" })
 	public String productList(
 			Optional<String> keyword,
 			Optional<String> category,
 			Optional<String> sort,
+			Optional<Integer> page,
+			Optional<Integer> size,
 			Model model) {
 		Optional<UUID> categoryId = category.filter(s -> !s.isBlank())
 				.flatMap(s -> parseUuid(s));
 
-		model.addAttribute("products", productListService.getProducts(keyword, categoryId, sort.orElse("new")));
+		int pageIndex = page.filter(p -> p >= 0).orElse(0);
+		int pageSize = size.filter(s -> s >= 1).map(s -> Math.min(MAX_PAGE_SIZE, s)).orElse(defaultPageSize);
+
+		ProductListResult result = productListService.getProducts(
+				keyword, categoryId, sort.orElse("new"), pageIndex, pageSize);
+
+		model.addAttribute("products", result.products());
 		model.addAttribute("categories", productListService.getCategories());
 		model.addAttribute("rankings", productListService.getRankings());
-		log.info("Product list displayed: keyword={}, category={}", keyword.orElse(null), category.orElse(null));
+		model.addAttribute("totalPages", result.totalPages());
+		model.addAttribute("currentPage", result.currentPage());
+		model.addAttribute("pageSize", result.pageSize());
+		log.info("Product list displayed: keyword={}, category={}, page={}", keyword.orElse(null), category.orElse(null), pageIndex);
 
 		return "item/product_list";
 	}

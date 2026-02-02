@@ -216,6 +216,57 @@ public class DevDataInitializer implements ApplicationRunner {
 		saveItem("デニムスカート", "デニム素材。Mサイズ。", 2500L, CAT_LEAF_LADIES);
 		saveItem("キャミソール", "シフォン。インナー付。", 900L, CAT_LEAF_LADIES);
 		saveItem("レギンス", "ヨガ用。2枚セット。", 1500L, CAT_LEAF_LADIES);
+		// 追加分（合計100件）
+		saveItem("USBハブ 4ポート", "Type-C接続。データ転送対応。", 1800L, CAT_LEAF_SMARTPHONE);
+		saveItem("イヤホンジャック アダプター", "USB-C to 3.5mm。", 600L, CAT_LEAF_SMARTPHONE);
+		saveItem("タッチペン スタイラス", "iPad/Android対応。", 1200L, CAT_LEAF_SMARTPHONE);
+		saveItem("カードリーダー SD/microSD", "USB3.0。小型。", 800L, CAT_LEAF_SMARTPHONE);
+		saveItem("HDMIケーブル 1m", "4K対応。", 900L, CAT_LEAF_SMARTPHONE);
+		saveItem("LANアダプター USB3.0", "有線接続用。ギガビット。", 1500L, CAT_LEAF_SMARTPHONE);
+		saveItem("冷却ファン スマホ用", "ゲームプレイ時の冷却。", 1100L, CAT_LEAF_SMARTPHONE);
+		saveItem("リングライト 卓上", "撮影・配信用。3段階調光。", 2500L, CAT_LEAF_SMARTPHONE);
+		saveItem("三脚 ミニ", "スマホ取り付け可能。", 800L, CAT_LEAF_SMARTPHONE);
+		saveItem("ペンタブレット 小型", "イラスト入門用。", 3500L, CAT_LEAF_SMARTPHONE);
+		saveItem("ヘッドホン オーバーイヤー", "閉鎖型。長時間使用に。", 4500L, CAT_LEAF_SMARTPHONE);
+		saveItem("マイク コンデンサー", "PC接続。ポッドキャスト用。", 3800L, CAT_LEAF_SMARTPHONE);
+		saveItem("スピーカー  Bluetooth", "小型。防水。", 2200L, CAT_LEAF_SMARTPHONE);
+		saveItem("充電スタンド 2台同時", "iPhone/Android対応。", 2800L, CAT_LEAF_SMARTPHONE);
+		saveItem("ケーブル 巻き取り式", "Lightning/Type-C 2in1。", 900L, CAT_LEAF_SMARTPHONE);
+		saveItem("Tシャツ 黒 無地", "Lサイズ。3枚セット。", 1500L, CAT_LEAF_MENS);
+		saveItem("パンツ カーキ", "チノパン。W84。", 2800L, CAT_LEAF_MENS);
+		saveItem("ベスト ニット", "Vネック。紺。Mサイズ。", 2200L, CAT_LEAF_MENS);
+		saveItem("コート トレンチ", "ベージュ。Lサイズ。", 12000L, CAT_LEAF_MENS);
+		saveItem("手袋 レザー", "冬用。ブラック。", 1800L, CAT_LEAF_MENS);
+		saveItem("マフラー ウール", "グレー。シンプル。", 2500L, CAT_LEAF_MENS);
+		saveItem("キャップ ニット", "アウター用。黒。", 800L, CAT_LEAF_MENS);
+		saveItem("サコッシュ", "ランニング用。軽量。", 600L, CAT_LEAF_MENS);
+		saveItem("ウォッチ アナログ", "レザーストラップ。", 3500L, CAT_LEAF_MENS);
+		saveItem("サングラス メンズ", "UV400。偏光。", 2000L, CAT_LEAF_MENS);
+		saveItem("ポーチ レザー", "小銭・カード入れ。", 1200L, CAT_LEAF_MENS);
+		saveItem("ネクタイ シルク", "紺無地。フォーマル。", 1500L, CAT_LEAF_MENS);
+		saveItem("靴下 5足セット", "黒無地。M-L。", 800L, CAT_LEAF_MENS);
+		saveItem("アンダーシャツ 3枚", "Vネック。白。", 900L, CAT_LEAF_MENS);
+		saveItem("トレーニングウェア", "上下セット。Lサイズ。", 3500L, CAT_LEAF_MENS);
+		saveItem("スウェット パーカー", "フード付き。グレー。", 3200L, CAT_LEAF_MENS);
+		saveItem("カーディガン メンズ", "ボタンなし。紺。", 2800L, CAT_LEAF_MENS);
+		saveItem("ワンピース デニム", "ロング丈。Sサイズ。", 3200L, CAT_LEAF_LADIES);
+		saveItem("ニット タートルネック", "ベージュ。Mサイズ。", 2500L, CAT_LEAF_LADIES);
+		saveItem("スカート ミニ", "黒。ハイウエスト。", 1800L, CAT_LEAF_LADIES);
+		saveItem("パンツ ワイド", "カーキ。Mサイズ。", 2800L, CAT_LEAF_LADIES);
+		saveItem("ブラウス シフォン", "ピンク。長袖。", 1500L, CAT_LEAF_LADIES);
+		saveItem("カーディガン 長丈", "グレー。ボタン留め。", 3200L, CAT_LEAF_LADIES);
+		saveItem("バッグ クロスボディ", "黒。コンパクト。", 2800L, CAT_LEAF_LADIES);
+		saveItem("ピアス シルバー", "フック式。2個セット。", 600L, CAT_LEAF_LADIES);
+		saveItem("ヘアゴム 5本セット", "カラー混。", 300L, CAT_LEAF_LADIES);
+		saveItem("化粧ポーチ", "中サイズ。マチ付き。", 1200L, CAT_LEAF_LADIES);
+		saveItem("パジャマ セット", "綿100%。S-M。", 2200L, CAT_LEAF_LADIES);
+		saveItem("ルームウェア", "ガウンタイプ。", 1800L, CAT_LEAF_LADIES);
+		saveItem("レギンス 高腰", "黒。フィット。", 1200L, CAT_LEAF_LADIES);
+		saveItem("スニーカー レディース", "24cm。白ベース。", 4500L, CAT_LEAF_LADIES);
+		saveItem("サンダル フラット", "ベージュ。23cm。", 2200L, CAT_LEAF_LADIES);
+		saveItem("バレエシューズ", "黒。22cm。", 1800L, CAT_LEAF_LADIES);
+		saveItem("キャミ 長袖", "インナー。白。", 800L, CAT_LEAF_LADIES);
+		saveItem("タイツ 3枚セット", "黒。デニール60。", 900L, CAT_LEAF_LADIES);
 	}
 
 	private void saveItem(String name, String description, long priceAmount, UUID categoryId) {

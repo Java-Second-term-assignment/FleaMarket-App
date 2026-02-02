@@ -124,12 +124,13 @@
 			</a>
 		</div>
 		<!-- ページネーション -->
-		<nav class="pagination-wrapper" th:if="${totalPages > 1}">
+		<nav class="pagination-wrapper" th:if="${totalPages > 1}"
+			th:with="currentKeyword=${param.keyword != null && param.keyword.length > 0 ? param.keyword[0] : null}, currentCategory=${param.category != null && param.category.length > 0 ? param.category[0] : null}, currentSort=${param.sort != null && param.sort.length > 0 ? param.sort[0] : 'new'}">
 			<ul class="pagination">
 
 				<!-- 前へ -->
 				<li class="page-item" th:classappend="${currentPage == 0} ? 'disabled'">
-					<a th:href="@{/products(page=${currentPage - 1}, size=${pageSize})}">
+					<a th:href="@{/products(page=${currentPage - 1}, size=${pageSize}, keyword=${currentKeyword}, category=${currentCategory}, sort=${currentSort})}">
 						‹
 					</a>
 				</li>
@@ -137,12 +138,12 @@
 				<!-- ページ番号 -->
 				<li class="page-item" th:each="i : ${#numbers.sequence(0, totalPages - 1)}"
 					th:classappend="${i == currentPage} ? 'active'">
-					<a th:href="@{/products(page=${i}, size=${pageSize})}" th:text="${i + 1}"></a>
+					<a th:href="@{/products(page=${i}, size=${pageSize}, keyword=${currentKeyword}, category=${currentCategory}, sort=${currentSort})}" th:text="${i + 1}"></a>
 				</li>
 
 				<!-- 次へ -->
 				<li class="page-item" th:classappend="${currentPage == totalPages - 1} ? 'disabled'">
-					<a th:href="@{/products(page=${currentPage + 1}, size=${pageSize})}">
+					<a th:href="@{/products(page=${currentPage + 1}, size=${pageSize}, keyword=${currentKeyword}, category=${currentCategory}, sort=${currentSort})}">
 						›
 					</a>
 				</li>

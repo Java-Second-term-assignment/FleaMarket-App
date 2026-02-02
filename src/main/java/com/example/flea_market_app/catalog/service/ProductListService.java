@@ -7,6 +7,7 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
@@ -31,6 +32,7 @@ public class ProductListService {
 	private static final String STATUS_PUBLISHED = "PUBLISHED";
 	private static final String STATUS_SOLD = "SOLD";
 	private static final int DEFAULT_PAGE_SIZE = 50;
+	private static final int MAX_PAGE_SIZE = 100;
 	private static final int RANKING_SIZE = 5;
 
 	private final ItemRepository itemRepository;
@@ -38,27 +40,43 @@ public class ProductListService {
 	private final ItemImageService itemImageService;
 
 	@Transactional(readOnly = true)
-	public List<ProductListViewDto> getProducts(
+	public ProductListResult getProducts(
 			Optional<String> keyword,
 			Optional<UUID> categoryId,
-			String sort) {
-		PageRequest pageRequest = createPageRequest(sort, DEFAULT_PAGE_SIZE);
-		List<ItemEntity> items;
+			String sort,
+			int page,
+			int pageSize) {
+		int safePage = Math.max(0, page);
+		int safeSize = Math.min(MAX_PAGE_SIZE, Math.max(1, pageSize));
+		PageRequest pageRequest = createPageRequest(sort, safePage, safeSize);
+		Page<ItemEntity> itemPage;
 
 		if (keyword.isPresent() && !keyword.get().isBlank()) {
 			String kw = keyword.get().trim();
 			if (categoryId.isPresent()) {
-				items = itemRepository.findByStatusAndKeywordAndCategoryId(STATUS_PUBLISHED, kw, categoryId.get(), pageRequest);
+				itemPage = itemRepository.findByStatusAndKeywordAndCategoryId(STATUS_PUBLISHED, kw, categoryId.get(), pageRequest);
 			} else {
-				items = itemRepository.findByStatusAndKeyword(STATUS_PUBLISHED, kw, pageRequest);
+				itemPage = itemRepository.findByStatusAndKeyword(STATUS_PUBLISHED, kw, pageRequest);
 			}
 		} else if (categoryId.isPresent()) {
-			items = itemRepository.findByStatusAndCategoryId(STATUS_PUBLISHED, categoryId.get(), pageRequest);
+			itemPage = itemRepository.findByStatusAndCategoryId(STATUS_PUBLISHED, categoryId.get(), pageRequest);
 		} else {
-			items = itemRepository.findByStatus(STATUS_PUBLISHED, pageRequest);
+			itemPage = itemRepository.findByStatus(STATUS_PUBLISHED, pageRequest);
 		}
 
-		return toProductListDtos(items);
+		List<ProductListViewDto> products = toProductListDtos(itemPage.getContent());
+		return new ProductListResult(
+				products,
+				itemPage.getTotalPages(),
+				itemPage.getNumber(),
+				itemPage.getSize());
+	}
+
+	public record ProductListResult(
+			List<ProductListViewDto> products,
+			int totalPages,
+			int currentPage,
+			int pageSize) {
 	}
 
 	@Transactional(readOnly = true)
@@ -71,19 +89,19 @@ public class ProductListService {
 	@Transactional(readOnly = true)
 	public List<RankingItemDto> getRankings() {
 		List<ItemEntity> items = itemRepository.findByStatus(STATUS_PUBLISHED,
-				PageRequest.of(0, RANKING_SIZE, Sort.by("createdAt").descending()));
+				PageRequest.of(0, RANKING_SIZE, Sort.by("createdAt").descending())).getContent();
 		return items.stream()
 				.map(this::toRankingDto)
 				.toList();
 	}
 
-	private PageRequest createPageRequest(String sort, int pageSize) {
+	private PageRequest createPageRequest(String sort, int page, int pageSize) {
 		Sort order = switch (sort != null ? sort : "new") {
 			case "low_price" -> Sort.by("priceAmount").ascending();
 			case "popular", "new" -> Sort.by("createdAt").descending();
 			default -> Sort.by("createdAt").descending();
 		};
-		return PageRequest.of(0, pageSize, order);
+		return PageRequest.of(page, pageSize, order);
 	}
 
 	private List<ProductListViewDto> toProductListDtos(List<ItemEntity> items) {

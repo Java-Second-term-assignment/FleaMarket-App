@@ -488,6 +488,9 @@ a {
 	font-weight: bold;
 	line-height: 1.4;
 	margin-bottom: 8px;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
 }
 
 .item-card-price {

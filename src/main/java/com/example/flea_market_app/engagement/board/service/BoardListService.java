@@ -34,7 +34,7 @@ public class BoardListService {
 	@Transactional(readOnly = true)
 	public List<BoardListViewDto> getBoards() {
 		List<ItemEntity> items = itemRepository.findByStatus(
-				STATUS_PUBLISHED, PageRequest.of(0, 100, Sort.by("createdAt").descending()));
+				STATUS_PUBLISHED, PageRequest.of(0, 100, Sort.by("createdAt").descending())).getContent();
 
 		if (items.isEmpty()) {
 			return List.of();
