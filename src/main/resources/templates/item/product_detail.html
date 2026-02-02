@@ -69,9 +69,7 @@
 						</button>
 					</div>
 
-					<button class="btn-purchase" th:disabled="${product.stock == 0}">
-						購入に進む
-					</button>
+					<a th:href="@{/order/confirm}" class="btn-purchase" th:classappend="${product.stock == 0} ? 'disabled'">購入に進む</a>
 
 					<div class="long-text">
 						<p th:text="${product.description}">商品説明</p>

@@ -188,9 +188,13 @@
 	stroke-width: 1.5;
 }
 
-/* 購入に進むボタン */
+/* 購入に進むボタン（リンクとして表示） */
 .btn-purchase {
+	display: inline-block;
 	width: 100%;
+	box-sizing: border-box;
+	text-align: center;
+	text-decoration: none;
 	background-color: #5a6fa5;
 	/* 画像のボタン色 */
 	color: white;
@@ -205,6 +209,13 @@
 
 .btn-purchase:hover {
 	background-color: #4a5a8a;
+	color: white;
+}
+
+.btn-purchase.disabled {
+	pointer-events: none;
+	opacity: 0.6;
+	cursor: not-allowed;
 }
 
 .long-text {

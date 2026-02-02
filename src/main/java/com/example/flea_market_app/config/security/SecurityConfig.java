@@ -81,7 +81,7 @@ public class SecurityConfig {
 				.authorizeHttpRequests(auth -> authorizationConfig.configureWeb(auth))
 				.formLogin(form -> form
 						.loginPage("/login")
-						.defaultSuccessUrl("/", true)
+						.defaultSuccessUrl("/", false)
 						.usernameParameter("email")
 						.passwordParameter("password"))
 				.logout(logout -> logout
