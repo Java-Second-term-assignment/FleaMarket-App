@@ -78,13 +78,15 @@
 				<section class="ranking-section">
 					<ol class="ranking-list">
 						<li class="ranking-item" th:each="rank, stat : ${rankings}">
-							<span class="ranking-rank" th:text="${stat.count}"></span>
-							<img th:src="${rank.imageUrl}" class="ranking-thumb" onerror="this.src='/img/no-image.png'">
+							<a th:href="@{/products/{id}(id=${rank.id != null ? rank.id.toString() : ''})}" class="ranking-item-link">
+								<span class="ranking-rank" th:text="${stat.count}"></span>
+								<img th:src="${rank.imageUrl}" class="ranking-thumb" onerror="this.src='/img/no-image.png'">
 
-							<div class="ranking-info">
-								<span class="ranking-item-title" th:text="${rank.name}"></span>
-								<span class="ranking-item-price" th:text="|${rank.price}円|"></span>
-							</div>
+								<div class="ranking-info">
+									<span class="ranking-item-title" th:text="${rank.name}"></span>
+									<span class="ranking-item-price" th:text="|${rank.price}円|"></span>
+								</div>
+							</a>
 						</li>
 					</ol>
 				</section>

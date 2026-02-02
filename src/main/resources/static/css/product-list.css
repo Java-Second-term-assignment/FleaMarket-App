@@ -308,18 +308,24 @@
 }
 
 .ranking-item {
+	list-style: none;
+	margin-bottom: 9px;
+}
+
+.ranking-item-link {
 	display: flex;
 	align-items: center;
 	gap: 12px;
 	background: #f9f9fd;
 	border-radius: 8px;
 	padding: 8px 13px;
-	margin-bottom: 9px;
 	transition: background 0.14s;
 	border-left: 6px solid #e3e266;
+	text-decoration: none;
+	color: inherit;
 }
 
-.ranking-item:hover {
+.ranking-item-link:hover {
 	background: #e7eafd;
 }
 

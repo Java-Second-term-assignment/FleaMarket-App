@@ -158,7 +158,7 @@ public class ProductListService {
 		if (imageUrl == null) {
 			imageUrl = ImageConstants.NO_IMAGE_PATH;
 		}
-		return new RankingItemDto(imageUrl, item.getName(), formatPrice(item.getPriceAmount()));
+		return new RankingItemDto(item.getId(), imageUrl, item.getName(), formatPrice(item.getPriceAmount()));
 	}
 
 	private String formatPrice(Long amount) {
