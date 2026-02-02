@@ -155,6 +155,18 @@
             <groupId>software.amazon.awssdk</groupId>
             <artifactId>s3</artifactId>
         </dependency>
+        <dependency>
+            <groupId>software.amazon.awssdk</groupId>
+            <artifactId>comprehend</artifactId>
+        </dependency>
+        
+        <dependency>
+            <groupId>com.stripe</groupId>
+            <artifactId>stripe-java</artifactId>
+            <version>24.16.0</version>
+        </dependency>
+
+
 	</dependencies>
 
 	<build>
