@@ -1,5 +1,7 @@
 package com.example.flea_market_app.integration.aws;
 
-public interface ComprehendClientPort {
+import com.example.flea_market_app.integration.aws.dto.ModerationResult;
 
+public interface ComprehendClientPort {
+	ModerationResult analyzeText(String text);
 }
