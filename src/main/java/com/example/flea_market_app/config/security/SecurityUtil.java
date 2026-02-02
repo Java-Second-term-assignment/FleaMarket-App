@@ -19,6 +19,9 @@ public final class SecurityUtil {
 		if (auth.getPrincipal() instanceof UUID uuid) {
 			return Optional.of(uuid);
 		}
+		if (auth.getPrincipal() instanceof com.example.flea_market_app.auth.service.UserIdUserDetails ud) {
+			return Optional.of(ud.getUserId());
+		}
 		if (auth.getPrincipal() instanceof org.springframework.security.core.userdetails.UserDetails ud) {
 			return Optional.of(UUID.fromString(ud.getUsername()));
 		}
@@ -44,12 +47,16 @@ public final class SecurityUtil {
 			return uuid;
 		}
 
-		// 2) principal が UserDetails 実装で、username に userId(UUID文字列)を入れてるケース
+		// 2) principal が UserIdUserDetails のケース（フォームログインで userId を保持）
+		if (auth.getPrincipal() instanceof com.example.flea_market_app.auth.service.UserIdUserDetails ud) {
+			return ud.getUserId();
+		}
+		// 3) principal が UserDetails で username が UUID 文字列のケース
 		if (auth.getPrincipal() instanceof org.springframework.security.core.userdetails.UserDetails ud) {
 			return UUID.fromString(ud.getUsername());
 		}
 
-		// 3) principal が String のケース（userId文字列）
+		// 4) principal が String のケース（userId文字列）
 		if (auth.getPrincipal() instanceof String s) {
 			return UUID.fromString(s);
 		}

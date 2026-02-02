@@ -1,6 +1,8 @@
 package com.example.flea_market_app.user.controller;
 
+import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 import org.slf4j.Logger;
@@ -53,6 +55,19 @@ public class UserPageController {
 
 		model.addAttribute("user", user);
 		model.addAttribute("favorites", favoriteViews);
+		// テンプレートで参照する設定・カード・住所等（未実装のためデフォルト値）
+		model.addAttribute("userSettings", Map.of("notificationEnabled", false));
+		model.addAttribute("creditCard", Map.of(
+				"maskedNumber", "",
+				"expireMonth", "",
+				"expireYear", ""));
+		model.addAttribute("userProducts", Collections.emptyList());
+		model.addAttribute("notifications", Collections.emptyList());
+		model.addAttribute("address", Map.of(
+				"recipientName", "",
+				"postalCode", "",
+				"address", "",
+				"phone", ""));
 
 		return "user/user_settings";
 	}
