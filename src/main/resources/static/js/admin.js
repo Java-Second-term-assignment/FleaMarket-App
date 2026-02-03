@@ -24,10 +24,10 @@ document.addEventListener("DOMContentLoaded", () => {
 		editForm.action = actionUrl;
 
 		// 入力項目の表示・非表示切り替え
-		document.getElementById("emailGroup").style.display = isUser ? "block" : "none";
-		document.getElementById("priceGroup").style.display = isUser ? "none" : "block";
+		document.getElementById("emailGroup").style.display = isUser ? "flex" : "none";
+		document.getElementById("priceGroup").style.display = isUser ? "none" : "flex";
 
-		modal.style.display = "block";
+		modal.style.display = "flex";
 		backdrop.style.display = "block";
 		setTimeout(() => {
 			modal.classList.add("active");

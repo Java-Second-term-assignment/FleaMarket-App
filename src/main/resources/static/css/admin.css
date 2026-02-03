@@ -433,10 +433,14 @@ td {
 #adminModalBackdrop {
 	display: none;
 	opacity: 0;
-	transition: opacity 0.3s ease;
+	transition: opacity 0.25s ease;
 }
 
-#adminEditModal.active,
+#adminEditModal.active {
+	display: flex;
+	opacity: 1;
+}
+
 #adminModalBackdrop.active {
 	display: block;
 	opacity: 1;
@@ -450,17 +454,142 @@ td {
 	display: block;
 }
 
-/* モーダルの配置 */
+/* 編集モーダル - レイアウト改善 */
 #adminEditModal {
 	position: fixed;
 	top: 50%;
 	left: 50%;
 	transform: translate(-50%, -50%);
 	z-index: 2001;
-	background: #1e2a3b;
-	padding: 20px;
+	background: linear-gradient(180deg, #243447 0%, #1e2a3b 100%);
+	border: 1px solid var(--border-color);
+	border-radius: 16px;
+	width: 100%;
+	max-width: 440px;
+	box-shadow: 0 24px 48px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(255, 255, 255, 0.05);
+	display: flex;
+	flex-direction: column;
+	overflow: hidden;
+}
+
+#adminEditModal .modal-header {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	padding: 20px 24px;
+	border-bottom: 1px solid var(--border-color);
+	background: rgba(0, 0, 0, 0.2);
+}
+
+#adminEditModal .modal-header h3 {
+	margin: 0;
+	font-size: 18px;
+	font-weight: 600;
+	color: var(--accent-yellow);
+	letter-spacing: 0.02em;
+}
+
+#adminEditModal .modal-header .close-modal {
+	font-size: 24px;
+	color: var(--text-sub);
+	cursor: pointer;
+	padding: 4px;
 	border-radius: 8px;
-	width: 400px;
+	transition: color 0.2s, background 0.2s;
+}
+
+#adminEditModal .modal-header .close-modal:hover {
+	color: var(--text-main);
+	background: rgba(255, 255, 255, 0.1);
+}
+
+#adminEditModal #editForm {
+	display: flex;
+	flex-direction: column;
+	flex: 1;
+	min-height: 0;
+}
+
+#adminEditModal .modal-body {
+	padding: 24px;
+	display: flex;
+	flex-direction: column;
+	gap: 20px;
+}
+
+#adminEditModal .form-group {
+	display: flex;
+	flex-direction: column;
+	gap: 8px;
+	margin: 0;
+}
+
+#adminEditModal .form-group label {
+	font-size: 13px;
+	font-weight: 500;
+	color: var(--text-sub);
+	letter-spacing: 0.02em;
+}
+
+#adminEditModal .form-group input {
+	width: 100%;
+	padding: 12px 16px;
+	font-size: 15px;
+	background: rgba(0, 0, 0, 0.35);
+	border: 1px solid var(--border-color);
+	border-radius: 10px;
+	color: var(--text-main);
+	box-sizing: border-box;
+	transition: border-color 0.2s, background 0.2s;
+}
+
+#adminEditModal .form-group input::placeholder {
+	color: rgba(255, 255, 255, 0.35);
+}
+
+#adminEditModal .form-group input:focus {
+	outline: none;
+	border-color: var(--accent-blue);
+	background: rgba(0, 0, 0, 0.45);
+}
+
+#adminEditModal .form-group input[type="number"] {
+	-moz-appearance: textfield;
+}
+
+#adminEditModal .form-group input[type="number"]::-webkit-outer-spin-button,
+#adminEditModal .form-group input[type="number"]::-webkit-inner-spin-button {
+	-webkit-appearance: none;
+	margin: 0;
+}
+
+#adminEditModal .modal-footer {
+	padding: 20px 24px 24px;
+	border-top: 1px solid var(--border-color);
+	display: flex;
+	justify-content: flex-end;
+	gap: 12px;
+}
+
+#adminEditModal .btn-submit-post {
+	width: 100%;
+	padding: 14px 24px;
+	font-size: 15px;
+	font-weight: 600;
+	background: var(--accent-green);
+	border: none;
+	border-radius: 10px;
+	color: white;
+	cursor: pointer;
+	transition: background 0.2s, transform 0.1s;
+}
+
+#adminEditModal .btn-submit-post:hover {
+	background: #43a047;
+}
+
+#adminEditModal .btn-submit-post:active {
+	transform: scale(0.98);
 }
 
 #adminModalBackdrop {
@@ -469,7 +598,8 @@ td {
 	left: 0;
 	width: 100vw;
 	height: 100vh;
-	background: rgba(0, 0, 0, 0.7);
+	background: rgba(0, 0, 0, 0.65);
+	backdrop-filter: blur(2px);
 	z-index: 2000;
 }
 
@@ -478,7 +608,7 @@ td {
 #deleteConfirmModalBackdrop {
 	display: none;
 	opacity: 0;
-	transition: opacity 0.3s ease;
+	transition: opacity 0.25s ease;
 }
 
 #deleteConfirmModal.active,
@@ -493,11 +623,78 @@ td {
 	left: 50%;
 	transform: translate(-50%, -50%);
 	z-index: 2001;
-	background: #1e2a3b;
-	padding: 24px;
-	border-radius: 12px;
+	background: linear-gradient(180deg, #243447 0%, #1e2a3b 100%);
+	border: 1px solid var(--border-color);
+	border-radius: 16px;
+	padding: 0;
 	width: 90%;
 	max-width: 400px;
+	box-shadow: 0 24px 48px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(255, 255, 255, 0.05);
+	overflow: hidden;
+}
+
+#deleteConfirmModal .modal-header {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	padding: 20px 24px;
+	border-bottom: 1px solid var(--border-color);
+	background: rgba(0, 0, 0, 0.2);
+}
+
+#deleteConfirmModal .modal-header h3 {
+	margin: 0;
+	font-size: 18px;
+	font-weight: 600;
+	color: var(--accent-red);
+}
+
+#deleteConfirmModal .modal-header #deleteConfirmModalClose {
+	font-size: 24px;
+	color: var(--text-sub);
+	cursor: pointer;
+	padding: 4px;
+	border-radius: 8px;
+	transition: color 0.2s, background 0.2s;
+}
+
+#deleteConfirmModal .modal-header #deleteConfirmModalClose:hover {
+	color: var(--text-main);
+	background: rgba(255, 255, 255, 0.1);
+}
+
+#deleteConfirmModal .modal-body {
+	padding: 24px;
+	line-height: 1.6;
+}
+
+#deleteConfirmModal .modal-body p {
+	margin: 0 0 8px 0;
+}
+
+#deleteConfirmModal .modal-body p:last-child {
+	margin-bottom: 0;
+	font-size: 13px;
+}
+
+#deleteConfirmModal .modal-footer {
+	padding: 16px 24px 24px;
+}
+
+#deleteConfirmModal .btn-submit-post {
+	width: 100%;
+	padding: 14px 24px;
+	font-size: 15px;
+	font-weight: 600;
+	border: none;
+	border-radius: 10px;
+	color: white;
+	cursor: pointer;
+	transition: background 0.2s, transform 0.1s;
+}
+
+#deleteConfirmModal .btn-submit-post:active {
+	transform: scale(0.98);
 }
 
 #deleteConfirmModalBackdrop {
@@ -506,7 +703,8 @@ td {
 	left: 0;
 	width: 100vw;
 	height: 100vh;
-	background: rgba(0, 0, 0, 0.7);
+	background: rgba(0, 0, 0, 0.65);
+	backdrop-filter: blur(2px);
 	z-index: 2000;
 }
 
