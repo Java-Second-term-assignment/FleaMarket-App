@@ -1,15 +1,10 @@
 @charset "UTF-8";
 
-:root {
-	--header-bg: #1e2a3b;
-	--main-bg: #f0f2f5;
-	--card-bg: #ffffff;
-	--accent-blue: #3b5998;
-}
+/* 色は variables.css の :root を参照 */
 
 .page-title {
 	margin-top: 100px;
-	color: #F2EEB8;
+	color: var(--accent-yellow);
 }
 
 /* 検索とランキング */

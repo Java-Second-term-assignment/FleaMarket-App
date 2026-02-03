@@ -1,0 +1,71 @@
+@charset "UTF-8";
+
+/**
+ * アプリ全体の色を :root で一元管理
+ * 各ページでこのファイルを最初に読み込むこと
+ */
+:root {
+	/* 背景 */
+	--bg-dark: #2c2c2c;
+	--bg-container: #38383c;
+	--bg-darker: #181818;
+	--bg-panel: #2b2b2b;
+
+	/* ヘッダー・ナビ */
+	--header-bg: #1e2a3b;
+	--header-gradient-start: #243447;
+	--nav-hover-bg: #263247;
+	--nav-hover-border: #394963;
+
+	/* カード・パネル */
+	--card-bg: #ffffff;
+	--card-bg-dark: #1e2a3b;
+	--card-bg-darker: #2a2a2a;
+
+	/* テキスト */
+	--text-main: #ffffff;
+	--text-sub: #cccccc;
+	--text-muted: #888888;
+	--text-dark: #333333;
+	--text-heading: #e8e8e8;
+	--text-label: #d0d0d0;
+
+	/* アクセントカラー */
+	--accent-blue: #4a5d99;
+	--accent-blue-light: #3b5998;
+	--accent-blue-link: #365292;
+	--accent-red: #ef4437;
+	--accent-red-soft: #f05b5b;
+	--accent-green: #4caf50;
+	--accent-orange: #ff9800;
+	--accent-yellow: #F2EEB8;
+
+	/* ボタン */
+	--btn-primary: #007bff;
+	--btn-primary-hover: #0056b3;
+	--btn-login: #54649b;
+	--btn-success: #28a745;
+	--btn-success-hover: #218838;
+	--btn-danger: #ff6b6b;
+
+	/* フォーム */
+	--main-bg: #f0f2f5;
+	--form-bg: #e0e6ff;
+	--input-bg: #ffffff;
+	--input-border: #5a5a5a;
+	--border-color: #444444;
+	--border-light: #555555;
+
+	/* グレー系 */
+	--white: #ffffff;
+	--gray-300: #ccc;
+	--gray-400: #bbb;
+	--gray-500: #888;
+	--gray-600: #666;
+
+	/* その他（リンク・ボーダー・エラー） */
+	--link-subtle: #ccddf0;
+	--link-blue: #8ab4f8;
+	--border-white-60: rgba(255, 255, 255, 0.6);
+	--text-error: #f08080;
+}

@@ -1,8 +1,8 @@
 @charset "UTF-8";
 
-/* 背景と全体のレイアウト（商品一覧と同じグレー） */
+/* 背景と全体のレイアウト（variables.css の :root を参照） */
 body {
-	background-color: #2c2c2c;
+	background-color: var(--bg-dark);
 	display: flex;
 	justify-content: center;
 	align-items: center;
@@ -13,7 +13,7 @@ body {
 
 /* 中央のシート（統計画面のシートより少し明るいグレー） */
 .container {
-	background-color: #38383c;
+	background-color: var(--bg-container);
 	width: 90%;
 	max-width: 500px;
 	border-radius: 12px;
@@ -32,7 +32,7 @@ body {
 	margin: 0;
 	font-size: 28px;
 	font-weight: 800;
-	color: #e8e8e8;
+	color: var(--text-heading);
 }
 
 /* コンテンツエリア */
@@ -49,27 +49,27 @@ label {
 	margin-bottom: 10px;
 	font-size: 14px;
 	font-weight: 500;
-	color: #d0d0d0;
+	color: var(--text-label);
 }
 
 .required {
-	color: #f08080;
+	color: var(--text-error);
 	margin-left: 4px;
 }
 
 input {
 	width: 100%;
 	padding: 12px 15px;
-	border: 1px solid #555;
+	border: 1px solid var(--border-light);
 	border-radius: 6px;
 	box-sizing: border-box;
 	font-size: 14px;
-	background-color: #2c2c2c;
-	color: #e8e8e8;
+	background-color: var(--bg-dark);
+	color: var(--text-heading);
 }
 
 input::placeholder {
-	color: #888;
+	color: var(--text-muted);
 }
 
 /* ボタンの共通設定 */
@@ -78,7 +78,7 @@ input::placeholder {
 	padding: 16px;
 	border: none;
 	border-radius: 6px;
-	color: white;
+	color: var(--text-main);
 	font-size: 15px;
 	font-weight: bold;
 	cursor: pointer;
@@ -92,18 +92,18 @@ input::placeholder {
 
 /* ログイン用（紺色） */
 .btn-login {
-	background-color: #54649b;
+	background-color: var(--btn-login);
 }
 
 /* パスワード変更・登録用（緑色） */
 .btn-register,
 .btn-submit {
-	background-color: #28a745;
+	background-color: var(--btn-success);
 }
 
 .btn-register:hover,
 .btn-submit:hover {
-	background-color: #218838;
+	background-color: var(--btn-success-hover);
 }
 
 /* 下部のテキストリンク */
@@ -111,11 +111,11 @@ input::placeholder {
 	text-align: center;
 	margin-top: 25px;
 	font-size: 13px;
-	color: #d0d0d0;
+	color: var(--text-label);
 }
 
 a {
-	color: #8ab4f8;
+	color: var(--link-blue);
 	text-decoration: none;
 }
 
@@ -135,20 +135,20 @@ a:hover {
 /* 登録画面の補足 */
 .footer-text {
 	font-size: 12px;
-	color: #c0c0c0;
+	color: var(--text-sub);
 	line-height: 1.6;
 	margin-top: 10px;
 }
 
 /* バリデーションエラー */
 .error-text {
-	color: #f08080;
+	color: var(--text-error);
 	font-size: 12px;
 	margin-top: 6px;
 }
 
 .btn-change {
-	background-color: #54649b;
+	background-color: var(--btn-login);
 }
 
 .modal-overlay {
@@ -167,8 +167,8 @@ a:hover {
 
 /* モーダル本体 */
 .modal-content {
-	background: #2b2b2b;
-	color: #2c2c2c;
+	background: var(--bg-panel);
+	color: var(--bg-dark);
 	/* ← 全体を白文字に */
 	border-radius: 8px;
 
@@ -191,7 +191,7 @@ a:hover {
 /* 見出し */
 .modal-content h2,
 .modal-content h3 {
-	color: #2c2c2c;
+	color: var(--bg-dark);
 	font-size: 16px;
 	margin-bottom: 11px;
 	font-weight: bold;
@@ -201,11 +201,11 @@ a:hover {
 /* 本文 */
 .modal-body {
 	font-size: 13px;
-	color: #2c2c2c;
+	color: var(--bg-dark);
 }
 
 .modal-body strong {
-	color: #365292;
+	color: var(--accent-blue-link);
 }
 
 /* リスト */
@@ -224,7 +224,7 @@ a:hover {
 /* 段落 */
 .modal-content p {
 	margin: 9px 0 10px;
-	color: #2c2c2c;
+	color: var(--bg-dark);
 	font-size: 13px;
 }
 
@@ -241,13 +241,13 @@ a:hover {
 .terms-body .terms-section h2 {
 	margin: 1.2em 0 0.6em;
 	font-size: 1.1em;
-	color: #365292;
+	color: var(--accent-blue-link);
 }
 
 .terms-body .terms-section h3 {
 	margin: 0.8em 0 0.3em;
 	font-size: 1em;
-	color: #333;
+	color: var(--text-dark);
 }
 
 .terms-body .terms-section p {

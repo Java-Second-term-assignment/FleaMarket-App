@@ -1,16 +1,6 @@
 @charset "UTF-8";
 
-:root {
-	--bg-dark: #2c2c2c;
-	--card-bg: #2a2a2a;
-	--form-bg: #e0e6ff;
-	--text-main: #ffffff;
-	--text-sub: #cccccc;
-	--accent-blue: #4a5d99;
-	--accent-red: #d32f2f;
-	--accent-green: #4caf50;
-	--border-color: #444;
-}
+/* 色は variables.css の :root を参照 */
 
 body {
 	margin: 0;
@@ -23,8 +13,8 @@ body {
 
 /* ヘッダー（固定表示） */
 .header {
-	background-color: #1e2a3b;
-	color: white;
+	background-color: var(--header-bg);
+	color: var(--text-main);
 	padding: 6px 0;
 	position: fixed;
 	top: 0;
@@ -89,7 +79,7 @@ body {
 }
 
 .btn-post {
-	background-color: #007bff;
+	background-color: var(--btn-primary);
 	color: white;
 	border: none;
 	padding: 8px 21px;
@@ -107,13 +97,13 @@ body {
 }
 
 .btn-post:hover {
-	background-color: #0056b3;
+	background-color: var(--btn-primary-hover);
 }
 
 .btn-logout {
 	background: none;
-	border: 1px solid #ffffff99;
-	color: #fff;
+	border: 1px solid var(--border-white-60);
+	color: var(--white);
 	border-radius: 20px;
 	padding: 8px 15px;
 	font-size: 14px;
@@ -128,15 +118,15 @@ body {
 }
 
 .btn-logout:hover {
-	background-color: #394963;
-	color: #ff6b6b;
-	border-color: #ff6b6b;
+	background-color: var(--nav-hover-border);
+	color: var(--btn-danger);
+	border-color: var(--btn-danger);
 }
 
 .lang-selector {
 	font-size: 13px;
 	margin-left: 15px;
-	color: #ccddf0;
+	color: var(--link-subtle);
 	cursor: pointer;
 	padding: 4px 8px;
 	border-radius: 8px;
@@ -145,8 +135,8 @@ body {
 }
 
 .lang-selector:hover {
-	background: #263247;
-	color: #fff;
+	background: var(--nav-hover-bg);
+	color: var(--white);
 }
 
 /* メインコンテンツ */
