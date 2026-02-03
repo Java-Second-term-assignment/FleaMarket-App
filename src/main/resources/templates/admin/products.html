@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="ja" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>商品管理 - 管理画面</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" />
+    <link rel="stylesheet" th:href="@{/css/common.css}">
+    <link rel="stylesheet" th:href="@{/css/admin.css}">
+    <script th:src="@{/js/admin.js}" defer></script>
+</head>
+<body>
+    <div th:replace="~{ui/fragments :: header}"></div>
+
+    <main>
+        <h1 class="page-title">商品管理</h1>
+
+        <section class="admin-card">
+            <div class="card-header"><h3>商品一覧</h3></div>
+            <table>
+                <thead>
+                    <tr>
+                        <th>ID</th><th>商品名</th><th>価格</th><th>出品者</th><th>状態</th><th>操作</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:each="product : ${products}">
+                        <td th:text="${product.id}">1</td>
+                        <td th:text="${product.name}">商品名</td>
+                        <td th:text="${product.price + '円'}">1000円</td>
+                        <td th:text="${product.sellerName}">出品者</td>
+                        <td><span class="status-badge" th:classappend="${product.statusLabel == '公開中' ? 'status-active' : (product.statusLabel == '削除済' ? 'status-disabled' : '')}" th:text="${product.statusLabel}">公開中</span></td>
+                        <td>
+                            <div class="action-group">
+                                <button class="icon-btn edit-product-btn"
+                                        th:data-id="${product.id}" th:data-name="${product.name}" th:data-price="${product.price}">
+                                    <span class="material-symbols-outlined">edit</span>
+                                </button>
+                            </div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+    </main>
+
+    <div class="modal-backdrop" id="adminModalBackdrop"></div>
+    <div id="adminEditModal" class="modal-content">
+        <div class="modal-header">
+            <h3 id="modalTitle">編集</h3>
+            <span class="material-symbols-outlined close-modal" style="cursor:pointer;">close</span>
+        </div>
+        <form id="editForm" method="post">
+            <div class="modal-body">
+                <input type="hidden" name="id" id="editId">
+                <div class="form-group">
+                    <label>名前</label>
+                    <input type="text" name="name" id="editName" required>
+                </div>
+                <div class="form-group" id="emailGroup">
+                    <label>メールアドレス</label>
+                    <input type="email" name="email" id="editEmail">
+                </div>
+                <div class="form-group" id="priceGroup" style="display:none;">
+                    <label>価格</label>
+                    <input type="number" name="price" id="editPrice">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="submit" class="btn-submit-post">保存する</button>
+            </div>
+        </form>
+    </div>
+</body>
+</html>

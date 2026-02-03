@@ -161,6 +161,88 @@ main {
 	margin-bottom: 20px;
 }
 
+/* ダッシュボード統計 */
+.admin-stats {
+	display: flex;
+	gap: 24px;
+	flex-wrap: wrap;
+	margin-bottom: 32px;
+}
+
+.admin-stat-card {
+	background-color: rgba(255, 255, 255, 0.05);
+	border: 1px solid var(--border-color);
+	border-radius: 12px;
+	padding: 24px;
+	min-width: 200px;
+	display: flex;
+	align-items: center;
+	gap: 16px;
+}
+
+.admin-stat-icon {
+	font-size: 40px;
+	color: var(--accent-blue);
+}
+
+.admin-stat-content {
+	display: flex;
+	flex-direction: column;
+	gap: 4px;
+}
+
+.admin-stat-value {
+	font-size: 28px;
+	font-weight: bold;
+	color: var(--text-main);
+}
+
+.admin-stat-label {
+	font-size: 14px;
+	color: var(--text-sub);
+}
+
+/* ダッシュボード管理メニュー */
+.admin-dashboard-links {
+	margin-top: 24px;
+}
+
+.admin-section-title {
+	font-size: 18px;
+	color: var(--text-sub);
+	margin-bottom: 16px;
+}
+
+.admin-link-cards {
+	display: flex;
+	gap: 16px;
+	flex-wrap: wrap;
+}
+
+.admin-link-card {
+	background-color: rgba(255, 255, 255, 0.05);
+	border: 1px solid var(--border-color);
+	border-radius: 12px;
+	padding: 20px 24px;
+	min-width: 160px;
+	display: flex;
+	align-items: center;
+	gap: 12px;
+	color: var(--text-main);
+	text-decoration: none;
+	transition: background 0.2s, border-color 0.2s;
+}
+
+.admin-link-card:hover {
+	background-color: rgba(255, 255, 255, 0.1);
+	border-color: var(--accent-blue);
+}
+
+.admin-link-card .material-symbols-outlined {
+	font-size: 28px;
+	color: var(--accent-blue);
+}
+
 /* タブ */
 .admin-tabs {
 	display: flex;

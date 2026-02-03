@@ -7,7 +7,6 @@
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" />
     <link rel="stylesheet" th:href="@{/css/common.css}">
     <link rel="stylesheet" th:href="@{/css/admin.css}">
-    <script th:src="@{/js/admin.js}" defer></script>
 </head>
 <body>
     <div th:replace="~{ui/fragments :: header}"></div>
@@ -15,104 +14,42 @@
     <main>
         <h1 class="page-title">管理者ダッシュボード</h1>
 
-        <div class="admin-tabs">
-            <button class="tab-btn active" data-target="user-section">ユーザー管理</button>
-            <button class="tab-btn" data-target="product-section">商品管理</button>
-            <button class="tab-btn" onclick="location.href='/admin/blacklist'">ブラックリスト管理</button>
-        </div>
-
-        <section id="user-section" class="admin-card tab-content active">
-            <div class="card-header"><h3>ユーザー一覧</h3></div>
-            <table>
-                <thead>
-                    <tr>
-                        <th>ID</th><th>ユーザー名</th><th>メール</th><th>状態</th><th>操作</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr th:each="user : ${users}">
-                        <td th:text="${user.id}">1</td>
-                        <td th:text="${user.username}">ユーザー名</td>
-                        <td th:text="${user.email}">mail@example.com</td>
-                        <td>
-                            <span class="status-badge" 
-                                  th:classappend="${user.enabled ? 'status-active' : 'status-disabled'}"
-                                  th:text="${user.enabled ? '有効' : '無効'}">状態</span>
-                        </td>
-                        <td>
-                            <div class="action-group">
-                                <button class="icon-btn edit-user-btn" 
-                                        th:data-id="${user.id}" th:data-name="${user.username}" th:data-email="${user.email}">
-                                    <span class="material-symbols-outlined">edit</span>
-                                </button>
-                                <form th:action="@{/admin/users/toggle}" method="post" style="display:inline;">
-                                    <input type="hidden" name="id" th:value="${user.id}">
-                                    <button type="submit" class="icon-btn disable">
-                                        <span class="material-symbols-outlined" th:text="${user.enabled ? 'block' : 'check_circle'}">block</span>
-                                    </button>
-                                </form>
-                            </div>
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
+        <!-- 統計表示 -->
+        <section class="admin-stats">
+            <div class="admin-stat-card">
+                <span class="material-symbols-outlined admin-stat-icon">inventory_2</span>
+                <div class="admin-stat-content">
+                    <span class="admin-stat-value" th:text="${stats.totalActiveItems}">0</span>
+                    <span class="admin-stat-label">公開中商品数</span>
+                </div>
+            </div>
+            <div class="admin-stat-card">
+                <span class="material-symbols-outlined admin-stat-icon">people</span>
+                <div class="admin-stat-content">
+                    <span class="admin-stat-value" th:text="${stats.totalUsers}">0</span>
+                    <span class="admin-stat-label">登録ユーザー数</span>
+                </div>
+            </div>
         </section>
 
-        <section id="product-section" class="admin-card tab-content">
-            <div class="card-header"><h3>商品一覧</h3></div>
-            <table>
-                <thead>
-                    <tr>
-                        <th>ID</th><th>商品名</th><th>価格</th><th>出品者</th><th>状態</th><th>操作</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr th:each="product : ${products}">
-                        <td th:text="${product.id}">1</td>
-                        <td th:text="${product.name}">商品名</td>
-                        <td th:text="${product.price + '円'}">1000円</td>
-                        <td th:text="${product.sellerName}">出品者</td>
-                        <td><span class="status-badge" th:classappend="${product.statusLabel == '公開中' ? 'status-active' : (product.statusLabel == '削除済' ? 'status-disabled' : '')}" th:text="${product.statusLabel}">公開中</span></td>
-                        <td>
-                            <div class="action-group">
-                                <button class="icon-btn edit-product-btn" 
-                                        th:data-id="${product.id}" th:data-name="${product.name}" th:data-price="${product.price}">
-                                    <span class="material-symbols-outlined">edit</span>
-                                </button>
-                            </div>
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
+        <!-- 管理メニュー（ヘッダーからも遷移可能） -->
+        <section class="admin-dashboard-links">
+            <h2 class="admin-section-title">管理メニュー</h2>
+            <div class="admin-link-cards">
+                <a th:href="@{/admin/users}" class="admin-link-card">
+                    <span class="material-symbols-outlined">person</span>
+                    <span>ユーザー管理</span>
+                </a>
+                <a th:href="@{/admin/products}" class="admin-link-card">
+                    <span class="material-symbols-outlined">inventory</span>
+                    <span>商品管理</span>
+                </a>
+                <a th:href="@{/admin/blacklist}" class="admin-link-card">
+                    <span class="material-symbols-outlined">block</span>
+                    <span>ブラックリスト管理</span>
+                </a>
+            </div>
         </section>
     </main>
-
-    <div class="modal-backdrop" id="adminModalBackdrop"></div>
-    <div id="adminEditModal" class="modal-content">
-        <div class="modal-header">
-            <h3 id="modalTitle">編集</h3>
-            <span class="material-symbols-outlined close-modal" style="cursor:pointer;">close</span>
-        </div>
-        <form id="editForm" method="post">
-            <div class="modal-body">
-                <input type="hidden" name="id" id="editId">
-                <div class="form-group">
-                    <label>名前</label>
-                    <input type="text" name="name" id="editName" required>
-                </div>
-                <div class="form-group" id="emailGroup">
-                    <label>メールアドレス</label>
-                    <input type="email" name="email" id="editEmail">
-                </div>
-                <div class="form-group" id="priceGroup" style="display:none;">
-                    <label>価格</label>
-                    <input type="number" name="price" id="editPrice">
-                </div>
-            </div>
-            <div class="modal-footer">
-                <button type="submit" class="btn-submit-post">保存する</button>
-            </div>
-        </form>
-    </div>
 </body>
 </html>

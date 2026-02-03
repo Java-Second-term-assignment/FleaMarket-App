@@ -6,6 +6,7 @@ import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 
+import com.example.flea_market_app.admin.controller.dto.AdminDashboardStatsDto;
 import com.example.flea_market_app.admin.controller.dto.AdminProductRowDto;
 import com.example.flea_market_app.admin.controller.dto.AdminUserRowDto;
 import com.example.flea_market_app.auth.domain.AuthUserEntity;
@@ -18,15 +19,23 @@ import com.example.flea_market_app.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 
 /**
- * 管理者ダッシュボード表示用のユーザー一覧・商品一覧を取得する。
+ * 管理者ダッシュボード表示用の統計・ユーザー一覧・商品一覧を取得する。
  */
 @Service
 @RequiredArgsConstructor
 public class AdminDashboardQueryService {
 
+	private static final String STATUS_PUBLISHED = "PUBLISHED";
+
 	private final UserRepository userRepository;
 	private final AuthUserRepository authUserRepository;
 	private final ItemRepository itemRepository;
+
+	public AdminDashboardStatsDto getDashboardStats() {
+		long totalActiveItems = itemRepository.countByStatus(STATUS_PUBLISHED);
+		long totalUsers = userRepository.count();
+		return new AdminDashboardStatsDto(totalActiveItems, totalUsers);
+	}
 
 	public List<AdminUserRowDto> getUsersForDashboard() {
 		List<UserEntity> users = userRepository.findAll();

@@ -22,9 +22,9 @@
 			<nav class="nav">
 				<div class="nav-links">
 
-					<!-- 共通（ログイン有無問わず） -->
-					<a th:href="@{/products}">商品一覧</a>
-					<a th:href="@{/board}">掲示板一覧</a>
+					<!-- 一般画面のみ表示（管理者画面では非表示） -->
+					<a th:if="${!isAdminContext}" th:href="@{/products}">商品一覧</a>
+					<a th:if="${!isAdminContext}" th:href="@{/board}">掲示板一覧</a>
 
 					<!-- 未ログイン時 -->
 					<a sec:authorize="isAnonymous()" th:href="@{/login}">
@@ -37,20 +37,27 @@
 						管理者はこちら
 					</a>
 
-					<!-- ログイン時 -->
-					<a sec:authorize="isAuthenticated()" th:href="@{/user/settings}">
+					<!-- ログイン時（管理者画面では非表示） -->
+					<a sec:authorize="isAuthenticated()" th:if="${!isAdminContext}" th:href="@{/user/settings}">
 						ユーザー設定
 					</a>
-					<span class="material-symbols-outlined">
+					<span th:if="${!isAdminContext}" class="material-symbols-outlined">
 						notifications
 					</span>
+					<!-- 管理者画面用ナビ -->
 					<a sec:authorize="hasRole('ADMIN')" th:href="@{/admin/dashboard}">
 						管理画面
 					</a>
+					<a sec:authorize="hasRole('ADMIN')" th:href="@{/admin/products}">
+						商品管理
+					</a>
+					<a sec:authorize="hasRole('ADMIN')" th:href="@{/admin/users}">
+						ユーザー管理
+					</a>
 				</div>
 
-				<!-- ログイン時のみ -->
-				<button sec:authorize="isAuthenticated()" class="btn-post" th:onclick="|location.href='@{/product/add}'|">
+				<!-- ログイン時のみ（管理者画面では非表示） -->
+				<button sec:authorize="isAuthenticated()" th:if="${!isAdminContext}" class="btn-post" th:onclick="|location.href='@{/product/add}'|">
 					出品する
 				</button>
 
