@@ -1,9 +1,12 @@
 package com.example.flea_market_app.admin.service.port;
 
+import java.time.OffsetDateTime;
 import java.util.UUID;
 
 public interface AdminUserWritePort {
 	boolean setActive(UUID userId, boolean active);
+
+	boolean setActiveAndFrozenUntil(UUID userId, boolean active, OffsetDateTime frozenUntil);
 
 	boolean toggleActive(UUID userId);
 

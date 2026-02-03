@@ -57,7 +57,7 @@ public class AdminController {
 			@PathVariable("id") UUID userId,
 			@Valid @RequestBody FreezeUserRequest req) {
 		UUID currentUserId = SecurityUtil.getCurrentUserId();
-		adminUserService.freezeUser(currentUserId, userId, req.getReason());
+		adminUserService.freezeUser(currentUserId, userId, req.getReason(), null);
 		return ResponseEntity.noContent().build();
 	}
 

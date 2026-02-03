@@ -1,5 +1,6 @@
 package com.example.flea_market_app.admin.controller;
 
+import java.time.OffsetDateTime;
 import java.util.UUID;
 
 import org.slf4j.Logger;
@@ -94,9 +95,13 @@ public class AdminPageController {
 	public String usersFreeze(
 			@RequestParam("id") UUID userId,
 			@RequestParam("reason") String reason,
+			@RequestParam(value = "frozenUntilDays", required = false) Integer frozenUntilDays,
 			RedirectAttributes ra) {
 		UUID currentUserId = SecurityUtil.getCurrentUserId();
-		adminUserService.freezeUser(currentUserId, userId, reason);
+		OffsetDateTime frozenUntil = frozenUntilDays != null
+				? OffsetDateTime.now().plusDays(frozenUntilDays)
+				: null;
+		adminUserService.freezeUser(currentUserId, userId, reason, frozenUntil);
 		ra.addFlashAttribute("message", "ユーザーを凍結しました");
 		return "redirect:/admin/users?tab=list";
 	}

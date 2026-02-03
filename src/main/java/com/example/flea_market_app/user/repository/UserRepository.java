@@ -1,5 +1,6 @@
 package com.example.flea_market_app.user.repository;
 
+import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.UUID;
 
@@ -39,4 +40,28 @@ public interface UserRepository extends JpaRepository<UserEntity, UUID> {
 	int updateActive(
 			@Param("userId") UUID userId,
 			@Param("active") boolean active);
+
+	@Modifying
+	@Query("""
+			    UPDATE UserEntity u
+			       SET u.active = :active, u.frozenUntil = :frozenUntil
+			     WHERE u.id = :userId
+			""")
+	int updateActiveAndFrozenUntil(
+			@Param("userId") UUID userId,
+			@Param("active") boolean active,
+			@Param("frozenUntil") OffsetDateTime frozenUntil);
+
+	@Modifying
+	@Query("""
+			    UPDATE UserEntity u
+			       SET u.active = true, u.frozenUntil = null
+			     WHERE u.id = :userId
+			       AND u.active = false
+			       AND u.frozenUntil IS NOT NULL
+			       AND u.frozenUntil <= :now
+			""")
+	int restoreExpiredFreeze(
+			@Param("userId") UUID userId,
+			@Param("now") OffsetDateTime now);
 }

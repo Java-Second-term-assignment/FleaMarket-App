@@ -1,5 +1,6 @@
 package com.example.flea_market_app.admin.service;
 
+import java.time.OffsetDateTime;
 import java.util.UUID;
 
 import org.springframework.stereotype.Service;
@@ -31,10 +32,10 @@ public class AdminUserService {
 	private final AdminUserWritePort adminUserWritePort;
 
 	@Transactional
-	public void freezeUser(UUID currentUserId, UUID targetUserId, String reason) {
+	public void freezeUser(UUID currentUserId, UUID targetUserId, String reason, OffsetDateTime frozenUntil) {
 		UUID adminAuthUserId = adminSecurityUtil.requireAdminAndGetAuthUserId(currentUserId);
 
-		boolean updated = adminUserWritePort.setActive(targetUserId, false);
+		boolean updated = adminUserWritePort.setActiveAndFrozenUntil(targetUserId, false, frozenUntil);
 		if (!updated)
 			throw NotFoundBusinessException.of(ErrorCode.RESOURCE_NOT_FOUND);
 
@@ -43,8 +44,8 @@ public class AdminUserService {
 
 	@Transactional
 	public void forceWithdraw(UUID currentUserId, UUID targetUserId, String reason) {
-		// MVPでは freeze と同義（将来: 退会理由、退会状態などを追加）
-		freezeUser(currentUserId, targetUserId, reason);
+		// MVPでは freeze と同義（無期限凍結）
+		freezeUser(currentUserId, targetUserId, reason, null);
 	}
 
 	@Transactional
@@ -60,7 +61,7 @@ public class AdminUserService {
 	public void restoreUser(UUID currentUserId, UUID targetUserId) {
 		UUID adminAuthUserId = adminSecurityUtil.requireAdminAndGetAuthUserId(currentUserId);
 
-		boolean updated = adminUserWritePort.setActive(targetUserId, true);
+		boolean updated = adminUserWritePort.setActiveAndFrozenUntil(targetUserId, true, null);
 		if (!updated)
 			throw NotFoundBusinessException.of(ErrorCode.RESOURCE_NOT_FOUND);
 

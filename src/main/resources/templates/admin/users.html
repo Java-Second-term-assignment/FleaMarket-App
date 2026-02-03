@@ -173,8 +173,17 @@
         <form id="freezeForm" method="post">
             <div class="modal-body">
                 <p><strong id="freezeUserName">ユーザー名</strong> の操作を実行しますか？</p>
+                <div class="form-group" id="freezeDurationGroup">
+                    <label for="freezeFrozenUntilDays">凍結期限</label>
+                    <select name="frozenUntilDays" id="freezeFrozenUntilDays">
+                        <option value="">無期限</option>
+                        <option value="7">7日間</option>
+                        <option value="30">30日間</option>
+                        <option value="90">90日間</option>
+                    </select>
+                </div>
                 <div class="form-group">
-                    <label for="freezeReason">理由（必須）</label>
+                    <label for="freezeReason">理由</label>
                     <input type="text" name="reason" id="freezeReason" required placeholder="理由を入力">
                 </div>
                 <input type="hidden" name="id" id="freezeUserId">

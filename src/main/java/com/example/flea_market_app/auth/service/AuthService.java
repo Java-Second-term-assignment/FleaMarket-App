@@ -17,6 +17,7 @@ import com.example.flea_market_app.auth.service.dto.RefreshRequest;
 import com.example.flea_market_app.auth.service.dto.RefreshResponse;
 import com.example.flea_market_app.common.exception.AccessDeniedBusinessException;
 import com.example.flea_market_app.common.exception.UnauthorizedBusinessException;
+import com.example.flea_market_app.user.repository.UserRepository;
 
 import lombok.RequiredArgsConstructor;
 
@@ -27,6 +28,7 @@ public class AuthService {
 	private final TokenService tokenService;
 	private final RefreshTokenRepository refreshTokenRepository;
 	private final AuthUserRepository authUserRepository;
+	private final UserRepository userRepository;
 
 	private final AuthUserProvider authUserProvider;
 	private final PasswordHasher passwordHasher;
@@ -48,6 +50,14 @@ public class AuthService {
 
 		// userId を UUID に変換（DBがuuidのため）
 		UUID userId = UUID.fromString(authUser.getUserId());
+
+		// 凍結期限切れの場合は自動復元
+		userRepository.restoreExpiredFreeze(userId, OffsetDateTime.now());
+
+		// 凍結中（is_active=false）の場合はログイン拒否
+		if (userRepository.findById(userId).map(u -> !u.isActive()).orElse(false)) {
+			throw UnauthorizedBusinessException.invalidCredentials();
+		}
 
 		String accessToken = tokenService.generateAccessToken(userId);
 
@@ -87,6 +97,15 @@ public class AuthService {
 		}
 
 		UUID userId = UUID.fromString(authUser.getUserId());
+
+		// 凍結期限切れの場合は自動復元
+		userRepository.restoreExpiredFreeze(userId, OffsetDateTime.now());
+
+		// 凍結中はログイン拒否
+		if (userRepository.findById(userId).map(u -> !u.isActive()).orElse(false)) {
+			throw UnauthorizedBusinessException.invalidCredentials();
+		}
+
 		String accessToken = tokenService.generateAccessToken(userId);
 		IssuedRefreshToken issued = tokenService.issueRefreshToken(userId);
 		refreshTokenRepository.deleteByUserId(userId);

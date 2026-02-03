@@ -116,7 +116,8 @@ document.addEventListener("DOMContentLoaded", () => {
 			const btn = e.target.closest(".freeze-open-btn");
 			if (btn) {
 				e.preventDefault();
-				freezeForm.action = btn.dataset.formAction || "/admin/users/freeze";
+				const formAction = btn.dataset.formAction || "/admin/users/freeze";
+				freezeForm.action = formAction;
 				freezeUserId.value = btn.dataset.userId || "";
 				freezeUserName.textContent = btn.dataset.userName || "ユーザー";
 				const modalTitle = document.getElementById("freezeModalTitle");
@@ -124,6 +125,14 @@ document.addEventListener("DOMContentLoaded", () => {
 				const submitBtn = document.getElementById("freezeSubmitBtn");
 				if (submitBtn) submitBtn.textContent = btn.dataset.submitLabel || "凍結する";
 				document.getElementById("freezeReason").value = "";
+				const durationGroup = document.getElementById("freezeDurationGroup");
+				const durationSelect = document.getElementById("freezeFrozenUntilDays");
+				const isForceWithdraw = formAction.includes("force-withdraw");
+				if (durationGroup) durationGroup.style.display = isForceWithdraw ? "none" : "block";
+				if (durationSelect) {
+					durationSelect.value = "";
+					durationSelect.disabled = isForceWithdraw;
+				}
 				freezeModal.style.display = "flex";
 				freezeBackdrop.style.display = "block";
 				setTimeout(() => {

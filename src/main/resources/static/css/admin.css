@@ -645,9 +645,11 @@ td {
 
 #freezeModal .modal-body { padding: 24px; }
 #freezeModal .modal-body p { margin: 0 0 16px 0; }
-#freezeModal .form-group { margin-bottom: 0; }
+#freezeModal .form-group { margin-bottom: 16px; }
+#freezeModal .form-group:last-of-type { margin-bottom: 0; }
 #freezeModal .form-group label { font-size: 13px; color: var(--text-sub); display: block; margin-bottom: 8px; }
-#freezeModal .form-group input {
+#freezeModal .form-group input,
+#freezeModal .form-group select {
 	width: 100%;
 	padding: 12px 16px;
 	background: rgba(0, 0, 0, 0.35);
@@ -655,6 +657,10 @@ td {
 	border-radius: 10px;
 	color: var(--text-main);
 	box-sizing: border-box;
+}
+
+#freezeModal .form-group select {
+	cursor: pointer;
 }
 
 #freezeModal .modal-footer {

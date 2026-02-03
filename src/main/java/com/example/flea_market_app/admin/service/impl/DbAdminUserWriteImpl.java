@@ -1,5 +1,6 @@
 package com.example.flea_market_app.admin.service.impl;
 
+import java.time.OffsetDateTime;
 import java.util.UUID;
 
 import org.springframework.stereotype.Component;
@@ -22,6 +23,12 @@ public class DbAdminUserWriteImpl implements AdminUserWritePort {
 	@Transactional
 	public boolean setActive(UUID userId, boolean active) {
 		return userRepository.updateActive(userId, active) > 0;
+	}
+
+	@Override
+	@Transactional
+	public boolean setActiveAndFrozenUntil(UUID userId, boolean active, OffsetDateTime frozenUntil) {
+		return userRepository.updateActiveAndFrozenUntil(userId, active, frozenUntil) > 0;
 	}
 
 	@Override

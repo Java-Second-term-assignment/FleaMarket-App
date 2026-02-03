@@ -1,5 +1,6 @@
 package com.example.flea_market_app.user.domain;
 
+import java.time.OffsetDateTime;
 import java.util.UUID;
 
 import jakarta.persistence.Column;
@@ -31,6 +32,9 @@ public class UserEntity {
 
 	@Column(name = "is_active", nullable = false)
 	private boolean active;
+
+	@Column(name = "frozen_until")
+	private OffsetDateTime frozenUntil;
 
 	@Column(name = "profile_image_s3_key")
 	private String profileImageS3Key;
