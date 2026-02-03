@@ -21,18 +21,20 @@ body {
 	overflow: hidden;
 }
 
-/* ヘッダー */
-.header {
+/* ヘッダー（ログインカード内の「ログイン」表示セクション） */
+.container .header {
 	padding: 30px 20px;
 	border-bottom: 1.5px solid rgba(255, 255, 255, 0.2);
 	text-align: center;
+	background-color: #1e2a3b;
+	color: #ffffff;
 }
 
-.header h1 {
+.container .header h1 {
 	margin: 0;
 	font-size: 28px;
 	font-weight: 800;
-	color: var(--text-heading);
+	color: #ffffff;
 }
 
 /* コンテンツエリア */

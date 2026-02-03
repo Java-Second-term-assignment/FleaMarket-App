@@ -39,10 +39,47 @@ html[data-theme="light"] .header .nav-links a::after {
 	background: #ffffff;
 }
 
-/* ライトテーマ時のコンテンツ・入力欄の見え方 */
-html[data-theme="light"] .container input {
-	background-color: var(--input-bg);
+/* ライトテーマ時でもログイン・新規登録カードのヘッダーは色を変えない（常にダーク・文字は白） */
+html[data-theme="light"] .container .header {
+	background-color: #1e2a3b;
+	border-bottom-color: rgba(255, 255, 255, 0.2);
 }
+html[data-theme="light"] .container .header h1 {
+	color: #e8e8e8;
+}
+
+/* ライトテーマ時：ログイン・新規登録の文字色は固定（テーマで変わらない） */
+html[data-theme="light"] .container .content,
+html[data-theme="light"] .container .content label {
+	color: #333333;
+}
+html[data-theme="light"] .container .content input {
+	background-color: #ffffff;
+	color: #1a1a1a;
+	border-color: #d1d1d1;
+}
+html[data-theme="light"] .container .content input::placeholder {
+	color: #888888;
+}
+html[data-theme="light"] .container .content .link-bottom {
+	color: #555555;
+}
+html[data-theme="light"] .container .content a {
+	color: #4a69bd;
+}
+html[data-theme="light"] .container .content .footer-text {
+	color: #555555;
+}
+html[data-theme="light"] .container .content .required {
+	color: #e33e3e;
+}
+html[data-theme="light"] .container .content .error-text {
+	color: #e33e3e;
+}
+html[data-theme="light"] .container .content .btn {
+	color: #ffffff;
+}
+
 html[data-theme="light"] .copyright {
 	color: rgba(0, 0, 0, 0.6);
 }
