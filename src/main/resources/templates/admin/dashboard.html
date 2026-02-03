@@ -72,7 +72,7 @@
                         <td th:text="${product.name}">商品名</td>
                         <td th:text="${product.price + '円'}">1000円</td>
                         <td th:text="${product.sellerName}">出品者</td>
-                        <td><span class="status-badge status-active">公開中</span></td>
+                        <td><span class="status-badge" th:classappend="${product.statusLabel == '公開中' ? 'status-active' : (product.statusLabel == '削除済' ? 'status-disabled' : '')}" th:text="${product.statusLabel}">公開中</span></td>
                         <td>
                             <div class="action-group">
                                 <button class="icon-btn edit-product-btn" 

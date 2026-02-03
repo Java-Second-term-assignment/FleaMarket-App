@@ -30,7 +30,10 @@ public class SecurityConfig {
 
 	@Bean
 	AdminLoginSuccessHandler adminLoginSuccessHandler() {
-		return new AdminLoginSuccessHandler();
+		AdminLoginSuccessHandler handler = new AdminLoginSuccessHandler();
+		handler.setDefaultTargetUrl("/admin/dashboard");
+		handler.setAlwaysUseDefaultTargetUrl(true);
+		return handler;
 	}
 
 	/**

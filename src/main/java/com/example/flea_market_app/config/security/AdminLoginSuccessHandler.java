@@ -51,8 +51,6 @@ public class AdminLoginSuccessHandler extends SimpleUrlAuthenticationSuccessHand
 			return;
 		}
 
-		setDefaultTargetUrl("/admin/dashboard");
-		setAlwaysUseDefaultTargetUrl(true);
 		super.onAuthenticationSuccess(request, response, authentication);
 	}
 }
