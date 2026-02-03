@@ -35,7 +35,7 @@
                     </thead>
                     <tbody>
                         <tr th:each="user : ${users}">
-                            <td th:text="${user.id}">1</td>
+                            <td th:text="${user.id != null ? #strings.substring(user.id.toString(), 24) : ''}">1</td>
                             <td th:text="${user.username}">ユーザー名</td>
                             <td th:text="${user.email}">mail@example.com</td>
                             <td>
@@ -46,14 +46,6 @@
                             <td>
                                 <span class="status-badge" th:classappend="${user.admin ? 'status-active' : 'status-disabled'}"
                                       th:text="${user.admin ? '管理者' : '一般'}">一般</span>
-                                <form th:action="@{/admin/users/admin-role}" method="post" style="display:inline; margin-left:6px;">
-                                    <input type="hidden" name="id" th:value="${user.id}">
-                                    <input type="hidden" name="makeAdmin" th:value="${!user.admin}">
-                                    <input type="hidden" name="reason" value="管理画面から変更">
-                                    <button type="submit" class="icon-btn" th:title="${user.admin ? '管理者権限を剥奪' : '管理者権限を付与'}">
-                                        <span class="material-symbols-outlined">admin_panel_settings</span>
-                                    </button>
-                                </form>
                             </td>
                             <td>
                                 <div class="action-group">
@@ -107,7 +99,7 @@
                     </thead>
                     <tbody>
                         <tr th:each="user : ${blacklistUsers}">
-                            <td th:text="${user.id}">1</td>
+                            <td th:text="${user.id != null ? #strings.substring(user.id.toString(), 24) : ''}">1</td>
                             <td th:text="${user.username}">ユーザー名</td>
                             <td th:text="${user.email}">mail@example.com</td>
                             <td><span class="status-tag status-restricted">制限中</span></td>

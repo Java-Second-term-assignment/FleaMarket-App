@@ -35,7 +35,7 @@
                     </thead>
                     <tbody>
                         <tr th:each="product : ${products}">
-                            <td th:text="${product.id}">1</td>
+                            <td th:text="${product.id != null ? #strings.substring(product.id.toString(), 24) : ''}">1</td>
                             <td th:text="${product.name}">商品名</td>
                             <td th:text="${product.price + '円'}">1000円</td>
                             <td th:text="${product.sellerName}">出品者</td>
@@ -90,7 +90,7 @@
                     </thead>
                     <tbody>
                         <tr th:each="product : ${blacklistProducts}">
-                            <td th:text="${product.id}">1</td>
+                            <td th:text="${product.id != null ? #strings.substring(product.id.toString(), 24) : ''}">1</td>
                             <td th:text="${product.name}">商品名</td>
                             <td th:text="${product.price + '円'}">1000円</td>
                             <td th:text="${product.sellerName}">出品者</td>
