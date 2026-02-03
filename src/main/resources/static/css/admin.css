@@ -244,6 +244,38 @@ main {
 	color: var(--accent-blue);
 }
 
+/* 統計画面：グラフエリア */
+.admin-stats-charts {
+	display: grid;
+	grid-template-columns: repeat(auto-fill, minmax(420px, 1fr));
+	gap: 24px;
+	margin-top: 32px;
+}
+
+.admin-chart-card {
+	background-color: rgba(255, 255, 255, 0.05);
+	border: 1px solid var(--border-color);
+	border-radius: 12px;
+	padding: 20px;
+}
+
+.admin-chart-title {
+	font-size: 16px;
+	color: var(--text-sub);
+	margin: 0 0 16px 0;
+	font-weight: 600;
+}
+
+.admin-chart-wrap {
+	position: relative;
+	width: 100%;
+	max-height: 300px;
+}
+
+.admin-chart-wrap canvas {
+	max-height: 300px;
+}
+
 /* タブ */
 .admin-tabs {
 	display: flex;

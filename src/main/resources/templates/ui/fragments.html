@@ -51,17 +51,17 @@
 					<!-- 管理者画面用ナビ -->
 					<div class="nav-item" sec:authorize="hasRole('ADMIN')">
 						<a th:href="@{/admin/dashboard}">
-							管理画面
-						</a>
-					</div>
-					<div class="nav-item" sec:authorize="hasRole('ADMIN')">
-						<a th:href="@{/admin/products}">
-							商品管理
+							統計画面
 						</a>
 					</div>
 					<div class="nav-item" sec:authorize="hasRole('ADMIN')">
 						<a th:href="@{/admin/users}">
 							ユーザー管理
+						</a>
+					</div>
+					<div class="nav-item" sec:authorize="hasRole('ADMIN')">
+						<a th:href="@{/admin/products}">
+							商品管理
 						</a>
 					</div>
 				</div>

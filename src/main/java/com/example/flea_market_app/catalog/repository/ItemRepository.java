@@ -1,5 +1,7 @@
 package com.example.flea_market_app.catalog.repository;
 
+import java.time.OffsetDateTime;
+import java.util.List;
 import java.util.UUID;
 
 import org.springframework.data.domain.Page;
@@ -49,5 +51,17 @@ public interface ItemRepository extends JpaRepository<ItemEntity, UUID> {
 	int updateStatus(
 			@Param("itemId") UUID itemId,
 			@Param("status") String status);
+
+	/** ステータス別件数（グラフ用） */
+	@Query("SELECT i.status, COUNT(i) FROM ItemEntity i GROUP BY i.status")
+	List<Object[]> countGroupByStatus();
+
+	/** 指定日以降の日別商品登録数（グラフ用） */
+	@Query(value = """
+			SELECT (created_at AT TIME ZONE 'UTC')::date AS day, COUNT(*) FROM items
+			WHERE created_at >= :since
+			GROUP BY (created_at AT TIME ZONE 'UTC')::date ORDER BY day
+			""", nativeQuery = true)
+	List<Object[]> countItemsByDaySince(@Param("since") OffsetDateTime since);
 
 }

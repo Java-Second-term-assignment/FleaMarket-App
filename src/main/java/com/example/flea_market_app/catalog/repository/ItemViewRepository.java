@@ -1,5 +1,6 @@
 package com.example.flea_market_app.catalog.repository;
 
+import java.util.List;
 import java.util.UUID;
 
 import org.springframework.data.domain.Page;
@@ -22,4 +23,11 @@ public interface ItemViewRepository extends JpaRepository<ItemViewEntity, UUID> 
 			ORDER BY COUNT(*) DESC
 			""", nativeQuery = true)
 	Page<Object[]> findTopViewedItemIds(@Param("status") String status, Pageable pageable);
+
+	/** 閲覧数トップN（グラフ用）。item_id, count の順。 */
+	@Query(value = """
+			SELECT item_id, COUNT(*) AS cnt FROM item_views
+			GROUP BY item_id ORDER BY cnt DESC LIMIT 10
+			""", nativeQuery = true)
+	List<Object[]> findTopViewedItemIdsWithCount();
 }

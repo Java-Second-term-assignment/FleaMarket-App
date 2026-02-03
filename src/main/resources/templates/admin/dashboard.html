@@ -7,6 +7,7 @@
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" />
     <link rel="stylesheet" th:href="@{/css/common.css}">
     <link rel="stylesheet" th:href="@{/css/admin.css}">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.6/dist/chart.umd.min.js"></script>
 </head>
 <body>
     <div th:replace="~{ui/fragments :: header}"></div>
@@ -32,24 +33,154 @@
             </div>
         </section>
 
-        <!-- 管理メニュー（ヘッダーからも遷移可能） -->
-        <section class="admin-dashboard-links">
-            <h2 class="admin-section-title">管理メニュー</h2>
-            <div class="admin-link-cards">
-                <a th:href="@{/admin/users}" class="admin-link-card">
-                    <span class="material-symbols-outlined">person</span>
-                    <span>ユーザー管理</span>
-                </a>
-                <a th:href="@{/admin/products}" class="admin-link-card">
-                    <span class="material-symbols-outlined">inventory</span>
-                    <span>商品管理</span>
-                </a>
-                <a th:href="@{/admin/blacklist}" class="admin-link-card">
-                    <span class="material-symbols-outlined">block</span>
-                    <span>ブラックリスト管理</span>
-                </a>
+        <!-- グラフエリア -->
+        <section class="admin-stats-charts">
+            <div class="admin-chart-card">
+                <h2 class="admin-chart-title">商品のステータス別件数</h2>
+                <div class="admin-chart-wrap">
+                    <canvas id="chartItemStatus"></canvas>
+                </div>
+            </div>
+            <div class="admin-chart-card">
+                <h2 class="admin-chart-title">商品登録数（直近<span th:text="${statsDays}">30</span>日）</h2>
+                <div class="admin-chart-wrap">
+                    <canvas id="chartItemCountsByDay"></canvas>
+                </div>
+            </div>
+            <div class="admin-chart-card">
+                <h2 class="admin-chart-title">ユーザー登録数（直近<span th:text="${statsDays}">30</span>日）</h2>
+                <div class="admin-chart-wrap">
+                    <canvas id="chartUserSignupsByDay"></canvas>
+                </div>
+            </div>
+            <div class="admin-chart-card">
+                <h2 class="admin-chart-title">閲覧数トップ10</h2>
+                <div class="admin-chart-wrap">
+                    <canvas id="chartTopViewed"></canvas>
+                </div>
             </div>
         </section>
+
+        <script type="application/json" id="itemStatusCountsJson" th:inline="text">[(${itemStatusCountsJson})]</script>
+        <script type="application/json" id="itemCountsByDayJson" th:inline="text">[(${itemCountsByDayJson})]</script>
+        <script type="application/json" id="userSignupCountsByDayJson" th:inline="text">[(${userSignupCountsByDayJson})]</script>
+        <script type="application/json" id="topViewedItemsJson" th:inline="text">[(${topViewedItemsJson})]</script>
+        <script th:inline="javascript">
+            (function() {
+                var chartDefaults = {
+                    responsive: true,
+                    maintainAspectRatio: true,
+                    scales: {
+                        x: { ticks: { color: '#cccccc' }, grid: { color: '#444' } },
+                        y: { ticks: { color: '#cccccc' }, grid: { color: '#444' } }
+                    },
+                    plugins: {
+                        legend: { labels: { color: '#cccccc' } }
+                    }
+                };
+                function parseJson(id) {
+                    var el = document.getElementById(id);
+                    return el && el.textContent ? JSON.parse(el.textContent) : [];
+                }
+                var itemStatusCounts = parseJson('itemStatusCountsJson');
+                if (itemStatusCounts.length > 0) {
+                    var ctx = document.getElementById('chartItemStatus');
+                    if (ctx) {
+                        new Chart(ctx, {
+                            type: 'doughnut',
+                            data: {
+                                labels: itemStatusCounts.map(function(d) { return d.label; }),
+                                datasets: [{
+                                    data: itemStatusCounts.map(function(d) { return d.count; }),
+                                    backgroundColor: ['#007bff', '#6c757d', '#dc3545', '#ffc107', '#28a745'].slice(0, itemStatusCounts.length),
+                                    borderColor: '#1e2a3b',
+                                    borderWidth: 2
+                                }]
+                            },
+                            options: {
+                                responsive: true,
+                                maintainAspectRatio: true,
+                                plugins: { legend: { position: 'bottom', labels: { color: '#cccccc' } } }
+                            }
+                        });
+                    }
+                }
+                var itemCountsByDay = parseJson('itemCountsByDayJson');
+                if (itemCountsByDay.length > 0) {
+                    var ctx = document.getElementById('chartItemCountsByDay');
+                    if (ctx) {
+                        new Chart(ctx, {
+                            type: 'bar',
+                            data: {
+                                labels: itemCountsByDay.map(function(d) { return d.date; }),
+                                datasets: [{
+                                    label: '商品数',
+                                    data: itemCountsByDay.map(function(d) { return d.count; }),
+                                    backgroundColor: 'rgba(0, 123, 255, 0.7)',
+                                    borderColor: '#007bff',
+                                    borderWidth: 1
+                                }]
+                            },
+                            options: chartDefaults
+                        });
+                    }
+                }
+                var userSignupCountsByDay = parseJson('userSignupCountsByDayJson');
+                if (userSignupCountsByDay.length > 0) {
+                    var ctx = document.getElementById('chartUserSignupsByDay');
+                    if (ctx) {
+                        new Chart(ctx, {
+                            type: 'line',
+                            data: {
+                                labels: userSignupCountsByDay.map(function(d) { return d.date; }),
+                                datasets: [{
+                                    label: '登録数',
+                                    data: userSignupCountsByDay.map(function(d) { return d.count; }),
+                                    borderColor: '#4caf50',
+                                    backgroundColor: 'rgba(76, 175, 80, 0.2)',
+                                    fill: true,
+                                    tension: 0.2
+                                }]
+                            },
+                            options: chartDefaults
+                        });
+                    }
+                }
+                var topViewedItems = parseJson('topViewedItemsJson');
+                if (topViewedItems.length > 0) {
+                    var ctx = document.getElementById('chartTopViewed');
+                    if (ctx) {
+                        var labels = topViewedItems.map(function(d) {
+                            var name = d.itemName || '';
+                            return name.length > 15 ? name.substring(0, 15) + '…' : name;
+                        });
+                        new Chart(ctx, {
+                            type: 'bar',
+                            data: {
+                                labels: labels,
+                                datasets: [{
+                                    label: '閲覧数',
+                                    data: topViewedItems.map(function(d) { return d.viewCount; }),
+                                    backgroundColor: 'rgba(255, 152, 0, 0.7)',
+                                    borderColor: '#ff9800',
+                                    borderWidth: 1
+                                }]
+                            },
+                            options: {
+                                indexAxis: 'y',
+                                responsive: true,
+                                maintainAspectRatio: true,
+                                scales: {
+                                    x: { ticks: { color: '#cccccc' }, grid: { color: '#444' } },
+                                    y: { ticks: { color: '#cccccc', font: { size: 11 } }, grid: { color: '#444' } }
+                                },
+                                plugins: { legend: { display: false } }
+                            }
+                        });
+                    }
+                }
+            })();
+        </script>
     </main>
 </body>
 </html>
