@@ -15,33 +15,96 @@
     <main>
         <h1 class="page-title">商品管理</h1>
 
-        <section class="admin-card">
-            <div class="card-header"><h3>商品一覧</h3></div>
-            <table>
-                <thead>
-                    <tr>
-                        <th>ID</th><th>商品名</th><th>価格</th><th>出品者</th><th>状態</th><th>操作</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr th:each="product : ${products}">
-                        <td th:text="${product.id}">1</td>
-                        <td th:text="${product.name}">商品名</td>
-                        <td th:text="${product.price + '円'}">1000円</td>
-                        <td th:text="${product.sellerName}">出品者</td>
-                        <td><span class="status-badge" th:classappend="${product.statusLabel == '公開中' ? 'status-active' : (product.statusLabel == '削除済' ? 'status-disabled' : '')}" th:text="${product.statusLabel}">公開中</span></td>
-                        <td>
-                            <div class="action-group">
-                                <button class="icon-btn edit-product-btn"
-                                        th:data-id="${product.id}" th:data-name="${product.name}" th:data-price="${product.price}">
-                                    <span class="material-symbols-outlined">edit</span>
-                                </button>
-                            </div>
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
-        </section>
+        <div th:if="${message}" class="flash-message" style="color: var(--accent-green); margin-bottom: 16px;" th:text="${message}"></div>
+        <div th:if="${error}" class="flash-error" style="color: var(--accent-red); margin-bottom: 16px;" th:text="${error}"></div>
+
+        <div class="admin-tabs">
+            <a th:href="@{/admin/products(tab='list')}" class="tab-btn" th:classappend="${activeTab == 'list'} ? 'active' : ''">一覧</a>
+            <a th:href="@{/admin/products(tab='blacklist')}" class="tab-btn" th:classappend="${activeTab == 'blacklist'} ? 'active' : ''">ブラックリスト</a>
+        </div>
+
+        <!-- 一覧タブ -->
+        <div class="tab-content" th:classappend="${activeTab == 'list'} ? 'active' : ''" id="tabList">
+            <section class="admin-card">
+                <div class="card-header"><h3>商品一覧</h3></div>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>ID</th><th>商品名</th><th>価格</th><th>出品者</th><th>状態</th><th>操作</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each="product : ${products}">
+                            <td th:text="${product.id}">1</td>
+                            <td th:text="${product.name}">商品名</td>
+                            <td th:text="${product.price + '円'}">1000円</td>
+                            <td th:text="${product.sellerName}">出品者</td>
+                            <td><span class="status-badge" th:classappend="${product.statusLabel == '公開中' ? 'status-active' : (product.statusLabel == '削除済' ? 'status-disabled' : '')}" th:text="${product.statusLabel}">公開中</span></td>
+                            <td>
+                                <div class="action-group">
+                                    <button class="icon-btn edit-product-btn"
+                                            th:data-id="${product.id}" th:data-name="${product.name}" th:data-price="${product.price}">
+                                        <span class="material-symbols-outlined">edit</span>
+                                    </button>
+                                    <form th:action="@{/admin/products/force-delete}" method="post" style="display:inline;">
+                                        <input type="hidden" name="id" th:value="${product.id}">
+                                        <button type="submit" class="icon-btn delete" title="強制削除"
+                                                onclick="return confirm('この商品を削除しますか？');">
+                                            <span class="material-symbols-outlined">block</span>
+                                        </button>
+                                    </form>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </section>
+        </div>
+
+        <!-- ブラックリストタブ -->
+        <div class="tab-content" th:classappend="${activeTab == 'blacklist'} ? 'active' : ''" id="tabBlacklist">
+            <section class="admin-card">
+                <div class="card-header"><h3>ブラックリスト（削除済商品）</h3></div>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>ID</th><th>商品名</th><th>価格</th><th>出品者</th><th>状態</th><th>操作</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each="product : ${blacklistProducts}">
+                            <td th:text="${product.id}">1</td>
+                            <td th:text="${product.name}">商品名</td>
+                            <td th:text="${product.price + '円'}">1000円</td>
+                            <td th:text="${product.sellerName}">出品者</td>
+                            <td><span class="status-tag status-restricted">削除済</span></td>
+                            <td>
+                                <div class="action-group">
+                                    <form th:action="@{/admin/products/blacklist/restore}" method="post" style="display:inline;">
+                                        <input type="hidden" name="id" th:value="${product.id}">
+                                        <button type="submit" class="btn-action btn-restore" title="復元">
+                                            <span class="material-symbols-outlined">settings_backup_restore</span>
+                                        </button>
+                                    </form>
+                                    <button type="button" class="btn-action btn-hard-delete delete-confirm-open"
+                                            th:data-form-action="@{/admin/products/blacklist/delete}"
+                                            th:data-target-id="${product.id}"
+                                            th:data-target-name="${product.name}"
+                                            title="永久削除">
+                                        <span class="material-symbols-outlined">delete_forever</span>
+                                    </button>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr th:if="${#lists.isEmpty(blacklistProducts)}">
+                            <td colspan="6" style="text-align:center; padding: 40px; color: var(--text-sub);">
+                                削除済の商品はありません。
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </section>
+        </div>
     </main>
 
     <div class="modal-backdrop" id="adminModalBackdrop"></div>
@@ -70,6 +133,24 @@
                 <button type="submit" class="btn-submit-post">保存する</button>
             </div>
         </form>
+    </div>
+
+    <div class="modal-backdrop" id="deleteConfirmModalBackdrop"></div>
+    <div id="deleteConfirmModal" class="modal-content">
+        <div class="modal-header">
+            <h3>永久削除の確認</h3>
+            <span class="material-symbols-outlined" id="deleteConfirmModalClose" style="cursor:pointer;">close</span>
+        </div>
+        <div class="modal-body">
+            <p><strong id="deleteConfirmTargetName">対象名</strong> を完全に削除しますか？</p>
+            <p style="color: var(--accent-red); font-size: 12px;">※この操作は取り消せません。データベースから抹消されます。</p>
+        </div>
+        <div class="modal-footer">
+            <form id="deleteConfirmForm" method="post">
+                <input type="hidden" name="id" id="deleteConfirmTargetId">
+                <button type="submit" class="btn-submit-post" style="background: var(--accent-red);">削除を確定する</button>
+            </form>
+        </div>
     </div>
 </body>
 </html>

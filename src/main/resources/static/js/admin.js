@@ -66,4 +66,40 @@ document.addEventListener("DOMContentLoaded", () => {
 
 	closeBtns.forEach(btn => btn.onclick = closeModal);
 	backdrop.onclick = closeModal;
+
+	// --- 永久削除確認モーダル ---
+	const deleteModal = document.getElementById("deleteConfirmModal");
+	const deleteBackdrop = document.getElementById("deleteConfirmModalBackdrop");
+	const deleteForm = document.getElementById("deleteConfirmForm");
+	const deleteTargetId = document.getElementById("deleteConfirmTargetId");
+	const deleteTargetName = document.getElementById("deleteConfirmTargetName");
+	const deleteModalClose = document.getElementById("deleteConfirmModalClose");
+
+	document.addEventListener("click", (e) => {
+		const btn = e.target.closest(".delete-confirm-open");
+		if (btn) {
+			e.preventDefault();
+			deleteForm.action = btn.dataset.formAction || "";
+			deleteTargetId.value = btn.dataset.targetId || "";
+			deleteTargetName.textContent = btn.dataset.targetName || "対象";
+			deleteModal.style.display = "block";
+			deleteBackdrop.style.display = "block";
+			setTimeout(() => {
+				deleteModal.classList.add("active");
+				deleteBackdrop.classList.add("active");
+			}, 10);
+		}
+	});
+
+	const closeDeleteModal = () => {
+		deleteModal.classList.remove("active");
+		deleteBackdrop.classList.remove("active");
+		setTimeout(() => {
+			deleteModal.style.display = "none";
+			deleteBackdrop.style.display = "none";
+		}, 300);
+	};
+
+	if (deleteModalClose) deleteModalClose.onclick = closeDeleteModal;
+	if (deleteBackdrop) deleteBackdrop.onclick = closeDeleteModal;
 });

@@ -9,4 +9,8 @@ import java.util.UUID;
  */
 public interface AdminItemWritePort {
 	boolean markDeleted(UUID itemId);
+
+	boolean restoreFromDeleted(UUID itemId);
+
+	boolean deletePermanently(UUID itemId);
 }

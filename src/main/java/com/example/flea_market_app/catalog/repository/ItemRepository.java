@@ -17,6 +17,10 @@ public interface ItemRepository extends JpaRepository<ItemEntity, UUID> {
 
 	long countByStatus(String status);
 
+	List<ItemEntity> findAllByStatus(String status);
+
+	List<ItemEntity> findAllByStatusNot(String status);
+
 	@Query("SELECT i FROM ItemEntity i WHERE i.status = :status")
 	Page<ItemEntity> findByStatus(@Param("status") String status, Pageable pageable);
 

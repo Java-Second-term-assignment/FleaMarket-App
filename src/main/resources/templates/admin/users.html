@@ -15,42 +15,97 @@
     <main>
         <h1 class="page-title">ユーザー管理</h1>
 
-        <section class="admin-card">
-            <div class="card-header"><h3>ユーザー一覧</h3></div>
-            <table>
-                <thead>
-                    <tr>
-                        <th>ID</th><th>ユーザー名</th><th>メール</th><th>状態</th><th>操作</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr th:each="user : ${users}">
-                        <td th:text="${user.id}">1</td>
-                        <td th:text="${user.username}">ユーザー名</td>
-                        <td th:text="${user.email}">mail@example.com</td>
-                        <td>
-                            <span class="status-badge"
-                                  th:classappend="${user.enabled ? 'status-active' : 'status-disabled'}"
-                                  th:text="${user.enabled ? '有効' : '無効'}">状態</span>
-                        </td>
-                        <td>
-                            <div class="action-group">
-                                <button class="icon-btn edit-user-btn"
-                                        th:data-id="${user.id}" th:data-name="${user.username}" th:data-email="${user.email}">
-                                    <span class="material-symbols-outlined">edit</span>
-                                </button>
-                                <form th:action="@{/admin/users/toggle}" method="post" style="display:inline;">
-                                    <input type="hidden" name="id" th:value="${user.id}">
-                                    <button type="submit" class="icon-btn disable">
-                                        <span class="material-symbols-outlined" th:text="${user.enabled ? 'block' : 'check_circle'}">block</span>
+        <div th:if="${message}" class="flash-message" style="color: var(--accent-green); margin-bottom: 16px;" th:text="${message}"></div>
+        <div th:if="${error}" class="flash-error" style="color: var(--accent-red); margin-bottom: 16px;" th:text="${error}"></div>
+
+        <div class="admin-tabs">
+            <a th:href="@{/admin/users(tab='list')}" class="tab-btn" th:classappend="${activeTab == 'list'} ? 'active' : ''">一覧</a>
+            <a th:href="@{/admin/users(tab='blacklist')}" class="tab-btn" th:classappend="${activeTab == 'blacklist'} ? 'active' : ''">ブラックリスト</a>
+        </div>
+
+        <!-- 一覧タブ -->
+        <div class="tab-content" th:classappend="${activeTab == 'list'} ? 'active' : ''" id="tabList">
+            <section class="admin-card">
+                <div class="card-header"><h3>ユーザー一覧</h3></div>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>ID</th><th>ユーザー名</th><th>メール</th><th>状態</th><th>操作</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each="user : ${users}">
+                            <td th:text="${user.id}">1</td>
+                            <td th:text="${user.username}">ユーザー名</td>
+                            <td th:text="${user.email}">mail@example.com</td>
+                            <td>
+                                <span class="status-badge"
+                                      th:classappend="${user.enabled ? 'status-active' : 'status-disabled'}"
+                                      th:text="${user.enabled ? '有効' : '無効'}">状態</span>
+                            </td>
+                            <td>
+                                <div class="action-group">
+                                    <button class="icon-btn edit-user-btn"
+                                            th:data-id="${user.id}" th:data-name="${user.username}" th:data-email="${user.email}">
+                                        <span class="material-symbols-outlined">edit</span>
                                     </button>
-                                </form>
-                            </div>
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
-        </section>
+                                    <form th:action="@{/admin/users/toggle}" method="post" style="display:inline;">
+                                        <input type="hidden" name="id" th:value="${user.id}">
+                                        <button type="submit" class="icon-btn disable">
+                                            <span class="material-symbols-outlined" th:text="${user.enabled ? 'block' : 'check_circle'}">block</span>
+                                        </button>
+                                    </form>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </section>
+        </div>
+
+        <!-- ブラックリストタブ -->
+        <div class="tab-content" th:classappend="${activeTab == 'blacklist'} ? 'active' : ''" id="tabBlacklist">
+            <section class="admin-card">
+                <div class="card-header"><h3>ブラックリスト（制限中ユーザー）</h3></div>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>ID</th><th>ユーザー名</th><th>メール</th><th>状態</th><th>操作</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each="user : ${blacklistUsers}">
+                            <td th:text="${user.id}">1</td>
+                            <td th:text="${user.username}">ユーザー名</td>
+                            <td th:text="${user.email}">mail@example.com</td>
+                            <td><span class="status-tag status-restricted">制限中</span></td>
+                            <td>
+                                <div class="action-group">
+                                    <form th:action="@{/admin/users/blacklist/restore}" method="post" style="display:inline;">
+                                        <input type="hidden" name="id" th:value="${user.id}">
+                                        <button type="submit" class="btn-action btn-restore" title="制限解除">
+                                            <span class="material-symbols-outlined">settings_backup_restore</span>
+                                        </button>
+                                    </form>
+                                    <button type="button" class="btn-action btn-hard-delete delete-confirm-open"
+                                            th:data-form-action="@{/admin/users/blacklist/delete}"
+                                            th:data-target-id="${user.id}"
+                                            th:data-target-name="${user.username}"
+                                            title="永久削除">
+                                        <span class="material-symbols-outlined">delete_forever</span>
+                                    </button>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr th:if="${#lists.isEmpty(blacklistUsers)}">
+                            <td colspan="5" style="text-align:center; padding: 40px; color: var(--text-sub);">
+                                制限中のユーザーはありません。
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </section>
+        </div>
     </main>
 
     <div class="modal-backdrop" id="adminModalBackdrop"></div>
@@ -79,6 +134,24 @@
                 <button type="submit" class="btn-submit-post">保存する</button>
             </div>
         </form>
+    </div>
+
+    <div class="modal-backdrop" id="deleteConfirmModalBackdrop"></div>
+    <div id="deleteConfirmModal" class="modal-content">
+        <div class="modal-header">
+            <h3>永久削除の確認</h3>
+            <span class="material-symbols-outlined" id="deleteConfirmModalClose" style="cursor:pointer;">close</span>
+        </div>
+        <div class="modal-body">
+            <p><strong id="deleteConfirmTargetName">対象名</strong> を完全に削除しますか？</p>
+            <p style="color: var(--accent-red); font-size: 12px;">※この操作は取り消せません。データベースから抹消されます。</p>
+        </div>
+        <div class="modal-footer">
+            <form id="deleteConfirmForm" method="post">
+                <input type="hidden" name="id" id="deleteConfirmTargetId">
+                <button type="submit" class="btn-submit-post" style="background: var(--accent-red);">削除を確定する</button>
+            </form>
+        </div>
     </div>
 </body>
 </html>

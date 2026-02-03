@@ -29,4 +29,19 @@ public class DbAdminItemWriteImpl implements AdminItemWritePort {
 	public boolean markDeleted(UUID itemId) {
 		return itemRepository.updateStatus(itemId, "DELETED") > 0;
 	}
+
+	@Override
+	@Transactional
+	public boolean restoreFromDeleted(UUID itemId) {
+		return itemRepository.updateStatus(itemId, "PUBLISHED") > 0;
+	}
+
+	@Override
+	@Transactional
+	public boolean deletePermanently(UUID itemId) {
+		if (!itemRepository.existsById(itemId))
+			return false;
+		itemRepository.deleteById(itemId);
+		return true;
+	}
 }

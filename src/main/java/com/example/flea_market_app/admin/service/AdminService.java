@@ -51,4 +51,26 @@ public class AdminService {
 				reason);
 	}
 
+	@Transactional
+	public void restoreItem(UUID currentUserId, UUID itemId) {
+		UUID adminAuthUserId = adminSecurityUtil.requireAdminAndGetAuthUserId(currentUserId);
+
+		boolean updated = adminItemWritePort.restoreFromDeleted(itemId);
+		if (!updated)
+			throw NotFoundBusinessException.of(ErrorCode.RESOURCE_NOT_FOUND);
+
+		auditLogService.record(adminAuthUserId, "RESTORE_ITEM", TargetType.ITEM.name(), itemId, "復元");
+	}
+
+	@Transactional
+	public void deleteItemPermanently(UUID currentUserId, UUID itemId) {
+		UUID adminAuthUserId = adminSecurityUtil.requireAdminAndGetAuthUserId(currentUserId);
+
+		boolean deleted = adminItemWritePort.deletePermanently(itemId);
+		if (!deleted)
+			throw NotFoundBusinessException.of(ErrorCode.RESOURCE_NOT_FOUND);
+
+		auditLogService.record(adminAuthUserId, "DELETE_ITEM_PERMANENTLY", TargetType.ITEM.name(), itemId, "永久削除");
+	}
+
 }

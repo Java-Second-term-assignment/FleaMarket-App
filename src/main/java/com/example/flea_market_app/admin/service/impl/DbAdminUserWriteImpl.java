@@ -26,7 +26,23 @@ public class DbAdminUserWriteImpl implements AdminUserWritePort {
 
 	@Override
 	@Transactional
+	public boolean toggleActive(UUID userId) {
+		return userRepository.toggleActive(userId) > 0;
+	}
+
+	@Override
+	@Transactional
 	public boolean setAdminByUserId(UUID userId, boolean admin) {
 		return authUserRepository.updateAdmin(userId, admin) > 0;
+	}
+
+	@Override
+	@Transactional
+	public boolean deleteUserPermanently(UUID userId) {
+		if (!userRepository.existsById(userId))
+			return false;
+		authUserRepository.findByUserId(userId).ifPresent(authUserRepository::delete);
+		userRepository.deleteById(userId);
+		return true;
 	}
 }
