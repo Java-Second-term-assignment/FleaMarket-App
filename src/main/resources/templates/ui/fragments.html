@@ -23,37 +23,47 @@
 				<div class="nav-links">
 
 					<!-- 一般画面のみ表示（管理者画面では非表示） -->
-					<a th:if="${!isAdminContext}" th:href="@{/products}">商品一覧</a>
-					<a th:if="${!isAdminContext}" th:href="@{/board}">掲示板一覧</a>
+					<div class="nav-item" th:if="${!isAdminContext}">
+						<a th:href="@{/products}">商品一覧</a>
+					</div>
+					<div class="nav-item" th:if="${!isAdminContext}">
+						<a th:href="@{/board}">掲示板一覧</a>
+					</div>
 
-					<!-- 未ログイン時 -->
-					<a sec:authorize="isAnonymous()" th:href="@{/login}">
-						ログイン
-					</a>
-					<a sec:authorize="isAnonymous()" th:href="@{/register}">
-						新規作成
-					</a>
-					<a sec:authorize="isAnonymous()" th:href="@{/admin/login}" class="nav-admin-link">
-						管理者はこちら
-					</a>
+					<!-- 未ログイン時（ログインのみ表示、新規登録は非表示） -->
+					<div class="nav-item" sec:authorize="isAnonymous()">
+						<a th:href="@{/login}">
+							ログイン
+						</a>
+					</div>
+					<div class="nav-item" sec:authorize="isAnonymous()">
+						<a th:href="@{/admin/login}" class="nav-admin-link">
+							管理者はこちら
+						</a>
+					</div>
 
 					<!-- ログイン時（管理者画面では非表示） -->
-					<a sec:authorize="isAuthenticated()" th:if="${!isAdminContext}" th:href="@{/user/settings}">
-						ユーザー設定
-					</a>
-					<span th:if="${!isAdminContext}" class="material-symbols-outlined">
-						notifications
-					</span>
+					<div class="nav-item" sec:authorize="isAuthenticated()" th:if="${!isAdminContext}">
+						<a th:href="@{/user/settings}">
+							ユーザー設定
+						</a>
+					</div>
 					<!-- 管理者画面用ナビ -->
-					<a sec:authorize="hasRole('ADMIN')" th:href="@{/admin/dashboard}">
-						管理画面
-					</a>
-					<a sec:authorize="hasRole('ADMIN')" th:href="@{/admin/products}">
-						商品管理
-					</a>
-					<a sec:authorize="hasRole('ADMIN')" th:href="@{/admin/users}">
-						ユーザー管理
-					</a>
+					<div class="nav-item" sec:authorize="hasRole('ADMIN')">
+						<a th:href="@{/admin/dashboard}">
+							管理画面
+						</a>
+					</div>
+					<div class="nav-item" sec:authorize="hasRole('ADMIN')">
+						<a th:href="@{/admin/products}">
+							商品管理
+						</a>
+					</div>
+					<div class="nav-item" sec:authorize="hasRole('ADMIN')">
+						<a th:href="@{/admin/users}">
+							ユーザー管理
+						</a>
+					</div>
 				</div>
 
 				<!-- ログイン時のみ（管理者画面では非表示） -->

@@ -59,8 +59,9 @@ body {
 
 .nav-links {
 	display: flex;
-	align-items: center;
-	gap: 2px;
+	align-items: stretch;
+	min-height: 36px;
+	gap: 0;
 }
 
 .nav-links a {
@@ -68,16 +69,16 @@ body {
 	text-decoration: none;
 	font-size: 14px;
 	position: relative;
-	margin-top: 10px;
-	padding: 0 6px 5px 6px;
-	display: inline-block;
+	padding: 0 6px;
+	display: flex;
+	align-items: center;
 	white-space: nowrap;
 }
 
 .nav-links a::after {
 	content: '';
 	position: absolute;
-	bottom: 0;
+	bottom: 6px;
 	left: 0;
 	width: 0;
 	height: 2px;
