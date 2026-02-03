@@ -100,6 +100,7 @@ public class SecurityConfig {
 
 	/**
 	 * Web用: フォーム認証、セッション、Thymeleafページ（一般ユーザーは /login）
+	 * 未認証時は商品一覧へリダイレクト（ログイン画面ではなく）
 	 */
 	@Bean
 	@Order(3)
@@ -111,9 +112,12 @@ public class SecurityConfig {
 				.sessionManagement(session -> session.sessionCreationPolicy(
 						org.springframework.security.config.http.SessionCreationPolicy.IF_REQUIRED))
 				.authorizeHttpRequests(auth -> authorizationConfig.configureWeb(auth))
+				.exceptionHandling(ex -> ex
+						.authenticationEntryPoint((request, response, authException) ->
+								response.sendRedirect(request.getContextPath() + "/products")))
 				.formLogin(form -> form
 						.loginPage("/login")
-						.defaultSuccessUrl("/", false)
+						.defaultSuccessUrl("/products", false)
 						.usernameParameter("email")
 						.passwordParameter("password"))
 				.logout(logout -> logout
