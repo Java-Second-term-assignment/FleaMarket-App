@@ -80,6 +80,12 @@ public enum ErrorCode {
 	/** 商品が公開中でない場合のエラーコード（お気に入り追加時など） */
 	ITEM_NOT_PUBLISHED("error.item_not_published", HttpStatus.BAD_REQUEST),
 
+	/** 外部サービスの一時障害（ネットワーク/タイムアウト等） */
+	EXTERNAL_SERVICE_TEMPORARY("error.external.temporary", HttpStatus.SERVICE_UNAVAILABLE),
+
+	/** 外部サービス呼び出し失敗（外部側エラー等） */
+	EXTERNAL_SERVICE_FAILED("error.external.failed", HttpStatus.BAD_GATEWAY),
+
 	/** リソースが見つからない場合の汎用的なエラーコード（未知のリソースタイプ用） */
 	RESOURCE_NOT_FOUND("error.not_found", HttpStatus.NOT_FOUND);
 
