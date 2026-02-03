@@ -5,13 +5,16 @@
 	<meta charset="UTF-8">
 	<title>Registration</title>
 
+	<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" />
 	<link rel="stylesheet" th:href="@{/css/variables.css}">
+	<link rel="stylesheet" th:href="@{/css/theme.css}">
+	<script th:src="@{/js/theme.js}"></script>
 	<!-- 認証系CSS -->
 	<link rel="stylesheet" th:href="@{/css/auth.css}">
 </head>
 
 <body>
-
+	<div class="theme-toggle-fixed" th:replace="~{ui/fragments :: theme_toggle_button}"></div>
 	<div class="container">
 		<div class="header">
 			<h1>Registration</h1>

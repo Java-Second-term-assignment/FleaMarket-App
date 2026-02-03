@@ -5,13 +5,16 @@
 	<meta charset="UTF-8">
 	<title>Login</title>
 
+	<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" />
 	<link rel="stylesheet" th:href="@{/css/variables.css}">
+	<link rel="stylesheet" th:href="@{/css/theme.css}">
+	<script th:src="@{/js/theme.js}"></script>
 	<!-- ログイン専用CSS -->
 	<link rel="stylesheet" th:href="@{/css/login.css}">
 </head>
 
 <body>
-
+	<div class="theme-toggle-fixed" th:replace="~{ui/fragments :: theme_toggle_button}"></div>
 	<div class="container">
 		<div class="header">
 			<h1>Login</h1>

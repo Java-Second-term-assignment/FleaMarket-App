@@ -8,10 +8,18 @@
 	<link rel="stylesheet" th:href="@{/css/variables.css}">
 	<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" />
 	<link rel="stylesheet" th:href="@{/css/common.css}">
+	<link rel="stylesheet" th:href="@{/css/theme.css}">
+	<script th:src="@{/js/theme.js}"></script>
 	<th:block th:replace="${links}" />
 </head>
 
 <body>
+	<th:block th:fragment="theme_toggle_button">
+		<button type="button" class="btn-theme-toggle" onclick="toggleTheme();" title="テーマ切替" aria-label="テーマ切替">
+			<span class="theme-icon theme-icon-dark" aria-hidden="true">dark_mode</span>
+			<span class="theme-icon theme-icon-light" aria-hidden="true">light_mode</span>
+		</button>
+	</th:block>
 	<div th:fragment="header" class="header">
 		<div class="header-inner">
 
@@ -72,6 +80,7 @@
 					出品する
 				</button>
 
+				<th:block th:replace="~{ui/fragments :: theme_toggle_button}"></th:block>
 				<a sec:authorize="isAuthenticated()" th:href="@{/logout}" class="btn-logout">
 					ログアウト
 				</a>
