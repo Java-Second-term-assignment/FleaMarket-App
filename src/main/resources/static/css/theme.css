@@ -139,3 +139,27 @@ html[data-theme="light"] .theme-icon-dark {
 .theme-toggle-fixed .btn-theme-toggle {
 	color: var(--text-main);
 }
+
+/* ライトモード時：商品詳細・商品一覧の表示を崩さない（文字色を明示） */
+html[data-theme="light"] .detail-card,
+html[data-theme="light"] .detail-card .product-title,
+html[data-theme="light"] .detail-card .long-text,
+html[data-theme="light"] .detail-card .category-tag,
+html[data-theme="light"] .detail-card .stock-info {
+	color: #1a1a1a;
+}
+html[data-theme="light"] .detail-card .price-display,
+html[data-theme="light"] .detail-card .price-row {
+	color: #1e2a3b;
+}
+html[data-theme="light"] .related-section .section-title {
+	color: #1a1a1a;
+}
+html[data-theme="light"] .review-title,
+html[data-theme="light"] .rating-score,
+html[data-theme="light"] .btn-all-reviews {
+	color: #1e2a3b;
+}
+html[data-theme="light"] .main-container .page-title {
+	color: #333333;
+}

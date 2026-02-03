@@ -386,13 +386,14 @@
 	white-space: nowrap;
 }
 
-/* カードのコンテナ（紫の点線枠） */
+/* カードのコンテナ（影付き） */
 .item-card {
 	width: 200px;
 	border-radius: 4px;
 	overflow: hidden;
 	font-family: sans-serif;
 	border: 1px solid #ccc;
+	box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12), 0 2px 4px rgba(0, 0, 0, 0.08);
 }
 
 a {
@@ -504,7 +505,7 @@ a {
 
 /* --- ホバー状態（下のカード） --- */
 .item-card {
-	transition: border 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+	transition: border 0.6s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.25s ease;
 }
 
 .item-card-content {
@@ -521,6 +522,7 @@ a {
 
 .item-card:hover {
 	border: 1px solid #4e6294;
+	box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12), 0 4px 8px rgba(0, 0, 0, 0.08);
 }
 
 .item-card:hover .item-card-content {
