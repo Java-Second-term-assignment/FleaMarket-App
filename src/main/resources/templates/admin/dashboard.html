@@ -70,15 +70,18 @@
         <script type="application/json" id="topViewedItemsJson" th:inline="text">[(${topViewedItemsJson})]</script>
         <script th:inline="javascript">
             (function() {
+                var isLight = document.documentElement.getAttribute('data-theme') === 'light';
+                var textColor = isLight ? '#333333' : '#cccccc';
+                var gridColor = isLight ? '#e0e0e0' : '#444';
                 var chartDefaults = {
                     responsive: true,
                     maintainAspectRatio: true,
                     scales: {
-                        x: { ticks: { color: '#cccccc' }, grid: { color: '#444' } },
-                        y: { ticks: { color: '#cccccc' }, grid: { color: '#444' } }
+                        x: { ticks: { color: textColor }, grid: { color: gridColor } },
+                        y: { ticks: { color: textColor }, grid: { color: gridColor } }
                     },
                     plugins: {
-                        legend: { labels: { color: '#cccccc' } }
+                        legend: { labels: { color: textColor } }
                     }
                 };
                 function parseJson(id) {
@@ -96,14 +99,14 @@
                                 datasets: [{
                                     data: itemStatusCounts.map(function(d) { return d.count; }),
                                     backgroundColor: ['#007bff', '#6c757d', '#dc3545', '#ffc107', '#28a745'].slice(0, itemStatusCounts.length),
-                                    borderColor: '#1e2a3b',
+                                    borderColor: isLight ? '#ffffff' : '#1e2a3b',
                                     borderWidth: 2
                                 }]
                             },
                             options: {
                                 responsive: true,
                                 maintainAspectRatio: true,
-                                plugins: { legend: { position: 'bottom', labels: { color: '#cccccc' } } }
+                                plugins: { legend: { position: 'bottom', labels: { color: textColor } } }
                             }
                         });
                     }
@@ -174,8 +177,8 @@
                                 responsive: true,
                                 maintainAspectRatio: true,
                                 scales: {
-                                    x: { ticks: { color: '#cccccc' }, grid: { color: '#444' } },
-                                    y: { ticks: { color: '#cccccc', font: { size: 11 } }, grid: { color: '#444' } }
+                                    x: { ticks: { color: textColor }, grid: { color: gridColor } },
+                                    y: { ticks: { color: textColor, font: { size: 11 } }, grid: { color: gridColor } }
                                 },
                                 plugins: { legend: { display: false } }
                             }
