@@ -10,7 +10,13 @@ import java.util.UUID;
 public interface AdminItemWritePort {
 	boolean markDeleted(UUID itemId);
 
+	boolean markSuspended(UUID itemId);
+
 	boolean restoreFromDeleted(UUID itemId);
+
+	boolean restoreToPublished(UUID itemId);
+
+	boolean updateNameAndPrice(UUID itemId, String name, Long priceAmount);
 
 	boolean deletePermanently(UUID itemId);
 }

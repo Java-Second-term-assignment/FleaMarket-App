@@ -39,13 +39,30 @@
                             <td th:text="${product.name}">商品名</td>
                             <td th:text="${product.price + '円'}">1000円</td>
                             <td th:text="${product.sellerName}">出品者</td>
-                            <td><span class="status-badge" th:classappend="${product.statusLabel == '公開中' ? 'status-active' : (product.statusLabel == '削除済' ? 'status-disabled' : '')}" th:text="${product.statusLabel}">公開中</span></td>
+                            <td><span class="status-badge" th:classappend="${product.statusLabel == '公開中' ? 'status-active' : (product.statusLabel == '出品停止' ? 'status-suspended' : (product.statusLabel == '削除済' ? 'status-disabled' : ''))}" th:text="${product.statusLabel}">公開中</span></td>
                             <td>
                                 <div class="action-group">
                                     <button class="icon-btn edit-product-btn"
                                             th:data-id="${product.id}" th:data-name="${product.name}" th:data-price="${product.price}">
                                         <span class="material-symbols-outlined">edit</span>
                                     </button>
+                                    <th:block th:if="${product.statusLabel == '公開中'}">
+                                        <form th:action="@{/admin/products/suspend}" method="post" style="display:inline;">
+                                            <input type="hidden" name="id" th:value="${product.id}">
+                                            <button type="submit" class="icon-btn" title="出品停止"
+                                                    onclick="return confirm('この商品を出品停止しますか？');">
+                                                <span class="material-symbols-outlined">pause_circle</span>
+                                            </button>
+                                        </form>
+                                    </th:block>
+                                    <th:block th:if="${product.statusLabel == '出品停止'}">
+                                        <form th:action="@{/admin/products/unsuspend}" method="post" style="display:inline;">
+                                            <input type="hidden" name="id" th:value="${product.id}">
+                                            <button type="submit" class="icon-btn" title="停止解除">
+                                                <span class="material-symbols-outlined">play_circle</span>
+                                            </button>
+                                        </form>
+                                    </th:block>
                                     <form th:action="@{/admin/products/force-delete}" method="post" style="display:inline;">
                                         <input type="hidden" name="id" th:value="${product.id}">
                                         <button type="submit" class="icon-btn delete" title="強制削除"

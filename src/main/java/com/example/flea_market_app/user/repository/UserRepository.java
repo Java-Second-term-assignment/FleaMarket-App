@@ -25,6 +25,14 @@ public interface UserRepository extends JpaRepository<UserEntity, UUID> {
 	@Modifying
 	@Query("""
 			    UPDATE UserEntity u
+			       SET u.displayName = :displayName
+			     WHERE u.id = :userId
+			""")
+	int updateDisplayName(@Param("userId") UUID userId, @Param("displayName") String displayName);
+
+	@Modifying
+	@Query("""
+			    UPDATE UserEntity u
 			       SET u.active = :active
 			     WHERE u.id = :userId
 			""")

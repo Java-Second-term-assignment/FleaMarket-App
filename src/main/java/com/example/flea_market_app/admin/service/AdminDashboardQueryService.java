@@ -48,7 +48,8 @@ public class AdminDashboardQueryService {
 				.map(u -> {
 					AuthUserEntity auth = authByUserId.get(u.getId());
 					String email = auth != null ? auth.getEmail() : "—";
-					return new AdminUserRowDto(u.getId(), u.getDisplayName(), email, u.isActive());
+					boolean admin = auth != null && auth.isAdmin();
+					return new AdminUserRowDto(u.getId(), u.getDisplayName(), email, u.isActive(), admin);
 				})
 				.toList();
 	}
@@ -86,7 +87,8 @@ public class AdminDashboardQueryService {
 				.map(u -> {
 					AuthUserEntity auth = authByUserId.get(u.getId());
 					String email = auth != null ? auth.getEmail() : "—";
-					return new AdminUserRowDto(u.getId(), u.getDisplayName(), email, false);
+					boolean admin = auth != null && auth.isAdmin();
+					return new AdminUserRowDto(u.getId(), u.getDisplayName(), email, false, admin);
 				})
 				.toList();
 	}
@@ -118,6 +120,9 @@ public class AdminDashboardQueryService {
 		return switch (status) {
 			case "ACTIVE", "PUBLISHED" -> "公開中";
 			case "DRAFT" -> "下書き";
+			case "SUSPENDED" -> "出品停止";
+			case "IN_TRADE" -> "取引中";
+			case "SOLD" -> "売却済";
 			case "DELETED" -> "削除済";
 			default -> status;
 		};

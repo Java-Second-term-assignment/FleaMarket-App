@@ -102,4 +102,47 @@ document.addEventListener("DOMContentLoaded", () => {
 
 	if (deleteModalClose) deleteModalClose.onclick = closeDeleteModal;
 	if (deleteBackdrop) deleteBackdrop.onclick = closeDeleteModal;
+
+	// --- 凍結確認モーダル ---
+	const freezeModal = document.getElementById("freezeModal");
+	const freezeBackdrop = document.getElementById("freezeModalBackdrop");
+	const freezeForm = document.getElementById("freezeForm");
+	const freezeUserId = document.getElementById("freezeUserId");
+	const freezeUserName = document.getElementById("freezeUserName");
+	const freezeModalClose = document.getElementById("freezeModalClose");
+
+	if (freezeModal) {
+		document.addEventListener("click", (e) => {
+			const btn = e.target.closest(".freeze-open-btn");
+			if (btn) {
+				e.preventDefault();
+				freezeForm.action = btn.dataset.formAction || "/admin/users/freeze";
+				freezeUserId.value = btn.dataset.userId || "";
+				freezeUserName.textContent = btn.dataset.userName || "ユーザー";
+				const modalTitle = document.getElementById("freezeModalTitle");
+				if (modalTitle) modalTitle.textContent = btn.dataset.modalTitle || "ユーザー凍結の確認";
+				const submitBtn = document.getElementById("freezeSubmitBtn");
+				if (submitBtn) submitBtn.textContent = btn.dataset.submitLabel || "凍結する";
+				document.getElementById("freezeReason").value = "";
+				freezeModal.style.display = "flex";
+				freezeBackdrop.style.display = "block";
+				setTimeout(() => {
+					freezeModal.classList.add("active");
+					freezeBackdrop.classList.add("active");
+				}, 10);
+			}
+		});
+
+		const closeFreezeModal = () => {
+			freezeModal.classList.remove("active");
+			freezeBackdrop.classList.remove("active");
+			setTimeout(() => {
+				freezeModal.style.display = "none";
+				freezeBackdrop.style.display = "none";
+			}, 300);
+		};
+
+		if (freezeModalClose) freezeModalClose.onclick = closeFreezeModal;
+		if (freezeBackdrop) freezeBackdrop.onclick = closeFreezeModal;
+	}
 });

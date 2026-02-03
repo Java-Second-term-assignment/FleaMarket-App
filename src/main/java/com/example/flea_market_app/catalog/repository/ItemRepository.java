@@ -49,6 +49,17 @@ public interface ItemRepository extends JpaRepository<ItemEntity, UUID> {
 	@Modifying
 	@Query("""
 			    UPDATE ItemEntity i
+			       SET i.name = :name, i.priceAmount = :priceAmount
+			     WHERE i.id = :itemId
+			""")
+	int updateNameAndPrice(
+			@Param("itemId") UUID itemId,
+			@Param("name") String name,
+			@Param("priceAmount") Long priceAmount);
+
+	@Modifying
+	@Query("""
+			    UPDATE ItemEntity i
 			       SET i.status = :status
 			     WHERE i.id = :itemId
 			""")

@@ -38,6 +38,14 @@ public class DbAdminUserWriteImpl implements AdminUserWritePort {
 
 	@Override
 	@Transactional
+	public boolean updateUserProfile(UUID userId, String displayName, String email) {
+		int u = userRepository.updateDisplayName(userId, displayName);
+		int a = authUserRepository.updateEmailByUserId(userId, email);
+		return u > 0 && a > 0;
+	}
+
+	@Override
+	@Transactional
 	public boolean deleteUserPermanently(UUID userId) {
 		if (!userRepository.existsById(userId))
 			return false;

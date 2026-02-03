@@ -66,6 +66,52 @@ public class AdminPageController {
 		return "admin/users";
 	}
 
+	@PostMapping("/admin/users/admin-role")
+	public String usersAdminRole(
+			@RequestParam("id") UUID userId,
+			@RequestParam("makeAdmin") boolean makeAdmin,
+			@RequestParam(value = "reason", required = false, defaultValue = "管理画面から変更") String reason,
+			RedirectAttributes ra) {
+		UUID currentUserId = SecurityUtil.getCurrentUserId();
+		adminUserService.changeAdminRole(currentUserId, userId, makeAdmin, reason);
+		ra.addFlashAttribute("message", makeAdmin ? "管理者権限を付与しました" : "管理者権限を剥奪しました");
+		return "redirect:/admin/users?tab=list";
+	}
+
+	@PostMapping("/admin/users/update")
+	public String usersUpdate(
+			@RequestParam("id") UUID userId,
+			@RequestParam("name") String displayName,
+			@RequestParam("email") String email,
+			RedirectAttributes ra) {
+		UUID currentUserId = SecurityUtil.getCurrentUserId();
+		adminUserService.updateUserProfile(currentUserId, userId, displayName, email);
+		ra.addFlashAttribute("message", "ユーザー情報を更新しました");
+		return "redirect:/admin/users?tab=list";
+	}
+
+	@PostMapping("/admin/users/freeze")
+	public String usersFreeze(
+			@RequestParam("id") UUID userId,
+			@RequestParam("reason") String reason,
+			RedirectAttributes ra) {
+		UUID currentUserId = SecurityUtil.getCurrentUserId();
+		adminUserService.freezeUser(currentUserId, userId, reason);
+		ra.addFlashAttribute("message", "ユーザーを凍結しました");
+		return "redirect:/admin/users?tab=list";
+	}
+
+	@PostMapping("/admin/users/force-withdraw")
+	public String usersForceWithdraw(
+			@RequestParam("id") UUID userId,
+			@RequestParam("reason") String reason,
+			RedirectAttributes ra) {
+		UUID currentUserId = SecurityUtil.getCurrentUserId();
+		adminUserService.forceWithdraw(currentUserId, userId, reason);
+		ra.addFlashAttribute("message", "ユーザーを強制退会させました");
+		return "redirect:/admin/users?tab=list";
+	}
+
 	@PostMapping("/admin/users/toggle")
 	public String usersToggle(@RequestParam("id") UUID userId, RedirectAttributes ra) {
 		UUID currentUserId = SecurityUtil.getCurrentUserId();
@@ -102,6 +148,34 @@ public class AdminPageController {
 		model.addAttribute("activeTab", "list".equals(tab) ? "list" : "blacklist");
 		log.info("Admin products list displayed, tab={}", tab);
 		return "admin/products";
+	}
+
+	@PostMapping("/admin/products/update")
+	public String productsUpdate(
+			@RequestParam("id") UUID itemId,
+			@RequestParam("name") String name,
+			@RequestParam("price") long price,
+			RedirectAttributes ra) {
+		UUID currentUserId = SecurityUtil.getCurrentUserId();
+		adminService.updateItem(currentUserId, itemId, name, price);
+		ra.addFlashAttribute("message", "商品情報を更新しました");
+		return "redirect:/admin/products?tab=list";
+	}
+
+	@PostMapping("/admin/products/suspend")
+	public String productsSuspend(@RequestParam("id") UUID itemId, RedirectAttributes ra) {
+		UUID currentUserId = SecurityUtil.getCurrentUserId();
+		adminService.suspendItem(currentUserId, itemId);
+		ra.addFlashAttribute("message", "商品を出品停止しました");
+		return "redirect:/admin/products?tab=list";
+	}
+
+	@PostMapping("/admin/products/unsuspend")
+	public String productsUnsuspend(@RequestParam("id") UUID itemId, RedirectAttributes ra) {
+		UUID currentUserId = SecurityUtil.getCurrentUserId();
+		adminService.unsuspendItem(currentUserId, itemId);
+		ra.addFlashAttribute("message", "出品停止を解除しました");
+		return "redirect:/admin/products?tab=list";
 	}
 
 	@PostMapping("/admin/products/force-delete")

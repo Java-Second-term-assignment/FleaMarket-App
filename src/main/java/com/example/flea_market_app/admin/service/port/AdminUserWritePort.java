@@ -9,5 +9,7 @@ public interface AdminUserWritePort {
 
 	boolean setAdminByUserId(UUID userId, boolean admin);
 
+	boolean updateUserProfile(UUID userId, String displayName, String email);
+
 	boolean deleteUserPermanently(UUID userId);
 }

@@ -32,8 +32,26 @@ public class DbAdminItemWriteImpl implements AdminItemWritePort {
 
 	@Override
 	@Transactional
+	public boolean markSuspended(UUID itemId) {
+		return itemRepository.updateStatus(itemId, "SUSPENDED") > 0;
+	}
+
+	@Override
+	@Transactional
 	public boolean restoreFromDeleted(UUID itemId) {
 		return itemRepository.updateStatus(itemId, "PUBLISHED") > 0;
+	}
+
+	@Override
+	@Transactional
+	public boolean restoreToPublished(UUID itemId) {
+		return itemRepository.updateStatus(itemId, "PUBLISHED") > 0;
+	}
+
+	@Override
+	@Transactional
+	public boolean updateNameAndPrice(UUID itemId, String name, Long priceAmount) {
+		return itemRepository.updateNameAndPrice(itemId, name, priceAmount) > 0;
 	}
 
 	@Override

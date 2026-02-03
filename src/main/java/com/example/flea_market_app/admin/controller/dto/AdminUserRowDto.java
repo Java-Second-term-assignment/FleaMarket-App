@@ -20,4 +20,5 @@ public class AdminUserRowDto {
 	private String username;
 	private String email;
 	private boolean enabled;
+	private boolean admin;
 }

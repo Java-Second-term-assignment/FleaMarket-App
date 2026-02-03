@@ -79,6 +79,17 @@ public class AdminUserService {
 	}
 
 	@Transactional
+	public void updateUserProfile(UUID currentUserId, UUID targetUserId, String displayName, String email) {
+		UUID adminAuthUserId = adminSecurityUtil.requireAdminAndGetAuthUserId(currentUserId);
+
+		boolean updated = adminUserWritePort.updateUserProfile(targetUserId, displayName, email);
+		if (!updated)
+			throw NotFoundBusinessException.of(ErrorCode.RESOURCE_NOT_FOUND);
+
+		auditLogService.record(adminAuthUserId, "UPDATE_USER_PROFILE", TargetType.USER.name(), targetUserId, null);
+	}
+
+	@Transactional
 	public void changeAdminRole(UUID currentUserId, UUID targetUserId, boolean makeAdmin, String reason) {
 		UUID adminAuthUserId = adminSecurityUtil.requireAdminAndGetAuthUserId(currentUserId);
 

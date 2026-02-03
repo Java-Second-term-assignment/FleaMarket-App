@@ -28,6 +28,14 @@ public interface AuthUserRepository extends JpaRepository<AuthUserEntity, UUID> 
 			@Param("userId") UUID userId,
 			@Param("admin") boolean admin);
 
+	@Modifying
+	@Query("""
+			    UPDATE AuthUserEntity a
+			       SET a.email = :email
+			     WHERE a.userId = :userId
+			""")
+	int updateEmailByUserId(@Param("userId") UUID userId, @Param("email") String email);
+
 	/** 指定日以降の日別登録数（グラフ用） */
 	@Query(value = """
 			SELECT (created_at AT TIME ZONE 'UTC')::date AS day, COUNT(*) FROM auth_users

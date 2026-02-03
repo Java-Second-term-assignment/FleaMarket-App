@@ -30,7 +30,7 @@
                 <table>
                     <thead>
                         <tr>
-                            <th>ID</th><th>ユーザー名</th><th>メール</th><th>状態</th><th>操作</th>
+                            <th>ID</th><th>ユーザー名</th><th>メール</th><th>状態</th><th>管理者</th><th>操作</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -44,15 +44,47 @@
                                       th:text="${user.enabled ? '有効' : '無効'}">状態</span>
                             </td>
                             <td>
+                                <span class="status-badge" th:classappend="${user.admin ? 'status-active' : 'status-disabled'}"
+                                      th:text="${user.admin ? '管理者' : '一般'}">一般</span>
+                                <form th:action="@{/admin/users/admin-role}" method="post" style="display:inline; margin-left:6px;">
+                                    <input type="hidden" name="id" th:value="${user.id}">
+                                    <input type="hidden" name="makeAdmin" th:value="${!user.admin}">
+                                    <input type="hidden" name="reason" value="管理画面から変更">
+                                    <button type="submit" class="icon-btn" th:title="${user.admin ? '管理者権限を剥奪' : '管理者権限を付与'}">
+                                        <span class="material-symbols-outlined">admin_panel_settings</span>
+                                    </button>
+                                </form>
+                            </td>
+                            <td>
                                 <div class="action-group">
                                     <button class="icon-btn edit-user-btn"
                                             th:data-id="${user.id}" th:data-name="${user.username}" th:data-email="${user.email}">
                                         <span class="material-symbols-outlined">edit</span>
                                     </button>
-                                    <form th:action="@{/admin/users/toggle}" method="post" style="display:inline;">
+                                    <th:block th:if="${user.enabled}">
+                                        <button type="button" class="icon-btn disable freeze-open-btn"
+                                                th:data-user-id="${user.id}"
+                                                th:data-user-name="${user.username}"
+                                                th:data-form-action="@{/admin/users/freeze}"
+                                                th:data-modal-title="ユーザー凍結の確認"
+                                                th:data-submit-label="凍結する"
+                                                title="凍結">
+                                            <span class="material-symbols-outlined">block</span>
+                                        </button>
+                                        <button type="button" class="icon-btn freeze-open-btn"
+                                                th:data-user-id="${user.id}"
+                                                th:data-user-name="${user.username}"
+                                                th:data-form-action="@{/admin/users/force-withdraw}"
+                                                th:data-modal-title="強制退会の確認"
+                                                th:data-submit-label="強制退会させる"
+                                                title="強制退会">
+                                            <span class="material-symbols-outlined">person_off</span>
+                                        </button>
+                                    </th:block>
+                                    <form th:if="${!user.enabled}" th:action="@{/admin/users/blacklist/restore}" method="post" style="display:inline;">
                                         <input type="hidden" name="id" th:value="${user.id}">
-                                        <button type="submit" class="icon-btn disable">
-                                            <span class="material-symbols-outlined" th:text="${user.enabled ? 'block' : 'check_circle'}">block</span>
+                                        <button type="submit" class="icon-btn" title="有効化">
+                                            <span class="material-symbols-outlined">check_circle</span>
                                         </button>
                                     </form>
                                 </div>
@@ -70,7 +102,7 @@
                 <table>
                     <thead>
                         <tr>
-                            <th>ID</th><th>ユーザー名</th><th>メール</th><th>状態</th><th>操作</th>
+                            <th>ID</th><th>ユーザー名</th><th>メール</th><th>状態</th><th>管理者</th><th>操作</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -79,6 +111,10 @@
                             <td th:text="${user.username}">ユーザー名</td>
                             <td th:text="${user.email}">mail@example.com</td>
                             <td><span class="status-tag status-restricted">制限中</span></td>
+                            <td>
+                                <span class="status-badge" th:classappend="${user.admin ? 'status-active' : 'status-disabled'}"
+                                      th:text="${user.admin ? '管理者' : '一般'}">一般</span>
+                            </td>
                             <td>
                                 <div class="action-group">
                                     <form th:action="@{/admin/users/blacklist/restore}" method="post" style="display:inline;">
@@ -98,7 +134,7 @@
                             </td>
                         </tr>
                         <tr th:if="${#lists.isEmpty(blacklistUsers)}">
-                            <td colspan="5" style="text-align:center; padding: 40px; color: var(--text-sub);">
+                            <td colspan="6" style="text-align:center; padding: 40px; color: var(--text-sub);">
                                 制限中のユーザーはありません。
                             </td>
                         </tr>
@@ -132,6 +168,27 @@
             </div>
             <div class="modal-footer">
                 <button type="submit" class="btn-submit-post">保存する</button>
+            </div>
+        </form>
+    </div>
+
+    <div class="modal-backdrop" id="freezeModalBackdrop"></div>
+    <div id="freezeModal" class="modal-content">
+        <div class="modal-header">
+            <h3 id="freezeModalTitle">ユーザー凍結の確認</h3>
+            <span class="material-symbols-outlined" id="freezeModalClose" style="cursor:pointer;">close</span>
+        </div>
+        <form id="freezeForm" method="post">
+            <div class="modal-body">
+                <p><strong id="freezeUserName">ユーザー名</strong> の操作を実行しますか？</p>
+                <div class="form-group">
+                    <label for="freezeReason">理由（必須）</label>
+                    <input type="text" name="reason" id="freezeReason" required placeholder="理由を入力">
+                </div>
+                <input type="hidden" name="id" id="freezeUserId">
+            </div>
+            <div class="modal-footer">
+                <button type="submit" class="btn-submit-post" id="freezeSubmitBtn" style="background: var(--accent-orange);">凍結する</button>
             </div>
         </form>
     </div>
