@@ -8,6 +8,7 @@ a {
 
 body {
 	background-color: var(--bg-dark);
+	color: var(--text-main);
 	margin: 0;
 	font-family: "Helvetica Neue", Arial, sans-serif;
 	padding-top: 60px;

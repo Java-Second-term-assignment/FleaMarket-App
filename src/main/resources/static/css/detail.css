@@ -11,7 +11,7 @@
 	display: flex;
 	flex-direction: column;
 	overflow: hidden;
-	background: #fff;
+	background: var(--detail-card-bg);
 	border-radius: 24px;
 	box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
 	padding: 40px;
@@ -106,7 +106,7 @@
 	font-size: 26px;
 	line-height: 1.4;
 	margin: 0 0 15px 0;
-	color: #1e2a3b;
+	color: var(--text-heading);
 }
 
 .price-row {
@@ -133,8 +133,7 @@
 
 .price-display {
 	font-size: 48px;
-	color: #e8efff;
-	/* 画像のような薄い青色 */
+	color: var(--text-sub);
 	margin-bottom: 10px;
 	letter-spacing: 1px;
 	font-weight: 300;
@@ -142,12 +141,12 @@
 
 .category-tag {
 	display: inline-block;
-	border: 1px solid #1e2a3b;
-	color: #4e6294;
+	border: 1px solid rgba(255, 255, 255, 0.35);
+	color: var(--text-heading);
 	padding: 4px 15px;
 	border-radius: 20px;
 	font-size: 14px;
-	background: #eef2ff;
+	background: rgba(255, 255, 255, 0.1);
 	margin-bottom: 0;
 }
 
@@ -163,6 +162,7 @@
 
 .stock-info {
 	font-size: 18px;
+	color: var(--text-heading);
 }
 
 .action-row {
@@ -173,7 +173,7 @@
 
 /* お気に入り・旗アイコンの四角ボタン */
 .icon-btn {
-	background: #fff;
+	background: rgba(255, 255, 255, 0.12);
 	border: none;
 	width: 55px;
 	height: 45px;
@@ -192,8 +192,7 @@
 .icon-btn svg {
 	width: 24px;
 	height: 24px;
-	stroke: #5a6fa5;
-	/* アイコンの色 */
+	stroke: var(--text-sub);
 	fill: none;
 	stroke-width: 1.5;
 }
@@ -229,7 +228,7 @@
 }
 
 .long-text {
-	color: #666;
+	color: var(--text-sub);
 	line-height: 1.8;
 }
 
@@ -251,8 +250,8 @@
 }
 
 .btn-gray {
-	background-color: #e0e4e8;
-	color: #4a5568;
+	background-color: var(--btn-gray-bg);
+	color: var(--btn-gray-color);
 	border: none;
 	padding: 16px;
 	border-radius: 30px;
@@ -548,10 +547,26 @@ a {
 	border-top: 1px solid var(--border-color);
 }
 
+.review-login-message {
+	color: var(--text-main);
+	font-size: 15px;
+	margin: 0 0 20px 0;
+}
+
+.review-login-message a {
+	color: var(--link-blue);
+	text-decoration: underline;
+	text-underline-offset: 3px;
+}
+
+.review-login-message a:hover {
+	opacity: 0.9;
+}
+
 .review-title {
 	font-size: 18px;
 	margin-bottom: 15px;
-	color: var(--header-bg);
+	color: var(--text-heading);
 }
 
 .rating-summary {
@@ -564,7 +579,7 @@ a {
 .rating-score {
 	font-size: 28px;
 	font-weight: bold;
-	color: var(--accent-blue);
+	color: var(--text-sub);
 }
 
 .stars {
@@ -574,14 +589,14 @@ a {
 }
 
 .review-count {
-	color: #888;
+	color: var(--text-muted);
 	font-size: 14px;
 }
 
 .review-item {
 	margin-bottom: 20px;
 	padding-bottom: 15px;
-	border-bottom: 1px solid #f0f0f0;
+	border-bottom: 1px solid var(--border-light);
 }
 
 .review-item:last-child {
@@ -592,7 +607,7 @@ a {
 	display: flex;
 	justify-content: space-between;
 	font-size: 13px;
-	color: #666;
+	color: var(--text-sub);
 	margin-bottom: 5px;
 }
 
@@ -606,7 +621,7 @@ a {
 	font-size: 14px;
 	line-height: 1.5;
 	margin: 0;
-	color: #444;
+	color: var(--text-sub);
 }
 
 .btn-all-reviews {
@@ -614,8 +629,8 @@ a {
 	background: none;
 	border: 1px solid var(--border-color);
 	padding: 10px;
-	border-radius: var(--radius-sm);
-	color: var(--accent-blue);
+	border-radius: 4px;
+	color: var(--text-heading);
 	cursor: pointer;
 	font-size: 14px;
 	margin-top: 10px;
@@ -623,7 +638,7 @@ a {
 }
 
 .btn-all-reviews:hover {
-	background: #f8f9fa;
+	background: var(--btn-all-reviews-hover-bg);
 }
 
 .page-title {

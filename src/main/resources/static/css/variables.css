@@ -21,6 +21,8 @@
 	--card-bg: #ffffff;
 	--card-bg-dark: #1e2a3b;
 	--card-bg-darker: #2a2a2a;
+	/* 商品詳細のメインカード（ダーク時はログインシートと同じグレー） */
+	--detail-card-bg: var(--bg-container);
 
 	/* テキスト */
 	--text-main: #ffffff;
@@ -68,4 +70,9 @@
 	--link-blue: #8ab4f8;
 	--border-white-60: rgba(255, 255, 255, 0.6);
 	--text-error: #f08080;
+
+	/* 商品詳細：ダークテーマ用 */
+	--btn-gray-bg: rgba(255, 255, 255, 0.12);
+	--btn-gray-color: #e8e8e8;
+	--btn-all-reviews-hover-bg: rgba(255, 255, 255, 0.08);
 }

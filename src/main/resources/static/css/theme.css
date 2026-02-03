@@ -15,6 +15,7 @@ html[data-theme="light"] {
 	--bg-dark: #ffffff;
 	--bg-container: #f0f0f0;
 	--bg-panel: #f5f5f5;
+	--detail-card-bg: #ffffff;
 	--text-main: #1a1a1a;
 	--text-sub: #555555;
 	--text-heading: #1a1a1a;
@@ -140,13 +141,30 @@ html[data-theme="light"] .theme-icon-dark {
 	color: var(--text-main);
 }
 
-/* ライトモード時：商品詳細・商品一覧の表示を崩さない（文字色を明示） */
+/* ライトモード時：商品詳細・商品一覧の表示を崩さない（文字色・背景を明示） */
 html[data-theme="light"] .detail-card,
 html[data-theme="light"] .detail-card .product-title,
 html[data-theme="light"] .detail-card .long-text,
-html[data-theme="light"] .detail-card .category-tag,
 html[data-theme="light"] .detail-card .stock-info {
 	color: #1a1a1a;
+}
+html[data-theme="light"] .detail-card .category-tag {
+	background: #eef2ff;
+	border-color: #1e2a3b;
+	color: #4e6294;
+}
+html[data-theme="light"] .detail-card .btn-gray {
+	background: #e0e4e8;
+	color: #4a5568;
+}
+html[data-theme="light"] .detail-card .btn-all-reviews:hover {
+	background: #f8f9fa;
+}
+html[data-theme="light"] .detail-card .icon-btn {
+	background: #fff;
+}
+html[data-theme="light"] .detail-card .icon-btn svg {
+	stroke: #5a6fa5;
 }
 html[data-theme="light"] .detail-card .price-display,
 html[data-theme="light"] .detail-card .price-row {
@@ -159,6 +177,12 @@ html[data-theme="light"] .review-title,
 html[data-theme="light"] .rating-score,
 html[data-theme="light"] .btn-all-reviews {
 	color: #1e2a3b;
+}
+html[data-theme="light"] .review-login-message {
+	color: #1a1a1a;
+}
+html[data-theme="light"] .review-login-message a {
+	color: #365292;
 }
 html[data-theme="light"] .main-container .page-title {
 	color: #333333;
