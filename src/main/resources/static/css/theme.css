@@ -196,8 +196,7 @@ html[data-theme="light"] .ranking-title {
 	color: #333333;
 }
 
-/* ライトモード：管理者ダッシュボードの統計カード・グラフカード */
-html[data-theme="light"] .admin-stat-card,
+/* ライトモード：管理者ダッシュボードのグラフカード */
 html[data-theme="light"] .admin-chart-card {
 	background-color: #f0f0f0;
 	border-color: #e0e0e0;
@@ -211,14 +210,11 @@ html[data-theme="light"] .admin-card {
 	background-color: #f0f0f0;
 	border-color: #e0e0e0;
 }
-html[data-theme="light"] .admin-stat-value,
-html[data-theme="light"] .admin-stat-label,
-html[data-theme="light"] .admin-chart-title,
 html[data-theme="light"] .admin-section-title {
 	color: #333333;
 }
-html[data-theme="light"] .admin-stat-label,
-html[data-theme="light"] .admin-chart-title {
+html[data-theme="light"] .admin-chart-title,
+html[data-theme="light"] .admin-chart-caption {
 	color: #555555;
 }
 html[data-theme="light"] .admin-link-card {

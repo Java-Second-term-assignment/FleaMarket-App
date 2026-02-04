@@ -18,40 +18,24 @@
     <main>
         <h1 class="page-title">管理者ダッシュボード</h1>
 
-        <!-- 統計表示 -->
-        <section class="admin-stats">
-            <div class="admin-stat-card">
-                <span class="material-symbols-outlined admin-stat-icon">inventory_2</span>
-                <div class="admin-stat-content">
-                    <span class="admin-stat-value" th:text="${stats.totalActiveItems}">0</span>
-                    <span class="admin-stat-label">公開中商品数</span>
-                </div>
-            </div>
-            <div class="admin-stat-card">
-                <span class="material-symbols-outlined admin-stat-icon">people</span>
-                <div class="admin-stat-content">
-                    <span class="admin-stat-value" th:text="${stats.totalUsers}">0</span>
-                    <span class="admin-stat-label">登録ユーザー数</span>
-                </div>
-            </div>
-        </section>
-
         <!-- グラフエリア -->
         <section class="admin-stats-charts">
             <div class="admin-chart-card">
                 <h2 class="admin-chart-title">商品のステータス別件数</h2>
+                <p class="admin-chart-caption">公開：<span th:text="${stats.totalActiveItems}">0</span>件</p>
                 <div class="admin-chart-wrap">
                     <canvas id="chartItemStatus"></canvas>
                 </div>
             </div>
             <div class="admin-chart-card">
-                <h2 class="admin-chart-title">商品登録数（直近<span th:text="${statsDays}">30</span>日）</h2>
+                <h2 class="admin-chart-title">商品登録数(直近<span th:text="${statsDays}">30</span>日)</h2>
                 <div class="admin-chart-wrap">
                     <canvas id="chartItemCountsByDay"></canvas>
                 </div>
             </div>
             <div class="admin-chart-card">
-                <h2 class="admin-chart-title">ユーザー登録数（直近<span th:text="${statsDays}">30</span>日）</h2>
+                <h2 class="admin-chart-title">ユーザー登録数(直近<span th:text="${statsDays}">30</span>日)</h2>
+                <p class="admin-chart-caption">総数：<span th:text="${stats.totalUsers}">0</span></p>
                 <div class="admin-chart-wrap">
                     <canvas id="chartUserSignupsByDay"></canvas>
                 </div>
