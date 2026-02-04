@@ -1,10 +1,13 @@
 package com.example.flea_market_app.admin.controller;
 
 import java.time.OffsetDateTime;
+import java.util.Collections;
+import java.util.List;
 import java.util.UUID;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -12,6 +15,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import com.example.flea_market_app.admin.controller.dto.AdminProductRowDto;
 import com.example.flea_market_app.admin.service.AdminDashboardQueryService;
 import com.example.flea_market_app.admin.service.AdminService;
 import com.example.flea_market_app.admin.service.AdminStatsService;
@@ -150,7 +154,16 @@ public class AdminPageController {
 	public String products(Model model, @RequestParam(required = false, defaultValue = "list") String tab) {
 		model.addAttribute("products", adminDashboardQueryService.getProductsForDashboard());
 		model.addAttribute("blacklistProducts", adminDashboardQueryService.getBlacklistedProducts());
-		model.addAttribute("activeTab", "list".equals(tab) ? "list" : "blacklist");
+		List<AdminProductRowDto> violationProducts;
+		try {
+			violationProducts = adminDashboardQueryService.getViolationProducts();
+		} catch (DataAccessException e) {
+			log.warn("Violation list unavailable (item_moderation table may be missing): {}", e.getMessage());
+			violationProducts = Collections.emptyList();
+		}
+		model.addAttribute("violationProducts", violationProducts);
+		String activeTab = "violations".equals(tab) ? "violations" : "blacklist".equals(tab) ? "blacklist" : "list";
+		model.addAttribute("activeTab", activeTab);
 		log.info("Admin products list displayed, tab={}", tab);
 		return "admin/products";
 	}

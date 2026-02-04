@@ -23,6 +23,7 @@
 
         <div class="admin-tabs">
             <a th:href="@{/admin/products(tab='list')}" class="tab-btn" th:classappend="${activeTab == 'list'} ? 'active' : ''">一覧</a>
+            <a th:href="@{/admin/products(tab='violations')}" class="tab-btn" th:classappend="${activeTab == 'violations'} ? 'active' : ''">違反リスト</a>
             <a th:href="@{/admin/products(tab='blacklist')}" class="tab-btn" th:classappend="${activeTab == 'blacklist'} ? 'active' : ''">ブラックリスト</a>
         </div>
 
@@ -74,6 +75,55 @@
                                         </button>
                                     </form>
                                 </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </section>
+        </div>
+
+        <!-- 違反リストタブ -->
+        <div class="tab-content" th:classappend="${activeTab == 'violations'} ? 'active' : ''" id="tabViolations">
+            <section class="admin-card">
+                <div class="card-header"><h3>違反リスト（AI検知）</h3></div>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>ID</th><th>商品名</th><th>価格</th><th>出品者</th><th>状態</th><th>操作</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each="product : ${violationProducts}">
+                            <td th:text="${product.id != null ? #strings.substring(product.id.toString(), 24) : ''}">1</td>
+                            <td th:text="${product.name}">商品名</td>
+                            <td th:text="${product.price + '円'}">1000円</td>
+                            <td th:text="${product.sellerName}">出品者</td>
+                            <td><span class="status-tag status-restricted">違反検知</span></td>
+                            <td>
+                                <div class="action-group">
+                                    <a th:href="@{/products/{id}(id=${product.id})}" class="icon-btn" title="詳細" target="_blank">
+                                        <span class="material-symbols-outlined">open_in_new</span>
+                                    </a>
+                                    <form th:action="@{/admin/products/suspend}" method="post" style="display:inline;">
+                                        <input type="hidden" name="id" th:value="${product.id}">
+                                        <button type="submit" class="icon-btn" title="出品停止"
+                                                onclick="return confirm('この商品を出品停止しますか？');">
+                                            <span class="material-symbols-outlined">pause_circle</span>
+                                        </button>
+                                    </form>
+                                    <form th:action="@{/admin/products/force-delete}" method="post" style="display:inline;">
+                                        <input type="hidden" name="id" th:value="${product.id}">
+                                        <button type="submit" class="icon-btn delete" title="強制削除"
+                                                onclick="return confirm('この商品を削除しますか？');">
+                                            <span class="material-symbols-outlined">block</span>
+                                        </button>
+                                    </form>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr th:if="${#lists.isEmpty(violationProducts)}">
+                            <td colspan="6" style="text-align:center; padding: 40px; color: var(--text-sub);">
+                                AI違反検知の対象はありません。
                             </td>
                         </tr>
                     </tbody>

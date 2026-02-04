@@ -10,9 +10,11 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.example.flea_market_app.admin.service.ItemModerationRecordService;
 import com.example.flea_market_app.catalog.service.ItemImageService;
 import com.example.flea_market_app.catalog.service.ItemService;
 import com.example.flea_market_app.listing.domain.ItemCondition;
+import com.example.flea_market_app.listing.service.ListingModerationService;
 import com.example.flea_market_app.listing.domain.Listing;
 import com.example.flea_market_app.listing.domain.ShippingFeePayer;
 import com.example.flea_market_app.listing.service.ListingService;
@@ -35,6 +37,8 @@ public class ListingServiceImpl implements ListingService {
 
 	private final ItemService itemService;
 	private final ItemImageService itemImageService;
+	private final ListingModerationService listingModerationService;
+	private final ItemModerationRecordService itemModerationRecordService;
 
 	@Override
 	@Transactional
@@ -72,6 +76,20 @@ public class ListingServiceImpl implements ListingService {
 		} catch (Exception e) {
 			log.error("Failed to upload images for item: {}", itemId, e);
 			throw e;
+		}
+
+		// AIモデレーション（違反時のみDBに記録、出品は成功させる）
+		try {
+			String firstS3Key = itemImageService.getFirstImageS3Key(itemId);
+			if (firstS3Key != null) {
+				var decision = listingModerationService.decide(request.getDescription(), firstS3Key);
+				if (decision.reject()) {
+					itemModerationRecordService.recordIfRejected(itemId, decision);
+					log.info("Item {} flagged by moderation, recorded for admin violation list", itemId);
+				}
+			}
+		} catch (Exception e) {
+			log.warn("Moderation check skipped or failed for item {}: {}", itemId, e.getMessage());
 		}
 
 		log.info("Successfully created item with {} images: {}", imageUrls.size(), itemId);
