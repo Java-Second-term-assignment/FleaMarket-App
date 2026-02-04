@@ -49,15 +49,19 @@ html[data-theme="light"] .container .header h1 {
 	color: #e8e8e8;
 }
 
-/* ライトテーマ時：ログイン・新規登録の文字色は固定（テーマで変わらない） */
+/* ライトテーマ時：ログイン・新規登録の文字色・太字は固定（テーマで変わらない） */
 html[data-theme="light"] .container .content,
-html[data-theme="light"] .container .content label {
+html[data-theme="light"] .container .content label,
+html[data-theme="light"] .container .content .link-bottom,
+html[data-theme="light"] .container .content .footer-text {
 	color: #333333;
+	font-weight: 600;
 }
 html[data-theme="light"] .container .content input {
 	background-color: #ffffff;
 	color: #1a1a1a;
 	border-color: #d1d1d1;
+	font-weight: 600;
 }
 html[data-theme="light"] .container .content input::placeholder {
 	color: #888888;

@@ -4,20 +4,22 @@
 body {
 	background-color: var(--bg-dark);
 	display: flex;
+	flex-direction: column;
 	justify-content: center;
 	align-items: center;
 	min-height: 100vh;
 	margin: 0;
 	font-family: "Helvetica Neue", Arial, sans-serif;
+	font-weight: 600;
 }
 
-/* 中央のシート（統計画面のシートより少し明るいグレー） */
+/* 中央のシート（今風のカード） */
 .container {
 	background-color: var(--bg-container);
 	width: 90%;
 	max-width: 500px;
-	border-radius: 12px;
-	box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+	border-radius: 16px;
+	box-shadow: 0 8px 32px rgba(0, 0, 0, 0.25);
 	overflow: hidden;
 }
 
@@ -33,13 +35,14 @@ body {
 .container .header h1 {
 	margin: 0;
 	font-size: 28px;
-	font-weight: 800;
+	font-weight: 700;
 	color: #ffffff;
 }
 
-/* コンテンツエリア */
+/* コンテンツエリア（余白を広めに） */
 .content {
-	padding: 30px 45px;
+	padding: 36px 48px;
+	font-weight: 600;
 }
 
 .form-group {
@@ -50,7 +53,7 @@ label {
 	display: block;
 	margin-bottom: 10px;
 	font-size: 14px;
-	font-weight: 500;
+	font-weight: 600;
 	color: var(--text-label);
 }
 
@@ -63,11 +66,19 @@ input {
 	width: 100%;
 	padding: 12px 15px;
 	border: 1px solid var(--border-light);
-	border-radius: 6px;
+	border-radius: 8px;
 	box-sizing: border-box;
 	font-size: 14px;
+	font-weight: 600;
 	background-color: var(--bg-dark);
 	color: var(--text-heading);
+	transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+input:focus {
+	outline: none;
+	border-color: var(--accent-blue);
+	box-shadow: 0 0 0 3px rgba(74, 93, 153, 0.25);
 }
 
 input::placeholder {
@@ -79,10 +90,10 @@ input::placeholder {
 	width: 100%;
 	padding: 16px;
 	border: none;
-	border-radius: 6px;
+	border-radius: 8px;
 	color: var(--text-main);
 	font-size: 15px;
-	font-weight: bold;
+	font-weight: 700;
 	cursor: pointer;
 	margin-top: 10px;
 	transition: opacity 0.2s;
@@ -113,6 +124,7 @@ input::placeholder {
 	text-align: center;
 	margin-top: 25px;
 	font-size: 13px;
+	font-weight: 600;
 	color: var(--text-label);
 }
 
@@ -132,11 +144,32 @@ a:hover {
 	left: 20px;
 	color: rgba(255, 255, 255, 0.8);
 	font-size: 14px;
+	font-weight: 600;
+}
+
+/* ログインシート外の戻るボタン用 */
+.auth-actions {
+	width: 90%;
+	max-width: 500px;
+	margin-bottom: 1rem;
+	text-align: left;
+}
+
+/* 戻るリンク（ログイン画面用） */
+.link-back {
+	display: inline-block;
+	margin-bottom: 0;
+	font-weight: 600;
+}
+
+.auth-actions .link-back {
+	margin-bottom: 0;
 }
 
 /* 登録画面の補足 */
 .footer-text {
 	font-size: 12px;
+	font-weight: 600;
 	color: var(--text-sub);
 	line-height: 1.6;
 	margin-top: 10px;

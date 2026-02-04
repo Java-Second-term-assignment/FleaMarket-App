@@ -1,5 +1,8 @@
 package com.example.flea_market_app.config.security;
 
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
+
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
@@ -107,7 +110,7 @@ public class SecurityConfig {
 
 	/**
 	 * Web用: フォーム認証、セッション、Thymeleafページ（一般ユーザーは /login）
-	 * 未認証時は商品一覧へリダイレクト（ログイン画面ではなく）
+	 * 未認証時はログイン画面へ returnUrl 付きでリダイレクト（戻る・ログイン後に元の画面へ遷移可能）。
 	 */
 	@Bean
 	@Order(3)
@@ -120,8 +123,17 @@ public class SecurityConfig {
 						org.springframework.security.config.http.SessionCreationPolicy.IF_REQUIRED))
 				.authorizeHttpRequests(auth -> authorizationConfig.configureWeb(auth))
 				.exceptionHandling(ex -> ex
-						.authenticationEntryPoint((request, response, authException) ->
-								response.sendRedirect(request.getContextPath() + "/products")))
+						.authenticationEntryPoint((request, response, authException) -> {
+							String requestUri = request.getRequestURI();
+							String queryString = request.getQueryString();
+							String fullPath = requestUri + (queryString != null && !queryString.isEmpty() ? "?" + queryString : "");
+							// 相対パスのみ許可（オープンリダイレクト対策）
+							boolean safe = fullPath.startsWith("/") && !fullPath.startsWith("//");
+							String returnUrl = safe ? URLEncoder.encode(fullPath, StandardCharsets.UTF_8) : "";
+							String loginPath = request.getContextPath() + "/login";
+							String redirect = returnUrl.isEmpty() ? loginPath : loginPath + "?returnUrl=" + returnUrl;
+							response.sendRedirect(redirect);
+						}))
 				.formLogin(form -> form
 						.loginPage("/login")
 						.successHandler(webLoginSuccessHandler())

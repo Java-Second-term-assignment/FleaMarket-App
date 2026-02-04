@@ -3,7 +3,7 @@
 
 <head>
 	<meta charset="UTF-8">
-	<title>Login</title>
+	<title>ログイン</title>
 
 	<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" />
 	<link rel="stylesheet" th:href="@{/css/variables.css}">
@@ -15,9 +15,17 @@
 
 <body>
 	<div class="theme-toggle-fixed" th:replace="~{ui/fragments :: theme_toggle_button}"></div>
+	<div class="auth-actions">
+		<div class="link-back" th:if="${returnUrl != null}">
+			<a th:href="${returnUrl}">← 戻る</a>
+		</div>
+		<div class="link-back" th:if="${returnUrl == null}">
+			<a th:href="@{/products}">← 商品一覧へ</a>
+		</div>
+	</div>
 	<div class="container">
 		<div class="header">
-			<h1>Login</h1>
+			<h1>ログイン</h1>
 		</div>
 
 		<div class="content">
@@ -29,18 +37,14 @@
 
 			<!-- ログインフォーム -->
 			<form th:action="@{/login}" method="post">
-				<input type="hidden" name="returnUrl" th:value="${param.returnUrl != null && !param.returnUrl.isEmpty()} ? param.returnUrl[0] : ''">
+				<input type="hidden" name="returnUrl" th:value="${returnUrl != null} ? ${returnUrl} : ''">
 				<div class="form-group">
-					<label>
-						メールアドレス<span class="required">（必須）</span>
-					</label>
+					<label>メールアドレス</label>
 					<input type="email" name="email" required>
 				</div>
 
 				<div class="form-group">
-					<label>
-						パスワード<span class="required">（必須）</span>
-					</label>
+					<label>パスワード</label>
 					<input type="password" name="password" required>
 				</div>
 

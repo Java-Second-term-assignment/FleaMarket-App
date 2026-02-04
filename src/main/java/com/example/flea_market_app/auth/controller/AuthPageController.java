@@ -7,6 +7,7 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.example.flea_market_app.auth.controller.dto.RegisterForm;
@@ -25,7 +26,14 @@ public class AuthPageController {
 	private final RegistrationService registrationService;
 
 	@GetMapping("/login")
-	public String loginPage() {
+	public String loginPage(@RequestParam(required = false) String returnUrl, Model model) {
+		// 相対パスのみモデルに渡す（オープンリダイレクト・XSS対策）
+		if (returnUrl != null && !returnUrl.isBlank()) {
+			String trimmed = returnUrl.trim();
+			if (trimmed.startsWith("/") && !trimmed.startsWith("//")) {
+				model.addAttribute("returnUrl", trimmed);
+			}
+		}
 		return "auth/login";
 	}
 
