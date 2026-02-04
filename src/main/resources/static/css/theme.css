@@ -187,6 +187,10 @@ html[data-theme="light"] .review-login-message a {
 html[data-theme="light"] .main-container .page-title {
 	color: #333333;
 }
+/* ライトモード時：人気ランキングのタイトルも商品一覧と同じく黒系に */
+html[data-theme="light"] .ranking-title {
+	color: #333333;
+}
 
 /* ライトモード：管理者ダッシュボードの統計カード・グラフカード */
 html[data-theme="light"] .admin-stat-card,
