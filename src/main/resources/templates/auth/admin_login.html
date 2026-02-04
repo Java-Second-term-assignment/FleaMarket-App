@@ -13,6 +13,11 @@
 
 <body>
 	<div class="theme-toggle-fixed" th:replace="~{ui/fragments :: theme_toggle_button}"></div>
+	<div class="auth-actions">
+		<div class="link-back">
+			<a th:href="@{/products}">← 商品一覧に戻る</a>
+		</div>
+	</div>
 	<div class="container">
 		<div class="header">
 			<h1>管理者ログイン</h1>
@@ -26,16 +31,12 @@
 
 			<form th:action="@{/admin/login}" method="post">
 				<div class="form-group">
-					<label>
-						メールアドレス<span class="required">（必須）</span>
-					</label>
+					<label>メールアドレス</label>
 					<input type="email" name="email" required autocomplete="username">
 				</div>
 
 				<div class="form-group">
-					<label>
-						パスワード<span class="required">（必須）</span>
-					</label>
+					<label>パスワード</label>
 					<input type="password" name="password" required autocomplete="current-password">
 				</div>
 
