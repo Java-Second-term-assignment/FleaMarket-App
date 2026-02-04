@@ -90,7 +90,7 @@
 }
 
 .product-search-card {
-	background: #38383c;
+	background: var(--header-bg);
 	border-radius: 14px 14px 18px 18px;
 	box-shadow: 0 2px 9px #53536933;
 	padding: 21px 33px 19px 33px;
