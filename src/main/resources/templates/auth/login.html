@@ -29,6 +29,7 @@
 
 			<!-- ログインフォーム -->
 			<form th:action="@{/login}" method="post">
+				<input type="hidden" name="returnUrl" th:value="${param.returnUrl != null && !param.returnUrl.isEmpty()} ? param.returnUrl[0] : ''">
 				<div class="form-group">
 					<label>
 						メールアドレス<span class="required">（必須）</span>

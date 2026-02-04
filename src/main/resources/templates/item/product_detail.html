@@ -4,12 +4,13 @@
 <head th:replace="~{ui/fragments :: common_head(${product.name + ' | 商品詳細'}, ~{::link})}">
 	<link rel="stylesheet" th:href="@{/css/product.css}">
 	<link rel="stylesheet" th:href="@{/css/detail.css}">
+	<link rel="stylesheet" th:href="@{/css/auth.css}">
 </head>
 
-<body>
+<body th:attr="data-anonymous=${#authorization.expression('isAnonymous()')}">
 	<div th:replace="~{ui/fragments :: header}"></div>
 
-	<main class="main-container">
+	<main class="main-container" th:attr="data-product-id=${product.id}">
 		<div class="detail-card">
 			<div class="detail-card-scroll">
 				<div class="detail-layout">
@@ -208,7 +209,20 @@
 		</section>
 	</main>
 
+	<!-- 未ログイン時：ログイン誘導モーダル -->
+	<div id="loginRequiredModal" class="modal-overlay" style="display:none;" aria-hidden="true">
+		<div class="modal-content">
+			<button type="button" class="modal-close-btn" id="loginRequiredModalClose" aria-label="閉じる">&times;</button>
+			<h2>ログインはお済みですか？</h2>
+			<div class="modal-body">
+				<p>購入やカートの利用にはログインが必要です。<br>ログインすると続行できます。</p>
+				<a id="loginRequiredModalLink" href="#" class="btn btn-login">ログインする</a>
+			</div>
+		</div>
+	</div>
+
 	<script th:src="@{/js/script.js}"></script>
+	<script th:src="@{/js/product_detail.js}"></script>
 </body>
 
 </html>

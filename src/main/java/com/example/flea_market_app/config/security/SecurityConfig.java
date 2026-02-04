@@ -36,6 +36,13 @@ public class SecurityConfig {
 		return handler;
 	}
 
+	@Bean
+	WebLoginSuccessHandler webLoginSuccessHandler() {
+		WebLoginSuccessHandler handler = new WebLoginSuccessHandler();
+		handler.setDefaultTargetUrl("/products");
+		return handler;
+	}
+
 	/**
 	 * 管理者用フォームログイン: /admin/login のみを扱う（一般ユーザーとエントリーポイントを分離）
 	 */
@@ -117,7 +124,7 @@ public class SecurityConfig {
 								response.sendRedirect(request.getContextPath() + "/products")))
 				.formLogin(form -> form
 						.loginPage("/login")
-						.defaultSuccessUrl("/products", false)
+						.successHandler(webLoginSuccessHandler())
 						.usernameParameter("email")
 						.passwordParameter("password"))
 				.logout(logout -> logout
