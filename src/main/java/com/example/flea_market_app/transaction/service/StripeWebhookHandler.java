@@ -28,7 +28,13 @@ public class StripeWebhookHandler {
 		}
 
 		// Stripe metadata の orderId は String なので UUID に変換
-		UUID orderId = UUID.fromString(e.orderId());
+		final UUID orderId;
+		try {
+			orderId = UUID.fromString(e.orderId());
+		} catch (IllegalArgumentException ex) {
+			// 不正な orderId 形式は無視
+			return;
+		}
 
 		// 既存の OrderService API を呼ぶ（責務が合う）
 		orderService.recordOrderPaid(orderId);

@@ -38,4 +38,7 @@ public class UserEntity {
 
 	@Column(name = "profile_image_s3_key")
 	private String profileImageS3Key;
+
+	@Column(name = "caption", length = 200)
+	private String caption;
 }

@@ -808,6 +808,7 @@ a {
 .modal-profile-edit label {
 	color: #ffd743;
 	font-size: 15px;
+	font-weight: 600;
 }
 
 .modal-profile-edit input,
@@ -846,13 +847,39 @@ a {
 }
 
 .modal-profile-edit .modal-cancel-btn {
-	background: #ddd;
-	color: #2a2c50;
+	background: transparent;
+	color: #e8e8e8;
+	border: 2px solid #6b7aa8;
+	border-radius: 8px;
+	padding: 10px 24px;
+	font-size: 15px;
+	font-weight: 600;
+	cursor: pointer;
+	transition: background 0.2s, border-color 0.2s, color 0.2s;
+}
+
+.modal-profile-edit .modal-cancel-btn:hover {
+	background: rgba(107, 122, 168, 0.2);
+	border-color: #8b9ac4;
+	color: #fff;
 }
 
 .modal-profile-edit .modal-save-btn {
 	background: #ffd743;
 	color: #222a45;
+	border: none;
+	border-radius: 8px;
+	padding: 10px 24px;
+	font-size: 15px;
+	font-weight: 600;
+	cursor: pointer;
+	box-shadow: 0 2px 8px rgba(255, 215, 67, 0.35);
+	transition: background 0.2s, box-shadow 0.2s, transform 0.15s;
+}
+
+.modal-profile-edit .modal-save-btn:hover {
+	background: #ffe066;
+	box-shadow: 0 3px 12px rgba(255, 215, 67, 0.45);
 }
 
 .modal-profile-edit .modal-profile-uploadlabel {

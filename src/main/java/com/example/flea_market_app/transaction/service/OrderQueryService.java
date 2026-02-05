@@ -82,14 +82,19 @@ public class OrderQueryService {
 		OrderEntity e = orderRepository.findById(orderId)
 				.orElseThrow(() -> NotFoundBusinessException.of(ResourceType.ORDER));
 
-		boolean isBuyer = e.getBuyerId().equals(userId);
-		boolean isSeller = e.getSellerId().equals(userId);
+		UUID buyerId = e.getBuyerId();
+		UUID sellerId = e.getSellerId();
+		if (buyerId == null || sellerId == null) {
+			throw new IllegalStateException("Order has null buyer or seller: orderId=" + e.getId());
+		}
+		boolean isBuyer = buyerId.equals(userId);
+		boolean isSeller = sellerId.equals(userId);
 		if (!isBuyer && !isSeller) {
 			throw new AccessDeniedBusinessException();
 		}
 
 		String role = isBuyer ? "BUYER" : "SELLER";
-		UUID counterpartyId = isBuyer ? e.getSellerId() : e.getBuyerId();
+		UUID counterpartyId = isBuyer ? sellerId : buyerId;
 		String counterpartyDisplayName = userRepository.findById(counterpartyId)
 				.map(UserEntity::getDisplayName)
 				.orElse("");
@@ -101,7 +106,11 @@ public class OrderQueryService {
 			thumbnailUrl = ImageConstants.NO_IMAGE_PATH;
 		}
 
-		OrderStatus status = OrderStatus.valueOf(e.getStatus());
+		String statusStr = e.getStatus();
+		if (statusStr == null) {
+			throw new IllegalStateException("Order status is null: orderId=" + e.getId());
+		}
+		OrderStatus status = OrderStatus.valueOf(statusStr);
 		boolean canConfirm = isBuyer && status == OrderStatus.PAID;
 		boolean canShip = isSeller && status == OrderStatus.AWAITING_SHIPMENT;
 		boolean canReceipt = isBuyer && status == OrderStatus.SHIPPED;

@@ -106,6 +106,9 @@ public class S3ImageServiceImpl implements S3ImageService {
 
 	@Override
 	public String generateImageUrl(String bucketName, String s3Key) {
+		if (bucketName == null || s3Key == null) {
+			throw new IllegalArgumentException("bucketName and s3Key must not be null");
+		}
 		// シンプルな公開URL形式: https://{bucket}.s3.{region}.amazonaws.com/{key}
 		// 注意: 実際の環境では、CloudFrontや署名付きURLを使用することを推奨
 		return String.format("https://%s.s3.%s.amazonaws.com/%s", bucketName, region, s3Key);

@@ -65,15 +65,15 @@
 						<label>表示名</label>
 						<input type="text" id="modalProfileEditTitle" th:value="${user.displayTitle}" maxlength="18">
 
-						<label>ユーザー名</label>
-						<input type="text" id="modalProfileEditName" th:value="${user.username}" maxlength="12">
+						<label>メールアドレス</label>
+						<input type="text" id="modalProfileEditName" th:value="${user.username}" maxlength="12" readonly>
 
 						<label>自己紹介</label>
 						<textarea id="modalProfileEditCaption" maxlength="80">[[${user.caption}]]</textarea>
 
 						<div class="modal-btn-row">
-							<button type="button" id="modalProfileCancelBtn">キャンセル</button>
-							<button type="submit">保存</button>
+							<button type="button" id="modalProfileCancelBtn" class="modal-cancel-btn">キャンセル</button>
+							<button type="submit" class="modal-save-btn">保存</button>
 						</div>
 					</form>
 				</div>

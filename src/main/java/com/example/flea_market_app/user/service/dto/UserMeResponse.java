@@ -22,7 +22,10 @@ public class UserMeResponse {
 
 	private boolean active;
 
-	public static UserMeResponse of(User user, String email) {
+	private String iconUrl;
+	private String caption;
+
+	public static UserMeResponse of(User user, String email, String iconUrl, String caption) {
 		return new UserMeResponse(
 				user.getId(),
 				user.getDisplayName(),
@@ -31,6 +34,8 @@ public class UserMeResponse {
 				user.getRank().getRankCode(),
 				user.getRank().getRankName(),
 				user.getRank().getCommissionBps(),
-				user.isActive());
+				user.isActive(),
+				iconUrl,
+				caption != null ? caption : "");
 	}
 }

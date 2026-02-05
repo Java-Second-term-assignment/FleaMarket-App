@@ -38,10 +38,10 @@ public class UserPageController {
 		UserMeResponse me = userProfileQueryService.getMe(userId);
 
 		UserSettingsViewDto user = UserSettingsViewDto.builder()
-				.iconUrl(null)
+				.iconUrl(me.getIconUrl())
 				.displayTitle(me.getDisplayName())
 				.username(me.getEmail() != null ? me.getEmail() : me.getDisplayName())
-				.caption("")
+				.caption(me.getCaption() != null ? me.getCaption() : "")
 				.build();
 
 		List<FavoriteItemResponse> favorites = favoriteService.listByUser(userId);

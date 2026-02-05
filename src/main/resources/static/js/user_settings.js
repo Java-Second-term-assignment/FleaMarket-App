@@ -67,4 +67,79 @@ document.addEventListener("DOMContentLoaded", () => {
 			}
 		});
 	}
+
+	// ===== 4. プロフィール保存（PATCH /user/me + 画像ありなら PUT /user/me/profile-image） =====
+	const profileEditForm = document.getElementById("profileEditForm");
+	if (profileEditForm) {
+		profileEditForm.addEventListener("submit", async (e) => {
+			e.preventDefault();
+
+			const displayNameEl = getEl("modalProfileEditTitle");
+			const captionEl = getEl("modalProfileEditCaption");
+			const displayName = displayNameEl ? displayNameEl.value.trim() : "";
+			const caption = captionEl ? captionEl.value.trim() : "";
+			const imageFile = fileInput && fileInput.files && fileInput.files[0] ? fileInput.files[0] : null;
+
+			try {
+				// 表示名・自己紹介を更新
+				const patchRes = await fetch("/user/me", {
+					method: "PATCH",
+					headers: { "Content-Type": "application/json" },
+					body: JSON.stringify({ displayName, caption }),
+					credentials: "same-origin"
+				});
+				if (!patchRes.ok) {
+					const text = await patchRes.text();
+					alert("プロフィールの保存に失敗しました。\n" + (text || patchRes.status));
+					return;
+				}
+
+				let newImageUrl = null;
+				if (imageFile) {
+					const formData = new FormData();
+					formData.append("image", imageFile);
+					const putRes = await fetch("/user/me/profile-image", {
+						method: "PUT",
+						body: formData,
+						credentials: "same-origin"
+					});
+					if (!putRes.ok) {
+						const text = await putRes.text();
+						alert("プロフィール画像の更新に失敗しました。\n" + (text || putRes.status));
+						return;
+					}
+					const json = await putRes.json();
+					newImageUrl = json.imageUrl || null;
+				}
+
+				// 画面上の表示を更新
+				const profileDisplayTitle = getEl("profileDisplayTitle");
+				const profileDisplayCaption = getEl("profileDisplayCaption");
+				const profileIconDisplay = getEl("profileIconDisplay");
+				if (profileDisplayTitle) profileDisplayTitle.textContent = displayName || "表示名";
+				if (profileDisplayCaption) profileDisplayCaption.textContent = caption || "プロフィールはまだ未記入です。";
+				if (newImageUrl && profileIconDisplay) {
+					let img = profileIconDisplay.querySelector("img");
+					const span = profileIconDisplay.querySelector("span");
+					if (!img) {
+						img = document.createElement("img");
+						img.alt = "icon";
+						profileIconDisplay.appendChild(img);
+					}
+					img.src = newImageUrl;
+					img.style.display = "block";
+					if (span) span.style.display = "none";
+					profileIconDisplay.dataset.imgsrc = newImageUrl;
+				}
+
+				closeModal();
+				if (fileInput) fileInput.value = "";
+				if (previewImg) { previewImg.style.display = "none"; previewImg.src = ""; }
+				if (noImageSpan) noImageSpan.style.display = "inline";
+			} catch (err) {
+				console.error(err);
+				alert("プロフィールの保存中にエラーが発生しました。");
+			}
+		});
+	}
 });

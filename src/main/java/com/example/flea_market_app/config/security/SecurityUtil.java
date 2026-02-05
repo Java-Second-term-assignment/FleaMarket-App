@@ -53,7 +53,11 @@ public final class SecurityUtil {
 		}
 		// 3) principal が UserDetails で username が UUID 文字列のケース
 		if (auth.getPrincipal() instanceof org.springframework.security.core.userdetails.UserDetails ud) {
-			return UUID.fromString(ud.getUsername());
+			String username = ud.getUsername();
+			if (username == null || username.isBlank()) {
+				throw new IllegalStateException("Unauthenticated: username is null or empty");
+			}
+			return UUID.fromString(username);
 		}
 
 		// 4) principal が String のケース（userId文字列）

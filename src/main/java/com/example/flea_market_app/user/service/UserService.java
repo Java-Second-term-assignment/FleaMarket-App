@@ -49,11 +49,12 @@ public class UserService {
 	}
 
 	@Transactional
-	public void updateProfile(UUID userId, String displayName) {
+	public void updateProfile(UUID userId, String displayName, String caption) {
 		UserEntity e = userRepository.findById(userId)
 				.orElseThrow(() -> new IllegalArgumentException("User not found: " + userId));
 
-		e.setDisplayName(displayName.trim());
+		e.setDisplayName(displayName != null ? displayName.trim() : "");
+		e.setCaption(caption != null ? caption.trim() : null);
 		userRepository.save(e);
 	}
 

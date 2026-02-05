@@ -45,7 +45,7 @@ public class UserController {
 	@PatchMapping("/me")
 	public ResponseEntity<Void> updateMe(@Validated @RequestBody UpdateProfileRequest req) {
 		UUID userId = SecurityUtil.getCurrentUserId();
-		userService.updateProfile(userId, req.getDisplayName());
+		userService.updateProfile(userId, req.getDisplayName(), req.getCaption());
 		return ResponseEntity.noContent().build();
 	}
 
