@@ -402,6 +402,14 @@
 	gap: 15px;
 }
 
+/* ライトモード：注文一覧と同様の薄いグレーでメリハリ（variables.css / theme.css の --bg-panel 使用） */
+html[data-theme="light"] .main-container .product-grid {
+	background-color: var(--bg-panel);
+	border: 1px solid var(--border-light);
+	border-radius: 12px;
+	padding: 20px;
+}
+
 .item-card {
 	width: 200px;
 	border-radius: 4px;
