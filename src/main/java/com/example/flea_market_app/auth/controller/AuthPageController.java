@@ -79,11 +79,6 @@ public class AuthPageController {
 		return "auth/password_reset_request";
 	}
 
-	@GetMapping("/password-reset-request")
-	public String passwordResetRequestPage() {
-		return "redirect:/password/forgot";
-	}
-
 	@PostMapping("/password-reset-request")
 	public String passwordResetRequest() {
 		return "redirect:/password/forgot";
