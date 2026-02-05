@@ -1,6 +1,8 @@
 package com.example.flea_market_app.admin.controller;
 
+import java.time.LocalDate;
 import java.time.OffsetDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
@@ -8,6 +10,9 @@ import java.util.UUID;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.dao.DataAccessException;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -60,6 +65,21 @@ public class AdminPageController {
 		model.addAttribute("topViewedItemsJson", OBJECT_MAPPER.writeValueAsString(adminStatsService.getTopViewedItems()));
 		log.info("Admin dashboard displayed");
 		return "admin/dashboard";
+	}
+
+	/** 統計情報のCSVエクスポート */
+	@GetMapping("/admin/dashboard/stats.csv")
+	public ResponseEntity<byte[]> dashboardStatsCsv(
+			@RequestParam(required = false, defaultValue = "30") int days) {
+		int safeDays = Math.min(365, Math.max(1, days));
+		byte[] csv = adminStatsService.buildStatsCsv(safeDays);
+		String filename = "admin-stats-" + LocalDate.now().format(DateTimeFormatter.BASIC_ISO_DATE) + ".csv";
+		HttpHeaders headers = new HttpHeaders();
+		headers.setContentType(MediaType.parseMediaType("text/csv; charset=UTF-8"));
+		headers.setContentDispositionFormData("attachment", filename);
+		headers.setContentLength(csv.length);
+		log.info("Admin stats CSV exported, days={}", safeDays);
+		return ResponseEntity.ok().headers(headers).body(csv);
 	}
 
 	@GetMapping("/admin/users")

@@ -151,6 +151,31 @@ main {
 	margin-bottom: 20px;
 }
 
+.admin-dashboard-actions {
+	margin-bottom: 20px;
+}
+
+.admin-dashboard-actions .btn-csv-export {
+	display: inline-flex;
+	align-items: center;
+	gap: 6px;
+	padding: 8px 14px;
+	background: var(--accent-green);
+	color: #fff;
+	border-radius: 6px;
+	text-decoration: none;
+	font-size: 14px;
+	border: none;
+}
+
+.admin-dashboard-actions .btn-csv-export:hover {
+	opacity: 0.9;
+}
+
+.admin-dashboard-actions .btn-csv-export .material-symbols-outlined {
+	font-size: 18px;
+}
+
 /* ダッシュボード管理メニュー */
 .admin-dashboard-links {
 	margin-top: 24px;

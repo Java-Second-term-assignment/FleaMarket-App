@@ -1,5 +1,6 @@
 package com.example.flea_market_app.admin.service;
 
+import java.nio.charset.StandardCharsets;
 import java.time.LocalDate;
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
@@ -131,5 +132,72 @@ public class AdminStatsService {
 
 	public int getDefaultDays() {
 		return DEFAULT_DAYS;
+	}
+
+	/**
+	 * ダッシュボードと同内容の統計をCSV形式で返す（UTF-8 BOM付き）。
+	 */
+	public byte[] buildStatsCsv(int days) {
+		AdminDashboardStatsDto stats = getDashboardStats();
+		List<StatusCountDto> itemStatusCounts = getItemStatusCounts();
+		List<DateCountDto> itemCountsByDay = getItemCountsByDay(days);
+		List<DateCountDto> userSignupCountsByDay = getUserSignupCountsByDay(days);
+		List<TopViewedItemDto> topViewedItems = getTopViewedItems();
+
+		StringBuilder sb = new StringBuilder();
+		// BOM for Excel UTF-8 recognition
+		sb.append('\uFEFF');
+
+		// サマリー
+		sb.append("サマリー\n");
+		sb.append(escapeCsv("項目")).append(',').append(escapeCsv("値")).append('\n');
+		sb.append(escapeCsv("公開中商品数")).append(',').append(stats.getTotalActiveItems()).append('\n');
+		sb.append(escapeCsv("登録ユーザー総数")).append(',').append(stats.getTotalUsers()).append('\n');
+		sb.append('\n');
+
+		// 商品ステータス別件数
+		sb.append("商品ステータス別件数\n");
+		sb.append(escapeCsv("ステータス")).append(',').append(escapeCsv("ラベル")).append(',').append(escapeCsv("件数")).append('\n');
+		for (StatusCountDto dto : itemStatusCounts) {
+			sb.append(escapeCsv(dto.getStatus())).append(',')
+					.append(escapeCsv(dto.getLabel())).append(',')
+					.append(dto.getCount()).append('\n');
+		}
+		sb.append('\n');
+
+		// 商品登録数(直近N日)
+		sb.append("商品登録数(直近").append(days).append("日)\n");
+		sb.append(escapeCsv("日付")).append(',').append(escapeCsv("件数")).append('\n');
+		for (DateCountDto dto : itemCountsByDay) {
+			sb.append(escapeCsv(dto.getDate())).append(',').append(dto.getCount()).append('\n');
+		}
+		sb.append('\n');
+
+		// ユーザー登録数(直近N日)
+		sb.append("ユーザー登録数(直近").append(days).append("日)\n");
+		sb.append(escapeCsv("日付")).append(',').append(escapeCsv("件数")).append('\n');
+		for (DateCountDto dto : userSignupCountsByDay) {
+			sb.append(escapeCsv(dto.getDate())).append(',').append(dto.getCount()).append('\n');
+		}
+		sb.append('\n');
+
+		// 閲覧数トップ
+		sb.append("閲覧数トップ\n");
+		sb.append(escapeCsv("商品ID")).append(',').append(escapeCsv("商品名")).append(',').append(escapeCsv("閲覧数")).append('\n');
+		for (TopViewedItemDto dto : topViewedItems) {
+			sb.append(escapeCsv(dto.getItemId() != null ? dto.getItemId().toString() : "")).append(',')
+					.append(escapeCsv(dto.getItemName())).append(',')
+					.append(dto.getViewCount()).append('\n');
+		}
+
+		return sb.toString().getBytes(StandardCharsets.UTF_8);
+	}
+
+	private static String escapeCsv(String value) {
+		if (value == null) return "";
+		if (value.contains(",") || value.contains("\n") || value.contains("\"")) {
+			return "\"" + value.replace("\"", "\"\"") + "\"";
+		}
+		return value;
 	}
 }

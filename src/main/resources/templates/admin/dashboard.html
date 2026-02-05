@@ -17,6 +17,11 @@
 
     <main>
         <h1 class="page-title">管理者ダッシュボード</h1>
+        <p class="admin-dashboard-actions">
+            <a th:href="@{/admin/dashboard/stats.csv(days=${statsDays})}" class="btn-link btn-csv-export" download>
+                <span class="material-symbols-outlined">download</span> 統計をCSVでダウンロード
+            </a>
+        </p>
 
         <!-- グラフエリア -->
         <section class="admin-stats-charts">
