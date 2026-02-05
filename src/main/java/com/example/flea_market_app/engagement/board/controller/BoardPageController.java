@@ -1,6 +1,5 @@
 package com.example.flea_market_app.engagement.board.controller;
 
-import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.UUID;
 
@@ -10,20 +9,27 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.validation.annotation.Validated;
 
+import com.example.flea_market_app.config.security.SecurityUtil;
 import com.example.flea_market_app.catalog.service.ItemQueryService;
 import com.example.flea_market_app.engagement.board.service.BoardListService;
 import com.example.flea_market_app.engagement.board.service.BoardService;
 import com.example.flea_market_app.engagement.board.service.dto.PostResponse;
 
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
 import lombok.RequiredArgsConstructor;
 
 @Controller
 @RequiredArgsConstructor
+@Validated
 public class BoardPageController {
 
 	private static final Logger log = LoggerFactory.getLogger(BoardPageController.class);
-	private static final DateTimeFormatter DATE_FORMAT = DateTimeFormatter.ofPattern("yyyy/MM/dd");
+	private static final int DEFAULT_POST_LIMIT = 50;
 
 	private final BoardListService boardListService;
 	private final BoardService boardService;
@@ -36,38 +42,27 @@ public class BoardPageController {
 		return "board/board_list";
 	}
 
-	@GetMapping("/board/{id}")
-	public String boardDetail(@PathVariable UUID id, Model model) {
-		log.info("Board detail requested: boardId={}", id);
-		itemQueryService.assertExists(id);
+	@GetMapping("/board/{boardId}")
+	public String boardDetail(@PathVariable UUID boardId, Model model) {
+		log.info("Board detail requested: boardId={}", boardId);
+		itemQueryService.assertExists(boardId);
 
-		List<PostResponse> posts = boardService.getPosts(id, 50);
+		List<PostResponse> posts = boardService.getPosts(boardId, DEFAULT_POST_LIMIT);
 
-		BoardDetailStub post;
-		List<CommentStub> comments;
-		if (posts.isEmpty()) {
-			post = new BoardDetailStub(id, "掲示板", "（投稿はまだありません）");
-			comments = List.of();
-		} else {
-			PostResponse first = posts.get(0);
-			post = new BoardDetailStub(first.getId(), first.getContent(), first.getContent());
-			comments = posts.stream()
-					.map(p -> new CommentStub(
-							p.getContent().length() > 30 ? p.getContent().substring(0, 30) + "..." : p.getContent(),
-							p.getContent(),
-							p.getCreatedAt() != null ? p.getCreatedAt().format(DATE_FORMAT) : "",
-							null, 0, p.getAuthorDisplayName() != null ? p.getAuthorDisplayName() : "ユーザー", false))
-					.toList();
-		}
-
-		model.addAttribute("post", post);
-		model.addAttribute("comments", comments);
+		model.addAttribute("boardId", boardId);
+		model.addAttribute("posts", posts);
 		return "board/board_detail";
 	}
 
-	private record BoardDetailStub(UUID id, String title, String content) {
-	}
+	@PostMapping("/board/{boardId}/posts")
+	public String createPost(
+			@PathVariable UUID boardId,
+			@RequestParam @NotBlank(message = "本文を入力してください") @Size(max = 1000, message = "本文は1000文字以内で入力してください") String content) {
+		UUID userId = SecurityUtil.getCurrentUserId();
+		log.info("Creating post: boardId={}, userId={}", boardId, userId);
 
-	private record CommentStub(String title, String body, String createdAt, Object parent, int replyCount, String userName, boolean editable) {
+		boardService.createPost(boardId, userId, content);
+		log.info("Created post for board: {}", boardId);
+		return "redirect:/board/" + boardId;
 	}
 }
