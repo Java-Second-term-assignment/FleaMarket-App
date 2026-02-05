@@ -78,12 +78,15 @@
 				<div class="section-title">操作</div>
 				<div class="order-action-buttons">
 					<form th:if="${order.canConfirm}" th:action="@{/user/orders/{id}/confirm(id=${order.orderId})}" method="post" style="display:inline;">
+						<th:block th:replace="~{ui/fragments :: csrf_token}"></th:block>
 						<button type="submit" class="btn-order-action">購入確定</button>
 					</form>
 					<form th:if="${order.canShip}" th:action="@{/user/orders/{id}/shipment(id=${order.orderId})}" method="post" style="display:inline;">
+						<th:block th:replace="~{ui/fragments :: csrf_token}"></th:block>
 						<button type="submit" class="btn-order-action">発送した</button>
 					</form>
 					<form th:if="${order.canReceipt}" th:action="@{/user/orders/{id}/receipt(id=${order.orderId})}" method="post" style="display:inline;">
+						<th:block th:replace="~{ui/fragments :: csrf_token}"></th:block>
 						<button type="submit" class="btn-order-action">受け取った</button>
 					</form>
 					<button th:if="${order.canCancel}" type="button" class="btn-order-action btn-cancel-open" th:attr="data-order-id=${order.orderId}">キャンセル</button>
@@ -103,6 +106,7 @@
 			<span class="modal-close" id="cancelModalClose">&times;</span>
 		</div>
 		<form id="cancelForm" method="post" th:action="@{/user/orders/{id}/cancel(id=${order.orderId})}">
+			<th:block th:replace="~{ui/fragments :: csrf_token}"></th:block>
 			<div class="modal-body">
 				<label for="cancelReason">理由（任意）</label>
 				<input type="text" id="cancelReason" name="reason" maxlength="2000" placeholder="キャンセル理由">
@@ -122,6 +126,7 @@
 			<span class="modal-close" id="reviewModalClose">&times;</span>
 		</div>
 		<form id="reviewForm" method="post" th:action="@{/user/orders/{id}/review(id=${order.orderId})}">
+			<th:block th:replace="~{ui/fragments :: csrf_token}"></th:block>
 			<div class="modal-body">
 				<label>評価</label>
 				<select name="rating" id="reviewRating" required>

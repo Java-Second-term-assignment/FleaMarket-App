@@ -77,6 +77,7 @@
 					<!-- ================= カート ================= -->
 					<div class="button-group">
 						<form th:action="@{/cart/add}" method="post" style="flex:2;">
+							<th:block th:replace="~{ui/fragments :: csrf_token}"></th:block>
 							<input type="hidden" name="productId" th:value="${product.id}">
 							<button type="submit" class="btn-blue" th:disabled="${product.stock == 0}">
 								カートに入れる
@@ -135,7 +136,7 @@
 						<form sec:authorize="isAuthenticated()" class="review-form"
 							th:action="@{/product/{id}/review(id=${product.id})}" method="post"
 							th:object="${reviewForm}">
-
+							<th:block th:replace="~{ui/fragments :: csrf_token}"></th:block>
 
 							<div class="review-form-group">
 								<label class="review-form-label">

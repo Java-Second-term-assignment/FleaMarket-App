@@ -15,6 +15,7 @@
 			<div class="section-card">
 				<p class="section-desc">以下を入力し、保存して注文確認へ戻ってください。</p>
 				<form th:action="@{/address}" method="post" class="address-form">
+					<th:block th:replace="~{ui/fragments :: csrf_token}"></th:block>
 					<input type="hidden" name="productId" th:value="${productId}" th:if="${productId != null}">
 					<div class="form-group">
 						<label class="info-label" for="name">氏名</label>

@@ -46,12 +46,14 @@
                                       th:classappend="${user.enabled ? 'status-active' : 'status-disabled'}"
                                       th:text="${user.enabled ? '有効' : '無効'}">状態</span>
                                 <form th:if="${user.enabled and user.id != currentUserId}" th:action="@{/admin/users/toggle}" method="post" class="inline-form toggle-form">
+                                    <th:block th:replace="~{ui/fragments :: csrf_token}"></th:block>
                                     <input type="hidden" name="id" th:value="${user.id}">
                                     <button type="submit" class="icon-btn btn-sm toggle-disable-btn" title="無効にする">
                                         <span class="material-symbols-outlined">toggle_off</span>
                                     </button>
                                 </form>
                                 <form th:if="${!user.enabled}" th:action="@{/admin/users/toggle}" method="post" class="inline-form toggle-form">
+                                    <th:block th:replace="~{ui/fragments :: csrf_token}"></th:block>
                                     <input type="hidden" name="id" th:value="${user.id}">
                                     <button type="submit" class="icon-btn btn-sm toggle-enable-btn" title="有効にする">
                                         <span class="material-symbols-outlined">toggle_on</span>
@@ -62,11 +64,13 @@
                                 <span class="status-badge status-cell" th:classappend="${user.admin ? 'status-active' : 'status-disabled'}"
                                       th:text="${user.admin ? '管理者' : '一般'}">一般</span>
                                 <form th:if="${user.admin and user.id != currentUserId}" th:action="@{/admin/users/admin-role}" method="post" class="inline-form admin-role-confirm">
+                                    <th:block th:replace="~{ui/fragments :: csrf_token}"></th:block>
                                     <input type="hidden" name="id" th:value="${user.id}">
                                     <input type="hidden" name="makeAdmin" value="false">
                                     <button type="submit" class="icon-btn btn-sm" title="管理者権限を剥奪">剥奪</button>
                                 </form>
                                 <form th:if="${!user.admin}" th:action="@{/admin/users/admin-role}" method="post" class="inline-form admin-role-confirm">
+                                    <th:block th:replace="~{ui/fragments :: csrf_token}"></th:block>
                                     <input type="hidden" name="id" th:value="${user.id}">
                                     <input type="hidden" name="makeAdmin" value="true">
                                     <button type="submit" class="icon-btn btn-sm" title="管理者権限を付与">付与</button>
@@ -99,6 +103,7 @@
                                         </button>
                                     </th:block>
                                     <form th:if="${!user.enabled}" th:action="@{/admin/users/blacklist/restore}" method="post" style="display:inline;">
+                                        <th:block th:replace="~{ui/fragments :: csrf_token}"></th:block>
                                         <input type="hidden" name="id" th:value="${user.id}">
                                         <button type="submit" class="icon-btn" title="有効化">
                                             <span class="material-symbols-outlined">check_circle</span>
@@ -132,11 +137,13 @@
                                 <span class="status-badge status-cell" th:classappend="${user.admin ? 'status-active' : 'status-disabled'}"
                                       th:text="${user.admin ? '管理者' : '一般'}">一般</span>
                                 <form th:if="${user.admin and user.id != currentUserId}" th:action="@{/admin/users/admin-role}" method="post" class="inline-form admin-role-confirm">
+                                    <th:block th:replace="~{ui/fragments :: csrf_token}"></th:block>
                                     <input type="hidden" name="id" th:value="${user.id}">
                                     <input type="hidden" name="makeAdmin" value="false">
                                     <button type="submit" class="icon-btn btn-sm" title="管理者権限を剥奪">剥奪</button>
                                 </form>
                                 <form th:if="${!user.admin}" th:action="@{/admin/users/admin-role}" method="post" class="inline-form admin-role-confirm">
+                                    <th:block th:replace="~{ui/fragments :: csrf_token}"></th:block>
                                     <input type="hidden" name="id" th:value="${user.id}">
                                     <input type="hidden" name="makeAdmin" value="true">
                                     <button type="submit" class="icon-btn btn-sm" title="管理者権限を付与">付与</button>
@@ -145,6 +152,7 @@
                             <td>
                                 <div class="action-group">
                                     <form th:action="@{/admin/users/blacklist/restore}" method="post" style="display:inline;">
+                                        <th:block th:replace="~{ui/fragments :: csrf_token}"></th:block>
                                         <input type="hidden" name="id" th:value="${user.id}">
                                         <button type="submit" class="btn-action btn-restore" title="制限解除">
                                             <span class="material-symbols-outlined">settings_backup_restore</span>
@@ -178,6 +186,7 @@
             <span class="material-symbols-outlined close-modal" style="cursor:pointer;">close</span>
         </div>
         <form id="editForm" method="post">
+            <th:block th:replace="~{ui/fragments :: csrf_token}"></th:block>
             <div class="modal-body">
                 <input type="hidden" name="id" id="editId">
                 <div class="form-group">
@@ -206,6 +215,7 @@
             <span class="material-symbols-outlined" id="freezeModalClose" style="cursor:pointer;">close</span>
         </div>
         <form id="freezeForm" method="post">
+            <th:block th:replace="~{ui/fragments :: csrf_token}"></th:block>
             <div class="modal-body">
                 <p><strong id="freezeUserName">ユーザー名</strong> の操作を実行しますか？</p>
                 <div class="form-group" id="freezeDurationGroup">
@@ -241,6 +251,7 @@
         </div>
         <div class="modal-footer">
             <form id="deleteConfirmForm" method="post">
+                <th:block th:replace="~{ui/fragments :: csrf_token}"></th:block>
                 <input type="hidden" name="id" id="deleteConfirmTargetId">
                 <button type="submit" class="btn-submit-post" style="background: var(--accent-red);">削除を確定する</button>
             </form>

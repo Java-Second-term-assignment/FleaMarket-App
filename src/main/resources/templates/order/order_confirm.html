@@ -97,6 +97,7 @@
 				</div>
 
 				<form th:action="@{/order/confirm}" method="post">
+					<th:block th:replace="~{ui/fragments :: csrf_token}"></th:block>
 					<input type="hidden" name="productId" th:value="${productId}" th:if="${productId != null}">
 					<button class="btn-submit" type="submit">
 						注文を確定する

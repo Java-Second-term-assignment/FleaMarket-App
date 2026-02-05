@@ -30,6 +30,7 @@
 			</p>
 
 			<form th:action="@{/admin/login}" method="post">
+				<th:block th:replace="~{ui/fragments :: csrf_token}"></th:block>
 				<div class="form-group">
 					<label>メールアドレス</label>
 					<input type="email" name="email" required autocomplete="username">

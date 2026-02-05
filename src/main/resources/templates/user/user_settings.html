@@ -212,6 +212,7 @@
 						<div class="settings-card-section">
 							<form id="address-edit-form" th:action="@{/user/address/update}" method="post"
 								style="display:flex;flex-direction:column;gap:10px;">
+								<th:block th:replace="~{ui/fragments :: csrf_token}"></th:block>
 
 								<div>
 									<label style="color:#ffd743;">お名前</label><br>

@@ -60,6 +60,7 @@
 
 			<!-- ログインフォーム -->
 			<form th:action="@{/login}" method="post">
+				<th:block th:replace="~{ui/fragments :: csrf_token}"></th:block>
 				<input type="hidden" name="returnUrl" th:value="${returnUrl != null} ? ${returnUrl} : ''">
 				<div class="form-group">
 					<label>メールアドレス</label>

@@ -20,6 +20,7 @@
 
 		<section class="post-form-container" sec:authorize="isAuthenticated()">
 			<form th:action="@{/board/{boardId}/posts(boardId=${boardId})}" method="post">
+				<th:block th:replace="~{ui/fragments :: csrf_token}"></th:block>
 				<div class="form-group">
 					<label for="content">投稿</label>
 					<textarea id="content" name="content" required maxlength="1000" placeholder="投稿内容を入力..."></textarea>

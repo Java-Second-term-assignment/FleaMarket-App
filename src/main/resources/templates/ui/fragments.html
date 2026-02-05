@@ -20,6 +20,10 @@
 			<span class="theme-icon theme-icon-light" aria-hidden="true">light_mode</span>
 		</button>
 	</th:block>
+	<!-- CSRF トークン（POST フォーム内に th:replace="~{ui/fragments :: csrf_token}" で挿入） -->
+	<th:block th:fragment="csrf_token">
+		<input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+	</th:block>
 	<div th:fragment="header" class="header">
 		<div class="header-inner">
 

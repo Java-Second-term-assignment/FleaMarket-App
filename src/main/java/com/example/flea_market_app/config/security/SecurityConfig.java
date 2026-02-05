@@ -54,7 +54,7 @@ public class SecurityConfig {
 	SecurityFilterChain adminLoginSecurityFilterChain(HttpSecurity http) throws Exception {
 		http
 				.securityMatcher("/admin/login", "/admin/login*")
-				.csrf(AbstractHttpConfigurer::disable)
+				// CSRF 有効（フォームログインのため）
 				.cors(Customizer.withDefaults())
 				.sessionManagement(session -> session.sessionCreationPolicy(
 						org.springframework.security.config.http.SessionCreationPolicy.IF_REQUIRED))
@@ -117,7 +117,7 @@ public class SecurityConfig {
 	public SecurityFilterChain webSecurityFilterChain(HttpSecurity http) throws Exception {
 		http
 				.securityMatcher("/**")
-				.csrf(AbstractHttpConfigurer::disable)
+				// CSRF 有効（フォーム・状態変更系を保護）
 				.cors(Customizer.withDefaults())
 				.sessionManagement(session -> session.sessionCreationPolicy(
 						org.springframework.security.config.http.SessionCreationPolicy.IF_REQUIRED))

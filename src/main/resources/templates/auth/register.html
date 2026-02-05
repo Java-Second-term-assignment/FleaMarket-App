@@ -59,6 +59,7 @@
 			<p th:if="${errorMessage}" th:text="${errorMessage}" class="error-text"></p>
 
 			<form th:action="@{/register}" th:object="${userForm}" method="post">
+				<th:block th:replace="~{ui/fragments :: csrf_token}"></th:block>
 
 				<div class="form-group">
 					<label>
