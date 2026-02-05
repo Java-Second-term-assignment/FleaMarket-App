@@ -32,10 +32,14 @@ public class UserProfileQueryService {
 		String email = authAccountQueryPort.findEmailByUserId(userId).orElse(null);
 
 		UserEntity entity = userRepository.findById(userId).orElseThrow();
-		String profileImageS3Key = entity.getProfileImageS3Key();
-		String iconUrl = (profileImageS3Key != null && !profileImageS3Key.isEmpty())
-				? s3ImageService.generateImageUrl(bucketName, profileImageS3Key)
-				: null;
+		String profileImageUrl = entity.getProfileImageUrl();
+		if (profileImageUrl == null || profileImageUrl.isEmpty()) {
+			String profileImageS3Key = entity.getProfileImageS3Key();
+			profileImageUrl = (profileImageS3Key != null && !profileImageS3Key.isEmpty())
+					? s3ImageService.generateImageUrl(bucketName, profileImageS3Key)
+					: null;
+		}
+		String iconUrl = profileImageUrl;
 		String caption = entity.getCaption() != null ? entity.getCaption() : "";
 
 		return UserMeResponse.of(user, email, iconUrl, caption);
