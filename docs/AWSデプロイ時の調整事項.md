@@ -85,7 +85,19 @@ SPRING_PROFILES_ACTIVE=pg
 
 ---
 
-## 5. Stripe（決済利用時）
+## 5. JWT（アクセストークン）
+
+API の認証に使用するアクセストークン（JWT）の署名に用いる秘密鍵です。本番では必ず環境変数で指定してください。
+
+| 項目 | 環境変数 | 説明 |
+|------|----------|------|
+| 秘密鍵 | `APP_JWT_SECRET` | **本番必須。** HMAC-SHA256 用。256bit（32 文字）以上の文字列を指定すること。未設定時は `application.properties` のデフォルト値が使われるため、本番では必ず上書きすること。 |
+
+- 秘密鍵は推測困難なランダム文字列にし、本番・ステージング・開発で異なる値を使うことを推奨します。
+
+---
+
+## 6. Stripe（決済利用時）
 
 決済機能を有効にする場合は、`application.properties` のコメントを外し、以下を設定します。
 
@@ -99,7 +111,7 @@ SPRING_PROFILES_ACTIVE=pg
 
 ---
 
-## 6. CORS（フロントエンドのオリジン）
+## 7. CORS（フロントエンドのオリジン）
 
 API を別オリジン（フロントアプリ）から呼び出す場合、許可するオリジンを本番用に変更してください。
 
@@ -115,25 +127,25 @@ API を別オリジン（フロントアプリ）から呼び出す場合、許�
 
 ---
 
-## 7. その他
+## 8. その他
 
-### 7.1 サーバーポート
+### 8.1 サーバーポート
 
 - デフォルトは 8080。`application-dev.properties` では 8082。
 - ECS/ALB 等ではコンテナは 8080 で listen し、ALB が 80/443 で受ける構成が一般的。
 
-### 7.2 Flyway
+### 8.2 Flyway
 
 - 本番では `classpath:db/migration` のみが使用される（`pg` プロファイルで `spring.flyway.locations=classpath:db/migration`）。
 - `dev_migration` は本番に含めないこと。
 
-### 7.3 商品一覧のページサイズ
+### 8.3 商品一覧のページサイズ
 
 - `app.product-list.page-size`（デフォルト 50）で変更可能。必要に応じてプロパティで設定。
 
 ---
 
-## 8. 環境変数チェックリスト（本番例）
+## 9. 環境変数チェックリスト（本番例）
 
 デプロイ前に、少なくとも以下を確認してください。
 
@@ -144,6 +156,7 @@ DATASOURCE_URL=jdbc:postgresql://your-rds-host:5432/flea_market
 SPRING_DATASOURCE_USERNAME=***
 SPRING_DATASOURCE_PASSWORD=***
 AWS_S3_BUCKET_NAME=your-production-bucket
+APP_JWT_SECRET=your-256bit-or-longer-secret-key-for-jwt-signing
 
 # 推奨（リージョンを変える場合）
 AWS_S3_REGION=ap-northeast-1
@@ -161,7 +174,7 @@ MAIL_FROM=noreply@yourdomain.com
 
 ---
 
-## 9. 参照
+## 10. 参照
 
 - アプリ設定: `src/main/resources/application.properties`
 - 本番用 DB 設定: `src/main/resources/application-pg.properties`
