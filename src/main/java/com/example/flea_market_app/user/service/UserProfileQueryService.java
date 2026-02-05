@@ -9,6 +9,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.example.flea_market_app.common.service.S3ImageService;
 import com.example.flea_market_app.user.domain.UserEntity;
 import com.example.flea_market_app.user.repository.UserRepository;
+import com.example.flea_market_app.user.service.dto.UserAddressDto;
 import com.example.flea_market_app.user.service.dto.UserMeResponse;
 import com.example.flea_market_app.user.service.port.AuthAccountQueryPort;
 
@@ -42,6 +43,12 @@ public class UserProfileQueryService {
 		String iconUrl = profileImageUrl;
 		String caption = entity.getCaption() != null ? entity.getCaption() : "";
 
-		return UserMeResponse.of(user, email, iconUrl, caption);
+		UserAddressDto address = UserAddressDto.from(
+				entity.getRecipientName(),
+				entity.getPostalCode(),
+				entity.getAddress(),
+				entity.getPhone());
+
+		return UserMeResponse.of(user, email, iconUrl, caption, address);
 	}
 }

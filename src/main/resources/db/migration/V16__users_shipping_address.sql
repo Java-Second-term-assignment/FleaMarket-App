@@ -1,0 +1,5 @@
+-- ユーザー既定配送先（1ユーザー1件）
+ALTER TABLE users ADD COLUMN recipient_name VARCHAR(100) NULL;
+ALTER TABLE users ADD COLUMN postal_code VARCHAR(20) NULL;
+ALTER TABLE users ADD COLUMN address VARCHAR(500) NULL;
+ALTER TABLE users ADD COLUMN phone VARCHAR(30) NULL;

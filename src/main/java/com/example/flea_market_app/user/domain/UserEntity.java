@@ -44,4 +44,16 @@ public class UserEntity {
 
 	@Column(name = "caption", length = 200)
 	private String caption;
+
+	@Column(name = "recipient_name", length = 100)
+	private String recipientName;
+
+	@Column(name = "postal_code", length = 20)
+	private String postalCode;
+
+	@Column(name = "address", length = 500)
+	private String address;
+
+	@Column(name = "phone", length = 30)
+	private String phone;
 }

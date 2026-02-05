@@ -17,6 +17,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import com.example.flea_market_app.catalog.service.ProductListService;
 import com.example.flea_market_app.config.security.SecurityUtil;
 import com.example.flea_market_app.transaction.domain.ReviewRating;
+import com.example.flea_market_app.user.service.UserService;
 import com.example.flea_market_app.transaction.service.OrderQueryService;
 import com.example.flea_market_app.transaction.service.OrderService;
 import com.example.flea_market_app.transaction.service.ReviewService;
@@ -37,6 +38,7 @@ public class OrderPageController {
 	private final OrderQueryService orderQueryService;
 	private final OrderService orderService;
 	private final ReviewService reviewService;
+	private final UserService userService;
 
 	@PostMapping("/order/confirm")
 	public String orderConfirmPost(
@@ -89,7 +91,11 @@ public class OrderPageController {
 		model.addAttribute("payment", sessionPayment != null ? sessionPayment : DEFAULT_PAYMENT);
 		@SuppressWarnings("unchecked")
 		Map<String, String> sessionAddress = (Map<String, String>) session.getAttribute(ORDER_ADDRESS);
-		model.addAttribute("address", sessionAddress != null ? sessionAddress : DEFAULT_ADDRESS);
+		var userId = SecurityUtil.getCurrentUserId();
+		Map<String, String> addressForView = sessionAddress != null
+				? sessionAddress
+				: userService.getDefaultShippingAddress(userId);
+		model.addAttribute("address", addressForView);
 		return "order/order_confirm";
 	}
 
@@ -121,7 +127,11 @@ public class OrderPageController {
 		}
 		@SuppressWarnings("unchecked")
 		Map<String, String> sessionAddress = (Map<String, String>) session.getAttribute(ORDER_ADDRESS);
-		model.addAttribute("address", sessionAddress != null ? sessionAddress : DEFAULT_ADDRESS);
+		var userId = SecurityUtil.getCurrentUserId();
+		Map<String, String> addressForView = sessionAddress != null
+				? sessionAddress
+				: userService.getDefaultShippingAddress(userId);
+		model.addAttribute("address", addressForView);
 		return "order/address";
 	}
 

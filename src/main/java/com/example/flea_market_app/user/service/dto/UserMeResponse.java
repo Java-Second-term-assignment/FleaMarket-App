@@ -25,7 +25,9 @@ public class UserMeResponse {
 	private String iconUrl;
 	private String caption;
 
-	public static UserMeResponse of(User user, String email, String iconUrl, String caption) {
+	private UserAddressDto address;
+
+	public static UserMeResponse of(User user, String email, String iconUrl, String caption, UserAddressDto address) {
 		return new UserMeResponse(
 				user.getId(),
 				user.getDisplayName(),
@@ -36,6 +38,7 @@ public class UserMeResponse {
 				user.getRank().getCommissionBps(),
 				user.isActive(),
 				iconUrl,
-				caption != null ? caption : "");
+				caption != null ? caption : "",
+				address != null ? address : UserAddressDto.empty());
 	}
 }

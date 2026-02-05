@@ -9,7 +9,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.example.flea_market_app.common.constant.ImageConstants;
 import com.example.flea_market_app.config.security.SecurityUtil;
@@ -18,7 +22,11 @@ import com.example.flea_market_app.engagement.favorite.service.dto.FavoriteItemR
 import com.example.flea_market_app.user.controller.dto.FavoriteItemViewDto;
 import com.example.flea_market_app.user.controller.dto.UserSettingsViewDto;
 import com.example.flea_market_app.user.service.UserProfileQueryService;
+import com.example.flea_market_app.user.service.UserService;
+import com.example.flea_market_app.user.service.dto.UpdateAddressRequest;
 import com.example.flea_market_app.user.service.dto.UserMeResponse;
+
+import jakarta.validation.Valid;
 
 import lombok.RequiredArgsConstructor;
 
@@ -29,6 +37,7 @@ public class UserPageController {
 	private static final Logger log = LoggerFactory.getLogger(UserPageController.class);
 
 	private final UserProfileQueryService userProfileQueryService;
+	private final UserService userService;
 	private final FavoriteService favoriteService;
 
 	@GetMapping("/user/settings")
@@ -63,12 +72,28 @@ public class UserPageController {
 				"expireYear", ""));
 		model.addAttribute("userProducts", Collections.emptyList());
 		model.addAttribute("notifications", Collections.emptyList());
-		model.addAttribute("address", Map.of(
-				"recipientName", "",
-				"postalCode", "",
-				"address", "",
-				"phone", ""));
+		model.addAttribute("address", me.getAddress());
 
 		return "user/user_settings";
+	}
+
+	@PostMapping("/user/address/update")
+	public String updateAddress(
+			@Valid @ModelAttribute UpdateAddressRequest req,
+			BindingResult result,
+			RedirectAttributes ra) {
+		UUID userId = SecurityUtil.getCurrentUserId();
+		if (result.hasErrors()) {
+			ra.addFlashAttribute("errorMessage", "入力内容を確認してください。");
+			return "redirect:/user/settings";
+		}
+		userService.updateAddress(
+				userId,
+				req.getRecipientName(),
+				req.getPostalCode(),
+				req.getAddress(),
+				req.getPhone());
+		ra.addFlashAttribute("message", "配送先を更新しました。");
+		return "redirect:/user/settings";
 	}
 }

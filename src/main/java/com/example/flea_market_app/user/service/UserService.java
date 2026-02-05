@@ -2,6 +2,7 @@ package com.example.flea_market_app.user.service;
 
 import java.io.IOException;
 import java.util.Locale;
+import java.util.Map;
 import java.util.UUID;
 
 import org.slf4j.Logger;
@@ -56,6 +57,52 @@ public class UserService {
 		e.setDisplayName(displayName != null ? displayName.trim() : "");
 		e.setCaption(caption != null ? caption.trim() : null);
 		userRepository.save(e);
+	}
+
+	/**
+	 * ユーザーの既定配送先を更新します。呼び出し元で認証ユーザー本人であることを確認すること。
+	 */
+	@Transactional
+	public void updateAddress(UUID userId, String recipientName, String postalCode, String address, String phone) {
+		UserEntity e = userRepository.findById(userId)
+				.orElseThrow(() -> new IllegalArgumentException("User not found: " + userId));
+
+		e.setRecipientName(trimToNull(recipientName, 100));
+		e.setPostalCode(trimToNull(postalCode, 20));
+		e.setAddress(trimToNull(address, 500));
+		e.setPhone(trimToNull(phone, 30));
+		userRepository.save(e);
+	}
+
+	/**
+	 * 注文フロー用の既定配送先を返します。キーは name, postcode, fullAddress。
+	 * 未設定の場合は空文字の Map を返します。
+	 */
+	@Transactional(readOnly = true)
+	public Map<String, String> getDefaultShippingAddress(UUID userId) {
+		UserEntity e = userRepository.findById(userId).orElse(null);
+		if (e == null) {
+			return Map.of("name", "", "postcode", "", "fullAddress", "");
+		}
+		return Map.of(
+				"name", nullToEmpty(e.getRecipientName()),
+				"postcode", nullToEmpty(e.getPostalCode()),
+				"fullAddress", nullToEmpty(e.getAddress()));
+	}
+
+	private static String trimToNull(String value, int maxLen) {
+		if (value == null) {
+			return null;
+		}
+		String t = value.trim();
+		if (t.isEmpty()) {
+			return null;
+		}
+		return t.length() > maxLen ? t.substring(0, maxLen) : t;
+	}
+
+	private static String nullToEmpty(String value) {
+		return value != null ? value : "";
 	}
 
 	@Transactional

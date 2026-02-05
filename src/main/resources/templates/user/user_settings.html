@@ -146,6 +146,9 @@
 
 					<div class="settings-card">
 
+						<div th:if="${message}" class="settings-flash-message" style="color:#4ade80;margin-bottom:12px;" th:text="${message}">メッセージ</div>
+						<div th:if="${errorMessage}" class="settings-flash-error" style="color:#f87171;margin-bottom:12px;" th:text="${errorMessage}">エラーメッセージ</div>
+
 						<!-- 通知設定 -->
 						<div class="settings-title">
 							通知設定
