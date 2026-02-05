@@ -31,6 +31,10 @@
 			<nav class="nav">
 				<div class="nav-links">
 
+					<!-- テーマ切替（商品一覧の左・区切り線で区切る） -->
+					<div class="nav-item nav-item-theme">
+						<th:block th:replace="~{ui/fragments :: theme_toggle_button}"></th:block>
+					</div>
 					<!-- 一般画面のみ表示（管理者画面では非表示） -->
 					<div class="nav-item" th:if="${isAdminContext != true}">
 						<a th:href="@{/products}">商品一覧</a>
@@ -85,7 +89,6 @@
 					出品する
 				</button>
 
-				<th:block th:replace="~{ui/fragments :: theme_toggle_button}"></th:block>
 				<a sec:authorize="isAuthenticated()" th:href="@{/logout}" class="btn-logout">
 					ログアウト
 				</a>
