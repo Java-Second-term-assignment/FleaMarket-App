@@ -197,6 +197,26 @@
 	stroke-width: 1.5;
 }
 
+/* お気に入りトグル：済みのときアイコンを赤で表示 */
+.favorite-toggle-btn .favorite-icon {
+	font-variation-settings: "FILL" 0;
+	color: var(--text-sub, #666);
+}
+.favorite-toggle-btn.is-favorited .favorite-icon {
+	font-variation-settings: "FILL" 1;
+	color: #e53935;
+}
+
+.favorite-error {
+	font-size: 13px;
+	color: var(--accent-red, #e53935);
+	visibility: hidden;
+	margin-left: 8px;
+}
+.favorite-error.visible {
+	visibility: visible;
+}
+
 /* 購入に進むボタン（リンクとして表示） */
 .btn-purchase {
 	display: inline-block;

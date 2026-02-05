@@ -17,6 +17,7 @@ import com.example.flea_market_app.catalog.service.ProductListService.ProductLis
 import com.example.flea_market_app.catalog.service.ProductListService;
 import com.example.flea_market_app.common.exception.NotFoundBusinessException;
 import com.example.flea_market_app.config.security.SecurityUtil;
+import com.example.flea_market_app.engagement.favorite.repository.FavoriteRepository;
 
 import lombok.RequiredArgsConstructor;
 
@@ -28,6 +29,7 @@ public class ProductPageController {
 
 	private final ProductListService productListService;
 	private final ItemViewService itemViewService;
+	private final FavoriteRepository favoriteRepository;
 
 	@Value("${app.product-list.page-size:50}")
 	private int defaultPageSize;
@@ -69,7 +71,11 @@ public class ProductPageController {
 				.map(product -> {
 					SecurityUtil.getCurrentUserIdOptional()
 							.ifPresent(userId -> itemViewService.recordViewIfNew(userId, id));
+					boolean isFavorited = SecurityUtil.getCurrentUserIdOptional()
+							.map(userId -> favoriteRepository.existsByUserIdAndItemId(userId, id))
+							.orElse(false);
 					model.addAttribute("product", product);
+					model.addAttribute("isFavorited", isFavorited);
 					model.addAttribute("reviewSummary", new ReviewSummaryStub());
 					model.addAttribute("reviews", List.<ReviewStub>of());
 					model.addAttribute("reviewForm", new com.example.flea_market_app.catalog.controller.dto.ReviewFormStub());

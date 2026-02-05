@@ -10,7 +10,7 @@
 <body th:attr="data-anonymous=${#authorization.expression('isAnonymous()')}">
 	<div th:replace="~{ui/fragments :: header}"></div>
 
-	<main class="main-container" th:attr="data-product-id=${product.id}">
+	<main class="main-container" th:attr="data-product-id=${product.id}, data-is-favorited=${isFavorited}">
 		<div class="detail-card">
 			<div class="detail-card-scroll">
 				<div class="detail-layout">
@@ -56,10 +56,10 @@
 					</div>
 
 					<div class="action-row">
-						<button class="icon-btn" title="お気に入り">
-							<span class="material-symbols-outlined">
-							favorite
-							</span>
+						<button type="button" class="icon-btn favorite-toggle-btn" data-favorite-toggle title="お気に入り"
+							th:classappend="${isFavorited} ? 'is-favorited'"
+							th:attr="aria-pressed=${isFavorited}">
+							<span class="material-symbols-outlined favorite-icon" th:text="${isFavorited} ? 'favorite' : 'favorite_border'">favorite_border</span>
 						</button>
 						<button class="icon-btn" title="通報">
 							<span class="material-symbols-outlined">
@@ -82,7 +82,9 @@
 								カートに入れる
 							</button>
 						</form>
-						<button class="btn-gray">お気に入り</button>
+						<button type="button" class="btn-gray favorite-toggle-btn" data-favorite-toggle
+							th:text="${isFavorited} ? 'お気に入り解除' : 'お気に入り'">お気に入り</button>
+						<span id="favoriteError" class="favorite-error" role="alert" aria-live="polite"></span>
 					</div>
 
 					<!-- ================= レビュー ================= -->
