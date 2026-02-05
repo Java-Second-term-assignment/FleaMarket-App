@@ -1,6 +1,7 @@
 @charset "UTF-8";
 
 /* 背景と全体のレイアウト（variables.css の :root を参照） */
+/* 共通ヘッダー固定時用：ヘッダーとコンテンツが被らないよう上余白を確保 */
 body {
 	background-color: var(--bg-dark);
 	display: flex;
@@ -9,8 +10,30 @@ body {
 	align-items: center;
 	min-height: 100vh;
 	margin: 0;
+	padding-top: 80px;
+	box-sizing: border-box;
 	font-family: "Helvetica Neue", Arial, sans-serif;
 	font-weight: 600;
+}
+
+/* 認証画面のサイト共通ヘッダーは常にダーク（白ヘッダー・白文字の見えなくなる不具合を防止） */
+body > .header {
+	background-color: #1e2a3b !important;
+	color: #ffffff !important;
+}
+body > .header a,
+body > .header .nav-links a,
+body > .header .nav-item a,
+body > .header .btn-logout,
+body > .header .logo a {
+	color: #ffffff !important;
+}
+body > .header .nav-links a::after {
+	background: #ffffff !important;
+}
+body > .header .btn-theme-toggle,
+body > .header .theme-icon {
+	color: #ffffff !important;
 }
 
 /* 中央のシート（今風のカード） */
@@ -23,20 +46,22 @@ body {
 	overflow: hidden;
 }
 
-/* ヘッダー（ログインカード内の「ログイン」表示セクション） */
-.container .header {
+/* カード内ヘッダー（共通ヘッダーと区別するため .auth-card-header を使用） */
+.container .auth-card-header {
+	position: static;
 	padding: 30px 20px;
 	border-bottom: 1.5px solid rgba(255, 255, 255, 0.2);
 	text-align: center;
 	background-color: #1e2a3b;
-	color: #ffffff;
+	color: #ffffff !important;
 }
 
-.container .header h1 {
+.container .auth-card-header h1 {
 	margin: 0;
 	font-size: 28px;
 	font-weight: 700;
-	color: #ffffff;
+	line-height: 1.2;
+	color: #ffffff !important;
 }
 
 /* コンテンツエリア（余白を広めに） */

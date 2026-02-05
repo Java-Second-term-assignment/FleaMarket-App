@@ -41,12 +41,12 @@ html[data-theme="light"] .header .nav-links a::after {
 }
 
 /* ライトテーマ時でもログイン・新規登録カードのヘッダーは色を変えない（常にダーク・文字は白） */
-html[data-theme="light"] .container .header {
+html[data-theme="light"] .container .auth-card-header {
 	background-color: #1e2a3b;
 	border-bottom-color: rgba(255, 255, 255, 0.2);
 }
-html[data-theme="light"] .container .header h1 {
-	color: #e8e8e8;
+html[data-theme="light"] .container .auth-card-header h1 {
+	color: #e8e8e8 !important;
 }
 
 /* ライトテーマ時：ログイン・新規登録の文字色・太字は固定（テーマで変わらない） */
