@@ -335,6 +335,32 @@ main {
 	padding: 10px 20px;
 }
 
+/* ライトモード：注文一覧と同様の薄いグレーでメリハリ（variables.css / theme.css の --bg-panel 使用） */
+html[data-theme="light"] .board-list-container {
+	background-color: var(--bg-panel);
+	border-color: var(--border-light);
+	border-radius: 12px;
+	padding: 20px;
+}
+
+html[data-theme="light"] .board-list-container .board-title {
+	color: var(--text-dark);
+}
+
+html[data-theme="light"] .board-list-container .board-meta {
+	color: var(--text-muted);
+}
+
+html[data-theme="light"] .board-list-container .board-content {
+	border-bottom-color: var(--border-light);
+}
+
+html[data-theme="light"] .board-list-container .category-chip-small {
+	background: #fff;
+	color: var(--accent-blue-link);
+	border: 1px solid var(--border-light);
+}
+
 .board-item {
 	display: flex;
 	align-items: flex-start;

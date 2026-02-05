@@ -242,3 +242,75 @@ html[data-theme="light"] .admin-tabs .tab-btn.active {
 html[data-theme="light"] main .page-title {
 	color: #1e2a3b;
 }
+
+/* =============== ユーザー設定：注文一覧と同様の薄いグレーでメリハリ =============== */
+html[data-theme="light"] .profile-card {
+	background-color: var(--bg-panel);
+	border-color: var(--border-light);
+}
+
+html[data-theme="light"] .profile-card-main {
+	border-bottom-color: var(--border-light);
+}
+
+html[data-theme="light"] .profile-card .tab-bar {
+	background: var(--bg-panel);
+}
+
+html[data-theme="light"] .profile-card .tab-bar .tab {
+	color: #555555;
+}
+
+html[data-theme="light"] .profile-card .tab-bar .tab.active,
+html[data-theme="light"] .profile-card .tab-bar .tab:hover {
+	background: #e8e8e8;
+	color: #1e2a3b;
+}
+
+html[data-theme="light"] .profile-card .tab-bar .tab:not(.active) {
+	color: #666666;
+}
+
+/* ユーザー設定：タブコンテンツ領域も薄いグレーで統一 */
+html[data-theme="light"] .profile-tab-content,
+html[data-theme="light"] .favorite-scroll-list,
+html[data-theme="light"] .product-scroll-list,
+html[data-theme="light"] .notification-scroll-list,
+html[data-theme="light"] .settings-card {
+	background-color: var(--input-bg);
+	border: 1px solid var(--border-light);
+	border-radius: 0 0 8px 8px;
+	color: var(--text-dark);
+}
+
+html[data-theme="light"] .profile-card-main,
+html[data-theme="light"] .profile-info-title,
+html[data-theme="light"] .profile-info-name,
+html[data-theme="light"] .profile-info-caption-edit,
+html[data-theme="light"] .profile-info-title-edit,
+html[data-theme="light"] .profile-info-name-edit {
+	color: #333333;
+}
+
+html[data-theme="light"] .profile-info-caption {
+	color: #555555;
+}
+
+html[data-theme="light"] .settings-title {
+	color: #1a1a1a;
+}
+
+html[data-theme="light"] .settings-card .settings-checkbox-label,
+html[data-theme="light"] .settings-card-section {
+	color: #333333;
+}
+
+/* 設定タブ内のラベル・値をライトモードで読みやすい色に */
+html[data-theme="light"] .settings-card [style*="color:#ffd743"] {
+	color: #1e2a3b !important;
+}
+
+/* #ffd743 はラベル用のため除外して #fff のみ上書き */
+html[data-theme="light"] .settings-card [style*="color:#fff"]:not([style*="color:#ffd743"]) {
+	color: #333333 !important;
+}
