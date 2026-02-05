@@ -153,6 +153,7 @@ public class OrderPageController {
 	public String orderDetail(@PathVariable("id") UUID orderId, Model model) {
 		var userId = SecurityUtil.getCurrentUserId();
 		model.addAttribute("order", orderQueryService.getOrderDetail(orderId, userId));
+		model.addAttribute("currentUserId", userId);
 		return "order/detail";
 	}
 

@@ -60,4 +60,122 @@ document.addEventListener("DOMContentLoaded", () => {
 	if (reviewBackdrop) reviewBackdrop.addEventListener("click", closeReviewModal);
 	if (reviewModalClose) reviewModalClose.addEventListener("click", closeReviewModal);
 	if (reviewModalCancel) reviewModalCancel.addEventListener("click", closeReviewModal);
+
+	// --- 取引チャット ---
+	const chatEl = document.getElementById("orderDetailChat");
+	const chatMessages = document.getElementById("chatMessages");
+	const chatInput = document.getElementById("chatInput");
+	const chatSendBtn = document.getElementById("chatSendBtn");
+	const chatRefreshBtn = document.getElementById("chatRefreshBtn");
+	const chatError = document.getElementById("chatError");
+
+	if (chatEl && chatMessages) {
+		const orderId = chatEl.getAttribute("data-order-id");
+		const currentUserId = chatEl.getAttribute("data-current-user-id");
+		const counterpartyName = chatEl.getAttribute("data-counterparty-name") || "相手";
+
+		function showChatError(msg) {
+			if (chatError) {
+				chatError.textContent = msg || "";
+				chatError.classList.toggle("visible", !!msg);
+			}
+		}
+
+		function formatMessageTime(isoString) {
+			if (!isoString) return "";
+			const d = new Date(isoString);
+			if (isNaN(d.getTime())) return isoString;
+			const y = d.getFullYear();
+			const m = String(d.getMonth() + 1).padStart(2, "0");
+			const day = String(d.getDate()).padStart(2, "0");
+			const h = String(d.getHours()).padStart(2, "0");
+			const min = String(d.getMinutes()).padStart(2, "0");
+			return y + "/" + m + "/" + day + " " + h + ":" + min;
+		}
+
+		function renderMessages(list) {
+			chatMessages.innerHTML = "";
+			if (!list || list.length === 0) {
+				chatMessages.innerHTML = "<p class=\"chat-empty\">まだメッセージはありません。</p>";
+				return;
+			}
+			list.forEach((msg) => {
+				const isOwn = msg.senderId === currentUserId;
+				const label = isOwn ? "自分" : counterpartyName;
+				const bubble = document.createElement("div");
+				bubble.className = "chat-bubble " + (isOwn ? "chat-bubble-own" : "chat-bubble-other");
+				bubble.innerHTML =
+					"<span class=\"chat-bubble-label\">" + escapeHtml(label) + "</span>" +
+					"<span class=\"chat-bubble-time\">" + escapeHtml(formatMessageTime(msg.createdAt)) + "</span>" +
+					"<p class=\"chat-bubble-content\">" + escapeHtml(msg.content || "") + "</p>";
+				chatMessages.appendChild(bubble);
+			});
+			chatMessages.scrollTop = chatMessages.scrollHeight;
+		}
+
+		function escapeHtml(s) {
+			if (s == null) return "";
+			const div = document.createElement("div");
+			div.textContent = s;
+			return div.innerHTML;
+		}
+
+		function loadMessages() {
+			showChatError("");
+			fetch("/user/orders/" + orderId + "/messages", { credentials: "same-origin" })
+				.then((res) => {
+					if (!res.ok) {
+						if (res.status === 401) throw new Error("ログインし直してください。");
+						if (res.status === 403) throw new Error("この取引のチャットを表示する権限がありません。");
+						if (res.status === 404) throw new Error("注文が見つかりません。");
+						throw new Error("メッセージの取得に失敗しました。");
+					}
+					return res.json();
+				})
+				.then(renderMessages)
+				.catch((err) => showChatError(err.message || "エラーが発生しました。"));
+		}
+
+		function sendMessage() {
+			const content = (chatInput && chatInput.value) ? chatInput.value.trim() : "";
+			if (!content) {
+				showChatError("メッセージを入力してください。");
+				return;
+			}
+			showChatError("");
+			if (chatSendBtn) chatSendBtn.disabled = true;
+			fetch("/user/orders/" + orderId + "/messages", {
+				method: "POST",
+				credentials: "same-origin",
+				headers: { "Content-Type": "application/json" },
+				body: JSON.stringify({ content: content })
+			})
+				.then((res) => {
+					if (!res.ok) {
+						return res.json().then((body) => {
+							const msg = (body && body.message) ? body.message : "送信に失敗しました。";
+							throw new Error(msg);
+						}).catch(() => { throw new Error("送信に失敗しました。"); });
+					}
+				})
+				.then(() => {
+					if (chatInput) chatInput.value = "";
+					loadMessages();
+				})
+				.catch((err) => showChatError(err.message || "送信に失敗しました。"))
+				.finally(() => { if (chatSendBtn) chatSendBtn.disabled = false; });
+		}
+
+		loadMessages();
+		if (chatSendBtn) chatSendBtn.addEventListener("click", sendMessage);
+		if (chatRefreshBtn) chatRefreshBtn.addEventListener("click", loadMessages);
+		if (chatInput) {
+			chatInput.addEventListener("keydown", (e) => {
+				if (e.key === "Enter" && !e.shiftKey) {
+					e.preventDefault();
+					sendMessage();
+				}
+			});
+		}
+	}
 });
