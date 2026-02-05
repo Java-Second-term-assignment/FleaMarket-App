@@ -23,7 +23,8 @@
 					<div class="profile-icon-wrap profile-icon-wrap-edit">
 						<div class="profile-image profile-image-edit" id="profileIconDisplay"
 							th:data-imgsrc="${user.iconUrl}">
-							<span th:if="${user.iconUrl == null || user.iconUrl == ''}">アイコン画像</span>
+							<span class="material-symbols-outlined profile-icon-placeholder"
+								th:if="${user.iconUrl == null || user.iconUrl == ''}">person</span>
 							<img th:if="${user.iconUrl != null && user.iconUrl != ''}" th:src="${user.iconUrl}"
 								alt="icon">
 						</div>
@@ -57,7 +58,7 @@
 					<form id="profileEditForm">
 						<label>アイコン画像</label><br>
 						<img id="modalProfileIconPreview" class="modal-profile-icon-preview" style="display:none;">
-						<span id="modalProfileIconNoImage">（画像が未設定）</span>
+						<span id="modalProfileIconNoImage" class="modal-profile-icon-placeholder"><span class="material-symbols-outlined">person</span></span>
 
 						<label class="modal-profile-uploadlabel">画像アップロード</label>
 						<input type="file" id="modalProfileIconFile" accept="image/*">

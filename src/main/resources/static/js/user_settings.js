@@ -135,7 +135,7 @@ document.addEventListener("DOMContentLoaded", () => {
 				closeModal();
 				if (fileInput) fileInput.value = "";
 				if (previewImg) { previewImg.style.display = "none"; previewImg.src = ""; }
-				if (noImageSpan) noImageSpan.style.display = "inline";
+				if (noImageSpan) noImageSpan.style.display = "inline-flex";
 			} catch (err) {
 				console.error(err);
 				alert("プロフィールの保存中にエラーが発生しました。");

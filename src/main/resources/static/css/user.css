@@ -196,6 +196,11 @@ body {
 	border: none;
 }
 
+.profile-image-edit .profile-icon-placeholder {
+	font-size: 40px;
+	color: #666;
+}
+
 .profile-icon-edit {
 	margin-top: 6px;
 	background: #5565da;
@@ -898,6 +903,22 @@ a {
 
 .modal-profile-edit .modal-profile-uploadlabel:hover {
 	background: #263247;
+}
+
+.modal-profile-edit .modal-profile-icon-placeholder {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	width: 60px;
+	height: 60px;
+	border-radius: 50%;
+	background: #ddd;
+	margin-bottom: 12px;
+}
+
+.modal-profile-edit .modal-profile-icon-placeholder .material-symbols-outlined {
+	font-size: 32px;
+	color: #666;
 }
 
 .modal-profile-edit .modal-profile-icon-preview {
