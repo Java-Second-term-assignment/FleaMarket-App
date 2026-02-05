@@ -154,4 +154,26 @@ document.addEventListener("DOMContentLoaded", () => {
 		if (freezeModalClose) freezeModalClose.onclick = closeFreezeModal;
 		if (freezeBackdrop) freezeBackdrop.onclick = closeFreezeModal;
 	}
+
+	// --- 管理者権限付与・剥奪の確認 ---
+	document.addEventListener("submit", (e) => {
+		const form = e.target.closest("form.admin-role-confirm");
+		if (!form) return;
+		e.preventDefault();
+		const makeAdminInput = form.querySelector('input[name="makeAdmin"]');
+		const makeAdmin = makeAdminInput && makeAdminInput.value === "true";
+		const msg = makeAdmin ? "管理者権限を付与しますか？" : "管理者権限を剥奪しますか？";
+		if (confirm(msg)) form.submit();
+	});
+
+	// --- 有効/無効トグルの確認（無効化時） ---
+	document.addEventListener("submit", (e) => {
+		const form = e.target.closest("form.toggle-form");
+		if (!form) return;
+		const submitter = e.submitter;
+		if (submitter && submitter.classList.contains("toggle-disable-btn")) {
+			e.preventDefault();
+			if (confirm("このユーザーを無効にしますか？")) form.submit();
+		}
+	});
 });

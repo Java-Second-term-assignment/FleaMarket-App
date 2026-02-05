@@ -67,6 +67,7 @@ public class AdminPageController {
 		model.addAttribute("users", adminDashboardQueryService.getUsersForDashboard());
 		model.addAttribute("blacklistUsers", adminDashboardQueryService.getBlacklistedUsers());
 		model.addAttribute("activeTab", "list".equals(tab) ? "list" : "blacklist");
+		model.addAttribute("currentUserId", SecurityUtil.getCurrentUserId());
 		log.info("Admin users list displayed, tab={}", tab);
 		return "admin/users";
 	}

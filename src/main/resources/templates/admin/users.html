@@ -42,13 +42,35 @@
                             <td th:text="${user.username}">ユーザー名</td>
                             <td th:text="${user.email}">mail@example.com</td>
                             <td>
-                                <span class="status-badge"
+                                <span class="status-badge status-cell"
                                       th:classappend="${user.enabled ? 'status-active' : 'status-disabled'}"
                                       th:text="${user.enabled ? '有効' : '無効'}">状態</span>
+                                <form th:if="${user.enabled and user.id != currentUserId}" th:action="@{/admin/users/toggle}" method="post" class="inline-form toggle-form">
+                                    <input type="hidden" name="id" th:value="${user.id}">
+                                    <button type="submit" class="icon-btn btn-sm toggle-disable-btn" title="無効にする">
+                                        <span class="material-symbols-outlined">toggle_off</span>
+                                    </button>
+                                </form>
+                                <form th:if="${!user.enabled}" th:action="@{/admin/users/toggle}" method="post" class="inline-form toggle-form">
+                                    <input type="hidden" name="id" th:value="${user.id}">
+                                    <button type="submit" class="icon-btn btn-sm toggle-enable-btn" title="有効にする">
+                                        <span class="material-symbols-outlined">toggle_on</span>
+                                    </button>
+                                </form>
                             </td>
                             <td>
-                                <span class="status-badge" th:classappend="${user.admin ? 'status-active' : 'status-disabled'}"
+                                <span class="status-badge status-cell" th:classappend="${user.admin ? 'status-active' : 'status-disabled'}"
                                       th:text="${user.admin ? '管理者' : '一般'}">一般</span>
+                                <form th:if="${user.admin and user.id != currentUserId}" th:action="@{/admin/users/admin-role}" method="post" class="inline-form admin-role-confirm">
+                                    <input type="hidden" name="id" th:value="${user.id}">
+                                    <input type="hidden" name="makeAdmin" value="false">
+                                    <button type="submit" class="icon-btn btn-sm" title="管理者権限を剥奪">剥奪</button>
+                                </form>
+                                <form th:if="${!user.admin}" th:action="@{/admin/users/admin-role}" method="post" class="inline-form admin-role-confirm">
+                                    <input type="hidden" name="id" th:value="${user.id}">
+                                    <input type="hidden" name="makeAdmin" value="true">
+                                    <button type="submit" class="icon-btn btn-sm" title="管理者権限を付与">付与</button>
+                                </form>
                             </td>
                             <td>
                                 <div class="action-group">
@@ -107,8 +129,18 @@
                             <td th:text="${user.email}">mail@example.com</td>
                             <td><span class="status-tag status-restricted">制限中</span></td>
                             <td>
-                                <span class="status-badge" th:classappend="${user.admin ? 'status-active' : 'status-disabled'}"
+                                <span class="status-badge status-cell" th:classappend="${user.admin ? 'status-active' : 'status-disabled'}"
                                       th:text="${user.admin ? '管理者' : '一般'}">一般</span>
+                                <form th:if="${user.admin and user.id != currentUserId}" th:action="@{/admin/users/admin-role}" method="post" class="inline-form admin-role-confirm">
+                                    <input type="hidden" name="id" th:value="${user.id}">
+                                    <input type="hidden" name="makeAdmin" value="false">
+                                    <button type="submit" class="icon-btn btn-sm" title="管理者権限を剥奪">剥奪</button>
+                                </form>
+                                <form th:if="${!user.admin}" th:action="@{/admin/users/admin-role}" method="post" class="inline-form admin-role-confirm">
+                                    <input type="hidden" name="id" th:value="${user.id}">
+                                    <input type="hidden" name="makeAdmin" value="true">
+                                    <button type="submit" class="icon-btn btn-sm" title="管理者権限を付与">付与</button>
+                                </form>
                             </td>
                             <td>
                                 <div class="action-group">
