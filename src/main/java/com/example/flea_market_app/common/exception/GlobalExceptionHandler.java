@@ -69,6 +69,7 @@ public class GlobalExceptionHandler {
 			mav.setStatus(httpStatus);
 			mav.addObject("status", httpStatus.value());
 			mav.addObject("message", message);
+			mav.addObject("isAdminContext", false);
 			if (httpStatus == HttpStatus.NOT_FOUND) {
 				mav.setViewName("error/404");
 			} else {

@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="ja" xmlns:th="http://www.thymeleaf.org">
+
+<head th:replace="~{ui/fragments :: common_head('注文詳細', ~{::link})}">
+	<link rel="stylesheet" th:href="@{/css/order_confirm.css}">
+	<link rel="stylesheet" th:href="@{/css/order_list.css}">
+	<link rel="stylesheet" th:href="@{/css/order_detail.css}">
+</head>
+
+<body>
+	<div th:replace="~{ui/fragments :: header}"></div>
+
+	<main class="confirm-container order-detail-main">
+		<section class="confirm-main">
+			<h1 class="page-title">注文詳細</h1>
+
+			<div th:if="${message}" class="flash-message order-detail-flash" th:text="${message}"></div>
+
+			<div class="section-card">
+				<div class="section-title">注文番号</div>
+				<p class="order-detail-id" th:text="${order.orderId != null ? #strings.substring(order.orderId.toString(), 0, 8) : ''}"></p>
+			</div>
+
+			<div class="section-card">
+				<div class="section-title">状態</div>
+				<p class="order-detail-status" th:switch="${order.status}">
+					<span th:case="'PAID'">支払済み</span>
+					<span th:case="'AWAITING_SHIPMENT'">発送待ち</span>
+					<span th:case="'SHIPPED'">発送済み</span>
+					<span th:case="'COMPLETED'">完了</span>
+					<span th:case="'CANCELLED'">キャンセル</span>
+					<span th:case="*" th:text="${order.status}">状態</span>
+				</p>
+			</div>
+
+			<div class="section-card">
+				<div class="section-title">商品</div>
+				<div class="order-detail-item">
+					<a th:href="@{/products/{id}(id=${order.itemId})}" class="order-detail-item-link">
+						<div class="order-item-thumb">
+							<img th:src="${order.itemThumbnailUrl}" alt="" onerror="this.src='/img/no-image.png'">
+						</div>
+						<div class="order-item-info">
+							<div class="order-item-name" th:text="${order.itemName}">商品名</div>
+							<div class="order-item-amount" th:text="'¥ ' + ${#numbers.formatInteger(order.totalAmount != null ? order.totalAmount : 0, 3, 'COMMA')}">¥ 0</div>
+						</div>
+					</a>
+				</div>
+			</div>
+
+			<div class="section-card" th:if="${order.shippingAddressSnapshot != null and !#strings.isEmpty(order.shippingAddressSnapshot)}">
+				<div class="section-title">お届け先</div>
+				<pre class="order-detail-address" th:text="${order.shippingAddressSnapshot}"></pre>
+			</div>
+
+			<div class="section-card" th:if="${order.counterpartyDisplayName != null and !#strings.isEmpty(order.counterpartyDisplayName)}">
+				<div class="section-title" th:text="${order.role == 'BUYER'} ? '出品者' : '購入者'">相手</div>
+				<p th:text="${order.counterpartyDisplayName}"></p>
+			</div>
+
+			<!-- 操作ボタン -->
+			<div class="section-card order-detail-actions">
+				<div class="section-title">操作</div>
+				<div class="order-action-buttons">
+					<form th:if="${order.canConfirm}" th:action="@{/user/orders/{id}/confirm(id=${order.orderId})}" method="post" style="display:inline;">
+						<button type="submit" class="btn-order-action">購入確定</button>
+					</form>
+					<form th:if="${order.canShip}" th:action="@{/user/orders/{id}/shipment(id=${order.orderId})}" method="post" style="display:inline;">
+						<button type="submit" class="btn-order-action">発送した</button>
+					</form>
+					<form th:if="${order.canReceipt}" th:action="@{/user/orders/{id}/receipt(id=${order.orderId})}" method="post" style="display:inline;">
+						<button type="submit" class="btn-order-action">受け取った</button>
+					</form>
+					<button th:if="${order.canCancel}" type="button" class="btn-order-action btn-cancel-open" th:attr="data-order-id=${order.orderId}">キャンセル</button>
+					<button th:if="${order.canReview}" type="button" class="btn-order-action btn-review-open" th:attr="data-order-id=${order.orderId}">評価する</button>
+				</div>
+			</div>
+
+			<p class="order-detail-back"><a th:href="@{/user/orders}">注文一覧へ戻る</a></p>
+		</section>
+	</main>
+
+	<!-- キャンセルモーダル -->
+	<div class="modal-backdrop" id="cancelModalBackdrop"></div>
+	<div class="modal-content" id="cancelModal">
+		<div class="modal-header">
+			<h3>取引をキャンセルしますか？</h3>
+			<span class="modal-close" id="cancelModalClose">&times;</span>
+		</div>
+		<form id="cancelForm" method="post" th:action="@{/user/orders/{id}/cancel(id=${order.orderId})}">
+			<div class="modal-body">
+				<label for="cancelReason">理由（任意）</label>
+				<input type="text" id="cancelReason" name="reason" maxlength="2000" placeholder="キャンセル理由">
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn-modal-cancel" id="cancelModalCancel">閉じる</button>
+				<button type="submit" class="btn-modal-submit btn-cancel-submit">キャンセルする</button>
+			</div>
+		</form>
+	</div>
+
+	<!-- 評価モーダル -->
+	<div class="modal-backdrop" id="reviewModalBackdrop"></div>
+	<div class="modal-content" id="reviewModal">
+		<div class="modal-header">
+			<h3>取引の評価</h3>
+			<span class="modal-close" id="reviewModalClose">&times;</span>
+		</div>
+		<form id="reviewForm" method="post" th:action="@{/user/orders/{id}/review(id=${order.orderId})}">
+			<div class="modal-body">
+				<label>評価</label>
+				<select name="rating" id="reviewRating" required>
+					<option value="GOOD">良い</option>
+					<option value="BAD">悪い</option>
+				</select>
+				<label for="reviewComment">コメント（任意）</label>
+				<textarea id="reviewComment" name="comment" maxlength="2000" rows="3"></textarea>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn-modal-cancel" id="reviewModalCancel">閉じる</button>
+				<button type="submit" class="btn-modal-submit">送信する</button>
+			</div>
+		</form>
+	</div>
+
+	<script th:src="@{/js/order_detail.js}" defer></script>
+</body>
+
+</html>
