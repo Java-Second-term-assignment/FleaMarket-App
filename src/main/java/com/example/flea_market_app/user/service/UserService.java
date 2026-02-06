@@ -123,7 +123,11 @@ public class UserService {
 
 		// 状態遷移の妥当性は domain でチェックしたいので一度 domain 化してもOK
 		User user = toDomain(e);
-		user.submitVerification();
+		try {
+			user.submitVerification();
+		} catch (IllegalStateException ex) {
+			throw new ValidationBusinessException(ErrorCode.INVALID_STATE, "error.invalid_state");
+		}
 
 		e.setIdentityStatus(user.getVerificationStatus().name());
 		userRepository.save(e);

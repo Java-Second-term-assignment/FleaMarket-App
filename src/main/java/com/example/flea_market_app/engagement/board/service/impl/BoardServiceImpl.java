@@ -32,12 +32,12 @@ public class BoardServiceImpl implements BoardService {
 
 	@Override
 	@Transactional(readOnly = true)
-	public List<PostResponse> getPosts(UUID itemId, int limit) {
+	public List<PostResponse> getPosts(UUID itemId, int page, int size) {
 		itemQueryService.assertExists(itemId);
 
-		int safeLimit = Math.max(1, Math.min(limit, 100));
+		int safeSize = Math.max(1, Math.min(size, 100));
 		List<BoardPostEntity> posts = boardPostRepository.findByItemIdOrderByCreatedAtDesc(
-				itemId, PageRequest.of(0, safeLimit));
+				itemId, PageRequest.of(page, safeSize));
 
 		if (posts.isEmpty()) {
 			return List.of();

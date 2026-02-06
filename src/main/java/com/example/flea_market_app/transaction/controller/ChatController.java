@@ -4,6 +4,8 @@ import java.util.List;
 import java.util.UUID;
 
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Min;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -12,11 +14,13 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.example.flea_market_app.common.response.ApiResponse;
 import com.example.flea_market_app.config.security.SecurityUtil;
-import com.example.flea_market_app.transaction.domain.OrderMessageEntity;
 import com.example.flea_market_app.transaction.service.ChatService;
+import com.example.flea_market_app.transaction.service.dto.ChatMessageResponse;
 import com.example.flea_market_app.transaction.service.dto.SendChatMessageRequest;
 
 import lombok.RequiredArgsConstructor;
@@ -34,6 +38,8 @@ import lombok.RequiredArgsConstructor;
 @Validated
 public class ChatController {
 
+	private static final int DEFAULT_MESSAGE_SIZE = 50;
+
 	private final ChatService chatService;
 
 	/** 送信: POST /orders/{orderId}/messages */
@@ -48,13 +54,15 @@ public class ChatController {
 
 	/**
 	 * 一覧: GET /orders/{orderId}/messages
-	 * MVPで不要ならコメントアウトしてOK（Service側は残しても害はない）
-	 *
-	 * <p>レスポンスは ApiResponse でラップしていない。タイムリーフで success/data 形式を期待する場合は要対応。
+	 * レスポンスは ApiResponse でラップ（success/data 形式）。
 	 */
 	@GetMapping("/{orderId}/messages")
-	public ResponseEntity<List<OrderMessageEntity>> list(@PathVariable UUID orderId) {
+	public ResponseEntity<ApiResponse<List<ChatMessageResponse>>> list(
+			@PathVariable UUID orderId,
+			@RequestParam(defaultValue = "0") @Min(0) int page,
+			@RequestParam(defaultValue = "" + DEFAULT_MESSAGE_SIZE) @Min(1) @Max(100) int size) {
 		UUID userId = SecurityUtil.getCurrentUserId();
-		return ResponseEntity.ok(chatService.listMessages(orderId, userId));
+		List<ChatMessageResponse> messages = chatService.listMessages(orderId, userId, page, size);
+		return ResponseEntity.ok(ApiResponse.success(messages));
 	}
 }

@@ -122,7 +122,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
 		function loadMessages() {
 			showChatError("");
-			fetch("/user/orders/" + orderId + "/messages", { credentials: "same-origin" })
+			fetch("/user/orders/" + orderId + "/messages?page=0&size=50", { credentials: "same-origin" })
 				.then((res) => {
 					if (!res.ok) {
 						if (res.status === 401) throw new Error("ログインし直してください。");
@@ -132,7 +132,7 @@ document.addEventListener("DOMContentLoaded", () => {
 					}
 					return res.json();
 				})
-				.then(renderMessages)
+				.then((body) => renderMessages(body && body.data != null ? body.data : body))
 				.catch((err) => showChatError(err.message || "エラーが発生しました。"));
 		}
 

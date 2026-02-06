@@ -47,7 +47,7 @@ public class BoardPageController {
 		log.info("Board detail requested: boardId={}", boardId);
 		itemQueryService.assertExists(boardId);
 
-		List<PostResponse> posts = boardService.getPosts(boardId, DEFAULT_POST_LIMIT);
+		List<PostResponse> posts = boardService.getPosts(boardId, 0, DEFAULT_POST_LIMIT);
 
 		model.addAttribute("boardId", boardId);
 		model.addAttribute("posts", posts);

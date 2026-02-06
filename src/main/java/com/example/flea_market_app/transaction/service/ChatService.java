@@ -3,7 +3,9 @@ package com.example.flea_market_app.transaction.service;
 import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -16,6 +18,7 @@ import com.example.flea_market_app.transaction.domain.OrderEntity;
 import com.example.flea_market_app.transaction.domain.OrderMessageEntity;
 import com.example.flea_market_app.transaction.repository.OrderMessageRepository;
 import com.example.flea_market_app.transaction.repository.OrderRepository;
+import com.example.flea_market_app.transaction.service.dto.ChatMessageResponse;
 
 import lombok.RequiredArgsConstructor;
 
@@ -50,13 +53,16 @@ public class ChatService {
 	}
 
 	@Transactional(readOnly = true)
-	public List<OrderMessageEntity> listMessages(UUID orderId, UUID currentUserId) {
+	public List<ChatMessageResponse> listMessages(UUID orderId, UUID currentUserId, int page, int size) {
 		OrderEntity order = orderRepository.findById(orderId)
 				.orElseThrow(() -> NotFoundBusinessException.of(ResourceType.ORDER));
 
 		assertParticipant(order, currentUserId);
 
-		return orderMessageRepository.findByOrderIdOrderByCreatedAtAsc(orderId);
+		int safeSize = Math.max(1, Math.min(size, 100));
+		List<OrderMessageEntity> entities = orderMessageRepository.findByOrderIdOrderByCreatedAtAsc(
+				orderId, PageRequest.of(page, safeSize));
+		return entities.stream().map(ChatMessageResponse::from).collect(Collectors.toList());
 	}
 
 	private void assertParticipant(OrderEntity order, UUID userId) {
