@@ -86,6 +86,12 @@ public enum ErrorCode {
 	/** 外部サービス呼び出し失敗（外部側エラー等） */
 	EXTERNAL_SERVICE_FAILED("error.external.failed", HttpStatus.BAD_GATEWAY),
 
+	/** Webhook の署名検証失敗（不正な署名・改ざん） */
+	WEBHOOK_SIGNATURE_INVALID("error.webhook_signature_invalid", HttpStatus.UNAUTHORIZED),
+
+	/** Webhook が未設定（webhook-secret 等が設定されていない） */
+	WEBHOOK_NOT_CONFIGURED("error.webhook_not_configured", HttpStatus.SERVICE_UNAVAILABLE),
+
 	/** リソースが見つからない場合の汎用的なエラーコード（未知のリソースタイプ用） */
 	RESOURCE_NOT_FOUND("error.not_found", HttpStatus.NOT_FOUND);
 

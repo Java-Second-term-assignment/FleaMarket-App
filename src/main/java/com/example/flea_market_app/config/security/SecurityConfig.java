@@ -117,7 +117,8 @@ public class SecurityConfig {
 	public SecurityFilterChain webSecurityFilterChain(HttpSecurity http) throws Exception {
 		http
 				.securityMatcher("/**")
-				// CSRF 有効（フォーム・状態変更系を保護）
+				// CSRF 有効（フォーム・状態変更系を保護）。Webhook は署名検証のみで信頼するため除外
+				.csrf(csrf -> csrf.ignoringRequestMatchers("/webhooks/**"))
 				.cors(Customizer.withDefaults())
 				.sessionManagement(session -> session.sessionCreationPolicy(
 						org.springframework.security.config.http.SessionCreationPolicy.IF_REQUIRED))

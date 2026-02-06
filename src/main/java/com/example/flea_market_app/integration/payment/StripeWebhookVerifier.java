@@ -21,8 +21,14 @@ public class StripeWebhookVerifier implements WebhookVerifier {
 
 	@Override
 	public VerifiedWebhook verify(String payload, String signatureHeader) {
+		String secret = props.webhookSecret();
+		if (secret == null || secret.isBlank()) {
+			throw new ExternalServiceException(
+					ErrorCode.WEBHOOK_NOT_CONFIGURED,
+					ErrorCode.WEBHOOK_NOT_CONFIGURED.getMessageKey());
+		}
 		try {
-			Event event = Webhook.constructEvent(payload, signatureHeader, props.webhookSecret());
+			Event event = Webhook.constructEvent(payload, signatureHeader, secret);
 
 			String type = event.getType();
 
@@ -40,8 +46,8 @@ public class StripeWebhookVerifier implements WebhookVerifier {
 
 		} catch (SignatureVerificationException e) {
 			throw new ExternalServiceException(
-					ErrorCode.EXTERNAL_SERVICE_FAILED,
-					ErrorCode.EXTERNAL_SERVICE_FAILED.getMessageKey(),
+					ErrorCode.WEBHOOK_SIGNATURE_INVALID,
+					ErrorCode.WEBHOOK_SIGNATURE_INVALID.getMessageKey(),
 					e);
 		} catch (Exception e) {
 			throw new ExternalServiceException(
