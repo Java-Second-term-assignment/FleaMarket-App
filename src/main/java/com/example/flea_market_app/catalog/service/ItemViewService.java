@@ -11,6 +11,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.example.flea_market_app.catalog.domain.ItemViewEntity;
 import com.example.flea_market_app.catalog.repository.ItemViewRepository;
+import com.example.flea_market_app.common.error.ErrorCode;
+import com.example.flea_market_app.common.exception.ValidationBusinessException;
 
 import lombok.RequiredArgsConstructor;
 
@@ -53,6 +55,6 @@ public class ItemViewService {
 		if (value instanceof String s) {
 			return UUID.fromString(s);
 		}
-		throw new IllegalArgumentException("Cannot convert to UUID: " + (value != null ? value.getClass() : "null"));
+		throw new ValidationBusinessException(ErrorCode.INVALID_ID, ErrorCode.INVALID_ID.getMessageKey());
 	}
 }

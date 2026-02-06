@@ -13,7 +13,9 @@ import com.example.flea_market_app.catalog.service.ItemImageService;
 import com.example.flea_market_app.catalog.service.ItemQueryService;
 import com.example.flea_market_app.catalog.service.dto.ItemSummary;
 import com.example.flea_market_app.common.constant.ImageConstants;
+import com.example.flea_market_app.common.error.ErrorCode;
 import com.example.flea_market_app.common.exception.AccessDeniedBusinessException;
+import com.example.flea_market_app.common.exception.BusinessException;
 import com.example.flea_market_app.common.exception.NotFoundBusinessException;
 import com.example.flea_market_app.common.exception.ResourceType;
 import com.example.flea_market_app.transaction.domain.OrderEntity;
@@ -86,7 +88,8 @@ public class OrderQueryService {
 		UUID buyerId = e.getBuyerId();
 		UUID sellerId = e.getSellerId();
 		if (buyerId == null || sellerId == null) {
-			throw new IllegalStateException("Order has null buyer or seller: orderId=" + e.getId());
+			throw new BusinessException(ErrorCode.INTERNAL_SERVER_ERROR, "error.internal_server_error",
+					new IllegalStateException("Order has null buyer or seller: orderId=" + e.getId())) {};
 		}
 		boolean isBuyer = Objects.equals(buyerId, userId);
 		boolean isSeller = Objects.equals(sellerId, userId);

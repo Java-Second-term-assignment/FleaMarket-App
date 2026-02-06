@@ -32,8 +32,14 @@ public enum ErrorCode {
 	/** 注文が見つからない場合のエラーコード */
 	ORDER_NOT_FOUND("error.not_found.order", HttpStatus.NOT_FOUND),
 
+	/** ランクが見つからない場合のエラーコード */
+	RANK_NOT_FOUND("error.not_found.rank", HttpStatus.NOT_FOUND),
+
 	/** メールアドレスの形式が不正な場合のエラーコード */
 	INVALID_EMAIL("error.invalid_email", HttpStatus.BAD_REQUEST),
+
+	/** 指定されたIDの形式が不正な場合のエラーコード */
+	INVALID_ID("error.invalid_id", HttpStatus.BAD_REQUEST),
 
 	/** パスワードが不正、またはポリシーに適合しない場合のエラーコード */
 	INVALID_PASSWORD("error.password.policy", HttpStatus.BAD_REQUEST),
@@ -166,7 +172,7 @@ public enum ErrorCode {
 	 */
 	public boolean isNotFound() {
 		return switch (this) {
-		case USER_NOT_FOUND, ITEM_NOT_FOUND, ORDER_NOT_FOUND, RESOURCE_NOT_FOUND -> true;
+		case USER_NOT_FOUND, ITEM_NOT_FOUND, ORDER_NOT_FOUND, RANK_NOT_FOUND, RESOURCE_NOT_FOUND -> true;
 		default -> false;
 		};
 	}

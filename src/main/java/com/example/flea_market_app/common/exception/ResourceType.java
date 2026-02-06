@@ -25,7 +25,10 @@ public enum ResourceType {
 	ITEM(ErrorCode.ITEM_NOT_FOUND),
 
 	/** 注文リソース */
-	ORDER(ErrorCode.ORDER_NOT_FOUND);
+	ORDER(ErrorCode.ORDER_NOT_FOUND),
+
+	/** ランクリソース */
+	RANK(ErrorCode.RANK_NOT_FOUND);
 
 	private final ErrorCode errorCode;
 

@@ -6,6 +6,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.example.flea_market_app.common.exception.NotFoundBusinessException;
+import com.example.flea_market_app.common.exception.ResourceType;
 import com.example.flea_market_app.common.service.S3ImageService;
 import com.example.flea_market_app.user.domain.UserEntity;
 import com.example.flea_market_app.user.repository.UserRepository;
@@ -32,7 +34,8 @@ public class UserProfileQueryService {
 		var user = userService.getRequired(userId);
 		String email = authAccountQueryPort.findEmailByUserId(userId).orElse(null);
 
-		UserEntity entity = userRepository.findById(userId).orElseThrow();
+		UserEntity entity = userRepository.findById(userId)
+				.orElseThrow(() -> NotFoundBusinessException.of(ResourceType.USER));
 		String profileImageUrl = entity.getProfileImageUrl();
 		if (profileImageUrl == null || profileImageUrl.isEmpty()) {
 			String profileImageS3Key = entity.getProfileImageS3Key();

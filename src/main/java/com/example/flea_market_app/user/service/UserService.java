@@ -12,9 +12,12 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.example.flea_market_app.common.error.ErrorCode;
 import com.example.flea_market_app.common.exception.AccessDeniedBusinessException;
+import com.example.flea_market_app.common.exception.BusinessException;
 import com.example.flea_market_app.common.exception.NotFoundBusinessException;
 import com.example.flea_market_app.common.exception.ResourceType;
+import com.example.flea_market_app.common.exception.ValidationBusinessException;
 import com.example.flea_market_app.common.service.S3ImageService;
 import com.example.flea_market_app.common.validation.ImageValidator;
 import com.example.flea_market_app.user.domain.User;
@@ -44,7 +47,7 @@ public class UserService {
 	@Transactional(readOnly = true)
 	public User getRequired(UUID userId) {
 		UserEntity e = userRepository.findById(userId)
-				.orElseThrow(() -> new IllegalArgumentException("User not found: " + userId));
+				.orElseThrow(() -> NotFoundBusinessException.of(ResourceType.USER));
 
 		return toDomain(e);
 	}
@@ -52,7 +55,7 @@ public class UserService {
 	@Transactional
 	public void updateProfile(UUID userId, String displayName, String caption) {
 		UserEntity e = userRepository.findById(userId)
-				.orElseThrow(() -> new IllegalArgumentException("User not found: " + userId));
+				.orElseThrow(() -> NotFoundBusinessException.of(ResourceType.USER));
 
 		e.setDisplayName(displayName != null ? displayName.trim() : "");
 		e.setCaption(caption != null ? caption.trim() : null);
@@ -65,7 +68,7 @@ public class UserService {
 	@Transactional
 	public void updateAddress(UUID userId, String recipientName, String postalCode, String address, String phone) {
 		UserEntity e = userRepository.findById(userId)
-				.orElseThrow(() -> new IllegalArgumentException("User not found: " + userId));
+				.orElseThrow(() -> NotFoundBusinessException.of(ResourceType.USER));
 
 		e.setRecipientName(trimToNull(recipientName, 100));
 		e.setPostalCode(trimToNull(postalCode, 20));
@@ -116,7 +119,7 @@ public class UserService {
 	@Transactional
 	public void submitVerification(UUID userId) {
 		UserEntity e = userRepository.findById(userId)
-				.orElseThrow(() -> new IllegalArgumentException("User not found: " + userId));
+				.orElseThrow(() -> NotFoundBusinessException.of(ResourceType.USER));
 
 		// 状態遷移の妥当性は domain でチェックしたいので一度 domain 化してもOK
 		User user = toDomain(e);
@@ -161,11 +164,11 @@ public class UserService {
 		// ファイル拡張子の取得
 		String originalFilename = imageFile.getOriginalFilename();
 		if (originalFilename == null || originalFilename.isEmpty()) {
-			throw new IllegalArgumentException("Original filename is null or empty");
+			throw new ValidationBusinessException(ErrorCode.INVALID_IMAGE_FORMAT, "error.invalid_image_format");
 		}
 		int lastDotIndex = originalFilename.lastIndexOf('.');
 		if (lastDotIndex == -1 || lastDotIndex == originalFilename.length() - 1) {
-			throw new IllegalArgumentException("File extension not found");
+			throw new ValidationBusinessException(ErrorCode.INVALID_IMAGE_FORMAT, "error.invalid_image_format");
 		}
 		String fileExtension = originalFilename.substring(lastDotIndex + 1).toLowerCase(Locale.ROOT);
 
@@ -195,7 +198,7 @@ public class UserService {
 			log.info("Successfully uploaded profile image to S3: {}", newS3Key);
 		} catch (IOException ex) {
 			log.error("Failed to read image file for upload: userId={}", userId, ex);
-			throw new RuntimeException("Failed to read image file", ex);
+			throw new BusinessException(ErrorCode.IMAGE_UPLOAD_FAILED, "error.image_upload_failed", ex) {};
 		}
 
 		// データベース更新
