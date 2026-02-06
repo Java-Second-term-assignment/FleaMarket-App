@@ -3,6 +3,7 @@ package com.example.flea_market_app;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.testcontainers.service.connection.ServiceConnection;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
 import org.testcontainers.containers.PostgreSQLContainer;
@@ -11,6 +12,7 @@ import org.testcontainers.junit.jupiter.Testcontainers;
 
 @Testcontainers
 @SpringBootTest
+@ActiveProfiles("test")
 class FleaMarketAppApplicationTests {
 
 	@Container
@@ -19,7 +21,7 @@ class FleaMarketAppApplicationTests {
 
 	@DynamicPropertySource
 	static void configureFlyway(DynamicPropertyRegistry registry) {
-		registry.add("spring.flyway.locations", () -> "classpath:db/migration");
+		registry.add("spring.flyway.locations", () -> "classpath:db/migration,classpath:db/test_migration");
 	}
 
 	@Test
