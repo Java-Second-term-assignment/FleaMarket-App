@@ -24,7 +24,7 @@
 		</div>
 
 		<div class="content">
-			<p th:if="${param.error != null}" class="error-text" style="margin-bottom: 1em;">
+			<p th:if="${param.error != null}" class="error-text" style="color: #c00; margin-bottom: 1em;">
 				<span th:if="${param.error[0] == 'forbidden'}">管理者権限がありません。一般ユーザーは <a th:href="@{/login}">通常のログイン</a> をご利用ください。</span>
 				<span th:unless="${param.error[0] == 'forbidden'}">メールアドレスまたはパスワードが正しくありません。</span>
 			</p>
