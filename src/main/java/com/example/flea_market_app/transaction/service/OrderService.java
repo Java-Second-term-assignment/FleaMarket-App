@@ -147,15 +147,11 @@ public class OrderService {
 	}
 
 	private Order toDomain(OrderEntity e) {
-		String statusStr = e.getStatus();
-		if (statusStr == null) {
-			throw new IllegalStateException("Order status is null: orderId=" + e.getId());
-		}
 		return new Order(
 				e.getId(),
 				e.getItemId(),
 				e.getBuyerId(),
 				e.getSellerId(),
-				OrderStatus.valueOf(statusStr));
+				OrderStatus.fromString(e.getStatus()));
 	}
 }

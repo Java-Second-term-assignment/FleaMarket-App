@@ -106,11 +106,7 @@ public class OrderQueryService {
 			thumbnailUrl = ImageConstants.NO_IMAGE_PATH;
 		}
 
-		String statusStr = e.getStatus();
-		if (statusStr == null) {
-			throw new IllegalStateException("Order status is null: orderId=" + e.getId());
-		}
-		OrderStatus status = OrderStatus.valueOf(statusStr);
+		OrderStatus status = OrderStatus.fromString(e.getStatus());
 		boolean canConfirm = isBuyer && status == OrderStatus.PAID;
 		boolean canShip = isSeller && status == OrderStatus.AWAITING_SHIPMENT;
 		boolean canReceipt = isBuyer && status == OrderStatus.SHIPPED;

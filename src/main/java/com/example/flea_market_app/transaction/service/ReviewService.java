@@ -32,16 +32,12 @@ public class ReviewService {
 		OrderEntity orderEntity = orderRepository.findById(orderId)
 				.orElseThrow(() -> NotFoundBusinessException.of(ResourceType.ORDER));
 
-		String statusStr = orderEntity.getStatus();
-		if (statusStr == null) {
-			throw new IllegalStateException("Order status is null: orderId=" + orderId);
-		}
 		Order order = new Order(
 				orderEntity.getId(),
 				orderEntity.getItemId(),
 				orderEntity.getBuyerId(),
 				orderEntity.getSellerId(),
-				OrderStatus.valueOf(statusStr));
+				OrderStatus.fromString(orderEntity.getStatus()));
 
 		order.assertParticipant(currentUserId);
 
