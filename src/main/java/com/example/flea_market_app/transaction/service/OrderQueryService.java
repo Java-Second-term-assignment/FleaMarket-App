@@ -2,6 +2,7 @@ package com.example.flea_market_app.transaction.service;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -87,8 +88,8 @@ public class OrderQueryService {
 		if (buyerId == null || sellerId == null) {
 			throw new IllegalStateException("Order has null buyer or seller: orderId=" + e.getId());
 		}
-		boolean isBuyer = buyerId.equals(userId);
-		boolean isSeller = sellerId.equals(userId);
+		boolean isBuyer = Objects.equals(buyerId, userId);
+		boolean isSeller = Objects.equals(sellerId, userId);
 		if (!isBuyer && !isSeller) {
 			throw new AccessDeniedBusinessException();
 		}
