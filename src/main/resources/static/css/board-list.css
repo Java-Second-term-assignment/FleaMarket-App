@@ -1,154 +1,6 @@
 @charset "UTF-8";
 
-:root {
-	--bg-dark: #2c2c2c;
-	--card-bg: #1e2a3b;
-	--input-bg: #ffffff;
-	--text-main: #ffffff;
-	--text-sub: #cccccc;
-	--accent-blue: #4a5d99;
-	--accent-red: #ef4437;
-	--accent-green: #4caf50;
-	--accent-yellow: #F2EEB8;
-	--border-color: #444;
-	--form-bg-light: #e0e6ff;
-}
-
-body {
-	margin: 0;
-	padding: 0;
-	font-family: "Helvetica Neue", Arial, sans-serif;
-	background-color: var(--bg-dark);
-	color: var(--text-main);
-	line-height: 1.6;
-}
-
-/* ヘッダー（固定表示） */
-.header {
-	background-color: #1e2a3b;
-	color: white;
-	padding: 6px 0;
-	position: fixed;
-	top: 0;
-	left: 0;
-	width: 100vw;
-	z-index: 1000;
-}
-
-.header-inner {
-	width: 100%;
-	max-width: none;
-	margin: 0;
-	padding: 0 32px;
-	display: flex;
-	justify-content: space-between;
-	align-items: center;
-	box-sizing: border-box;
-}
-
-.logo {
-	font-size: 20px;
-	font-weight: bold;
-	white-space: nowrap;
-}
-
-.nav {
-	display: flex;
-	align-items: center;
-}
-
-.nav-links {
-	display: flex;
-	align-items: center;
-	gap: 2px;
-}
-
-.nav-links a {
-	color: white;
-	text-decoration: none;
-	font-size: 14px;
-	position: relative;
-	margin-top: 10px;
-	padding: 0 6px 5px 6px;
-	display: inline-block;
-	white-space: nowrap;
-}
-
-.nav-links a::after {
-	content: '';
-	position: absolute;
-	bottom: 0;
-	left: 0;
-	width: 0;
-	height: 2px;
-	background: white;
-	transition: 0.3s;
-}
-
-.nav-links a:hover::after {
-	width: 100%;
-}
-
-.btn-post {
-	background-color: #007bff;
-	color: white;
-	border: none;
-	padding: 8px 21px;
-	border-radius: 20px;
-	font-size: 15px;
-	font-weight: bold;
-	cursor: pointer;
-	transition: background 0.2s;
-	margin-left: 12px;
-	white-space: nowrap;
-	display: flex;
-	align-items: center;
-	justify-content: center;
-	text-align: center;
-}
-
-.btn-post:hover {
-	background-color: #0056b3;
-}
-
-.btn-logout {
-	background: none;
-	border: 1px solid #ffffff99;
-	color: #fff;
-	border-radius: 20px;
-	padding: 8px 15px;
-	font-size: 14px;
-	cursor: pointer;
-	transition: background 0.2s, color 0.2s;
-	margin-left: 12px;
-	white-space: nowrap;
-	display: flex;
-	align-items: center;
-	justify-content: center;
-	text-align: center;
-}
-
-.btn-logout:hover {
-	background-color: #394963;
-	color: #ff6b6b;
-	border-color: #ff6b6b;
-}
-
-.lang-selector {
-	font-size: 13px;
-	margin-left: 15px;
-	color: #ccddf0;
-	cursor: pointer;
-	padding: 4px 8px;
-	border-radius: 8px;
-	transition: background 0.17s;
-	white-space: nowrap;
-}
-
-.lang-selector:hover {
-	background: #263247;
-	color: #fff;
-}
+/* ヘッダー・ナビ・body は common.css に任せ、レイアウトを他画面と統一 */
 
 /* --- メインレイアウト --- */
 main {
@@ -259,7 +111,7 @@ main {
 }
 
 .product-search-card {
-	background: #9299bb;
+	background: var(--header-bg);
 	border-radius: 14px 14px 18px 18px;
 	box-shadow: 0 2px 9px #53536933;
 	padding: 21px 33px 19px 33px;
@@ -481,6 +333,32 @@ main {
 	border: 1px solid var(--border-color);
 	border-radius: 8px;
 	padding: 10px 20px;
+}
+
+/* ライトモード：注文一覧と同様の薄いグレーでメリハリ（variables.css / theme.css の --bg-panel 使用） */
+html[data-theme="light"] .board-list-container {
+	background-color: var(--bg-panel);
+	border-color: var(--border-light);
+	border-radius: 12px;
+	padding: 20px;
+}
+
+html[data-theme="light"] .board-list-container .board-title {
+	color: var(--text-dark);
+}
+
+html[data-theme="light"] .board-list-container .board-meta {
+	color: var(--text-muted);
+}
+
+html[data-theme="light"] .board-list-container .board-content {
+	border-bottom-color: var(--border-light);
+}
+
+html[data-theme="light"] .board-list-container .category-chip-small {
+	background: #fff;
+	color: var(--accent-blue-link);
+	border: 1px solid var(--border-light);
 }
 
 .board-item {

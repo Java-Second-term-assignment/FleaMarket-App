@@ -1,5 +1,7 @@
 package com.example.flea_market_app.catalog.controller.dto;
 
+import java.util.UUID;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -9,6 +11,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class RankingItemDto {
 
+	private UUID id;
 	private String imageUrl;
 	private String name;
 	private String price;

@@ -57,6 +57,17 @@ public class EmailNotificationSenderImpl implements EmailNotificationSender {
 		send(to, subject, body, "chatReceived", orderId);
 	}
 
+	@Override
+	public void sendPasswordResetLink(String email, String resetLink) {
+		String subject = "パスワード再設定のご案内";
+		String body = "パスワード再設定のリクエストを受け付けました。\n\n"
+				+ "以下のリンクをクリックして、新しいパスワードを設定してください。\n"
+				+ "有効期限は1時間です。\n\n"
+				+ resetLink + "\n\n"
+				+ "心当たりがない場合は、このメールを無視してください。";
+		send(email, subject, body, "passwordReset", null);
+	}
+
 	private void send(String to, String subject, String body, String kind, UUID orderId) {
 		try {
 			SimpleMailMessage message = new SimpleMailMessage();

@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="ja" xmlns:th="http://www.thymeleaf.org">
+
+<head th:replace="~{ui/fragments :: common_head('カート', ~{::link})}">
+	<link rel="stylesheet" th:href="@{/css/order_list.css}">
+	<link rel="stylesheet" th:href="@{/css/order_confirm.css}">
+</head>
+
+<body>
+	<div th:replace="~{ui/fragments :: header}"></div>
+
+	<main class="order-list-main">
+		<h1 class="page-title">カート</h1>
+
+		<div th:if="${message}" class="flash-message" style="color: var(--accent-green, green); margin-bottom: 16px;" th:text="${message}"></div>
+		<div th:if="${errorMessage}" class="flash-error" style="color: var(--accent-red, #c00); margin-bottom: 16px;" th:text="${errorMessage}"></div>
+
+		<section class="order-list-card">
+			<th:block th:if="${items != null and !items.isEmpty()}">
+				<ul class="order-list">
+					<li th:each="item : ${items}" class="order-list-item cart-list-item">
+						<div class="cart-list-item-inner">
+							<a th:href="@{/products/{id}(id=${item.id})}" class="order-list-link">
+								<div class="order-item-thumb">
+									<img th:src="${item.imageUrl}" alt="" onerror="this.src='/img/no-image.png'">
+								</div>
+								<div class="order-item-info">
+									<div class="order-item-name" th:text="${item.name}">商品名</div>
+									<div class="order-item-meta">
+										<span class="order-item-id">数量: 1</span>
+									</div>
+									<div class="order-item-amount" th:text="'¥' + ${#numbers.formatInteger(item.price, 3, 'COMMA')}">¥0</div>
+								</div>
+							</a>
+							<form th:action="@{/cart/remove}" method="post" class="cart-remove-form">
+								<th:block th:replace="~{ui/fragments :: csrf_token}"></th:block>
+								<input type="hidden" name="productId" th:value="${item.id}">
+								<button type="submit" class="btn-remove">削除</button>
+							</form>
+						</div>
+					</li>
+				</ul>
+			</th:block>
+			<div th:if="${items == null or items.isEmpty()}" class="order-list-empty">
+				<span class="material-symbols-outlined order-list-empty-icon" aria-hidden="true">shopping_cart</span>
+				<p class="order-list-empty-text">カートに商品がありません。</p>
+				<a th:href="@{/products}" class="order-list-empty-link">商品一覧へ</a>
+			</div>
+		</section>
+
+		<!-- 配送先・注文確定（商品がある場合のみ） -->
+		<th:block th:if="${items != null and !items.isEmpty()}">
+			<section class="order-list-card" style="margin-top: 24px;">
+				<div class="section-card" style="margin-bottom: 0; padding: 24px;">
+					<div class="section-title">
+						お届け先
+						<a th:href="@{/address(returnTo='cart')}" class="edit-link">変更</a>
+					</div>
+					<div class="info-grid">
+						<div class="info-label">氏名</div>
+						<div class="info-value" th:text="${address != null ? address.name : ''}">-</div>
+						<div class="info-label">郵便番号</div>
+						<div class="info-value" th:text="${address != null ? address.postcode : ''}">-</div>
+						<div class="info-label">住所</div>
+						<div class="info-value" th:text="${address != null ? address.fullAddress : ''}">-</div>
+					</div>
+				</div>
+			</section>
+
+			<section class="order-list-card" style="margin-top: 24px;">
+				<div class="summary-card" style="margin-bottom: 0;">
+					<h3>注文合計</h3>
+					<div class="summary-row">
+						<span>商品合計</span>
+						<span th:text="'¥ ' + ${#numbers.formatInteger(subtotal,3,'COMMA')}">¥ 0</span>
+					</div>
+					<div class="summary-row">
+						<span>配送料</span>
+						<span th:text="'¥ ' + ${#numbers.formatInteger(shippingFee,3,'COMMA')}">¥ 0</span>
+					</div>
+					<div class="total-row">
+						<span>請求金額</span>
+						<span th:text="'¥ ' + ${#numbers.formatInteger(total,3,'COMMA')}">¥ 0</span>
+					</div>
+					<form th:action="@{/cart/checkout}" method="post">
+						<th:block th:replace="~{ui/fragments :: csrf_token}"></th:block>
+						<button class="btn-submit" type="submit">注文を確定する</button>
+					</form>
+					<p class="info-text">注文確定後のキャンセルはできません。</p>
+				</div>
+			</section>
+		</th:block>
+	</main>
+</body>
+
+</html>

@@ -37,15 +37,15 @@
 			<div class="section-card">
 				<div class="section-title">
 					お支払い方法
-					<a th:href="@{/payment}" class="edit-link">変更</a>
+					<a th:href="${productId != null} ? @{/payment(productId=${productId})} : @{/payment}" class="edit-link">変更</a>
 				</div>
 
 				<div class="info-grid">
 					<div class="info-label">カード</div>
-					<div th:text="${payment.method}">クレジットカード</div>
+					<div class="info-value" th:text="${payment.method}">クレジットカード</div>
 
 					<div class="info-label">支払い回数</div>
-					<div th:text="${payment.installment}">一括払い</div>
+					<div class="info-value" th:text="${payment.installment}">一括払い</div>
 				</div>
 			</div>
 
@@ -53,18 +53,18 @@
 			<div class="section-card">
 				<div class="section-title">
 					お届け先
-					<a th:href="@{/address}" class="edit-link">変更</a>
+					<a th:href="${productId != null} ? @{/address(productId=${productId})} : @{/address}" class="edit-link">変更</a>
 				</div>
 
 				<div class="info-grid">
 					<div class="info-label">氏名</div>
-					<div th:text="${address.name}">山田 太郎</div>
+					<div class="info-value" th:text="${address.name}">山田 太郎</div>
 
 					<div class="info-label">郵便番号</div>
-					<div th:text="${address.postcode}">〒000-0000</div>
+					<div class="info-value" th:text="${address.postcode}">〒000-0000</div>
 
 					<div class="info-label">住所</div>
-					<div th:text="${address.fullAddress}">
+					<div class="info-value" th:text="${address.fullAddress}">
 						東京都〇〇区
 					</div>
 				</div>
@@ -97,6 +97,8 @@
 				</div>
 
 				<form th:action="@{/order/confirm}" method="post">
+					<th:block th:replace="~{ui/fragments :: csrf_token}"></th:block>
+					<input type="hidden" name="productId" th:value="${productId}" th:if="${productId != null}">
 					<button class="btn-submit" type="submit">
 						注文を確定する
 					</button>

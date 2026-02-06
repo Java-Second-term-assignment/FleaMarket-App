@@ -1,137 +1,9 @@
 @charset "UTF-8";
 
+/* ヘッダー・ナビ・ボタンは common.css に任せる（他画面とレイアウトを揃える） */
 body {
-	background-color: #2c2c2c;
-	margin: 0;
-	font-family: "Helvetica Neue", Arial, sans-serif;
-	color: #333;
-}
-
-/* ヘッダー（固定表示） */
-.header {
-	background-color: #1e2a3b;
-	color: white;
-	padding: 6px 0;
-	position: fixed;
-	top: 0;
-	left: 0;
-	width: 100vw;
-	z-index: 1000;
-}
-
-.header-inner {
-	width: 100%;
-	max-width: none;
-	margin: 0;
-	padding: 0 32px;
-	display: flex;
-	justify-content: space-between;
-	align-items: center;
-	box-sizing: border-box;
-}
-
-.logo {
-	font-size: 20px;
-	font-weight: bold;
-	white-space: nowrap;
-}
-
-.nav {
-	display: flex;
-	align-items: center;
-}
-
-.nav-links {
-	display: flex;
-	align-items: center;
-	gap: 2px;
-}
-
-.nav-links a {
-	color: white;
-	text-decoration: none;
-	font-size: 14px;
-	position: relative;
-	margin-top: 10px;
-	padding: 0 6px 5px 6px;
-	display: inline-block;
-	white-space: nowrap;
-}
-
-.nav-links a::after {
-	content: '';
-	position: absolute;
-	bottom: 0;
-	left: 0;
-	width: 0;
-	height: 2px;
-	background: white;
-	transition: 0.3s;
-}
-
-.nav-links a:hover::after {
-	width: 100%;
-}
-
-.btn-post {
-	background-color: #007bff;
-	color: white;
-	border: none;
-	padding: 8px 21px;
-	border-radius: 20px;
-	font-size: 15px;
-	font-weight: bold;
-	cursor: pointer;
-	transition: background 0.2s;
-	margin-left: 12px;
-	white-space: nowrap;
-	display: flex;
-	align-items: center;
-	justify-content: center;
-	text-align: center;
-}
-
-.btn-post:hover {
-	background-color: #0056b3;
-}
-
-.btn-logout {
-	background: none;
-	border: 1px solid #ffffff99;
-	color: #fff;
-	border-radius: 20px;
-	padding: 8px 15px;
-	font-size: 14px;
-	cursor: pointer;
-	transition: background 0.2s, color 0.2s;
-	margin-left: 12px;
-	white-space: nowrap;
-	display: flex;
-	align-items: center;
-	justify-content: center;
-	text-align: center;
-}
-
-.btn-logout:hover {
-	background-color: #394963;
-	color: #ff6b6b;
-	border-color: #ff6b6b;
-}
-
-.lang-selector {
-	font-size: 13px;
-	margin-left: 15px;
-	color: #ccddf0;
-	cursor: pointer;
-	padding: 4px 8px;
-	border-radius: 8px;
-	transition: background 0.17s;
-	white-space: nowrap;
-}
-
-.lang-selector:hover {
-	background: #263247;
-	color: #fff;
+	background-color: var(--bg-dark);
+	color: var(--text-dark);
 }
 
 .main-container {
@@ -149,14 +21,14 @@ body {
 
 .page-title {
 	margin-top: 100px;
-	color: #F2EEB8;
+	color: var(--accent-yellow);
 }
 
 .profile-card {
 	margin-top: 38px;
 	border-radius: 9px;
 	border: 1.5px solid #454654;
-	background: #2c2c2c;
+	background: var(--bg-dark);
 	padding: 32px 32px 30px 32px;
 }
 
@@ -193,6 +65,11 @@ body {
 	color: #444;
 	margin-bottom: 2px;
 	border: none;
+}
+
+.profile-image-edit .profile-icon-placeholder {
+	font-size: 40px;
+	color: #666;
 }
 
 .profile-icon-edit {
@@ -361,7 +238,7 @@ body {
 .tab-bar {
 	display: flex;
 	align-items: center;
-	background: #2c2c2c;
+	background: var(--bg-dark);
 	border-radius: 5px 5px 0 0;
 	padding: 0 8px 0 0;
 	margin-bottom: 0;
@@ -486,7 +363,7 @@ body {
 }
 
 .notification-date {
-	color: #F2EEB8;
+	color: var(--accent-yellow);
 	font-size: 13px;
 	margin-top: 2px;
 	transition: color 0.15s;
@@ -548,7 +425,7 @@ body {
 	color: #d83836;
 }
 
-/* =============== 商品リスト専用（注文リスト） =============== */
+/* =============== 商品一覧専用（注文リスト） =============== */
 .product-scroll-list {
 	min-height: 250px;
 	max-height: 470px;
@@ -807,6 +684,7 @@ a {
 .modal-profile-edit label {
 	color: #ffd743;
 	font-size: 15px;
+	font-weight: 600;
 }
 
 .modal-profile-edit input,
@@ -845,13 +723,39 @@ a {
 }
 
 .modal-profile-edit .modal-cancel-btn {
-	background: #ddd;
-	color: #2a2c50;
+	background: transparent;
+	color: #e8e8e8;
+	border: 2px solid #6b7aa8;
+	border-radius: 8px;
+	padding: 10px 24px;
+	font-size: 15px;
+	font-weight: 600;
+	cursor: pointer;
+	transition: background 0.2s, border-color 0.2s, color 0.2s;
+}
+
+.modal-profile-edit .modal-cancel-btn:hover {
+	background: rgba(107, 122, 168, 0.2);
+	border-color: #8b9ac4;
+	color: #fff;
 }
 
 .modal-profile-edit .modal-save-btn {
 	background: #ffd743;
 	color: #222a45;
+	border: none;
+	border-radius: 8px;
+	padding: 10px 24px;
+	font-size: 15px;
+	font-weight: 600;
+	cursor: pointer;
+	box-shadow: 0 2px 8px rgba(255, 215, 67, 0.35);
+	transition: background 0.2s, box-shadow 0.2s, transform 0.15s;
+}
+
+.modal-profile-edit .modal-save-btn:hover {
+	background: #ffe066;
+	box-shadow: 0 3px 12px rgba(255, 215, 67, 0.45);
 }
 
 .modal-profile-edit .modal-profile-uploadlabel {
@@ -870,6 +774,22 @@ a {
 
 .modal-profile-edit .modal-profile-uploadlabel:hover {
 	background: #263247;
+}
+
+.modal-profile-edit .modal-profile-icon-placeholder {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	width: 60px;
+	height: 60px;
+	border-radius: 50%;
+	background: #ddd;
+	margin-bottom: 12px;
+}
+
+.modal-profile-edit .modal-profile-icon-placeholder .material-symbols-outlined {
+	font-size: 32px;
+	color: #666;
 }
 
 .modal-profile-edit .modal-profile-icon-preview {

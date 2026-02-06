@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="ja" xmlns:th="http://www.thymeleaf.org">
+
+<head th:replace="~{ui/fragments :: common_head('お支払い方法', ~{::link})}">
+	<link rel="stylesheet" th:href="@{/css/order_confirm.css}">
+</head>
+
+<body>
+	<div th:replace="~{ui/fragments :: header}"></div>
+
+	<main class="confirm-container">
+		<section class="confirm-main">
+			<h1 class="page-title">お支払い方法</h1>
+
+			<div class="section-card">
+				<p class="section-desc">以下で選択し、保存して注文確認へ戻ってください。</p>
+				<form th:action="@{/payment}" method="post" class="payment-form">
+					<th:block th:replace="~{ui/fragments :: csrf_token}"></th:block>
+					<input type="hidden" name="productId" th:value="${productId}" th:if="${productId != null}">
+					<div class="form-group">
+						<label class="info-label" for="method">カード種別</label>
+						<select id="method" name="method" class="form-select">
+							<option value="クレジットカード" th:selected="${payment.method == 'クレジットカード'}">クレジットカード</option>
+							<option value="デビットカード" th:selected="${payment.method == 'デビットカード'}">デビットカード</option>
+							<option value="残高から" th:selected="${payment.method == '残高から'}">残高から</option>
+						</select>
+					</div>
+					<div class="form-group" id="installment-group">
+						<label class="info-label" for="installment">支払い回数</label>
+						<select id="installment" name="installment" class="form-select">
+							<option value="一括払い" th:selected="${payment.installment == '一括払い'}">一括払い</option>
+							<option value="2回払い" th:selected="${payment.installment == '2回払い'}">2回払い</option>
+							<option value="3回払い" th:selected="${payment.installment == '3回払い'}">3回払い</option>
+							<option value="6回払い" th:selected="${payment.installment == '6回払い'}">6回払い</option>
+							<option value="10回払い" th:selected="${payment.installment == '10回払い'}">10回払い</option>
+						</select>
+					</div>
+					<div class="form-actions">
+						<button type="submit" class="btn-save">保存して注文確認へ戻る</button>
+					</div>
+				</form>
+				<p class="back-link">
+					<a th:href="${productId != null} ? @{/order/confirm(productId=${productId})} : @{/order/confirm}">注文確認へ戻る</a>
+				</p>
+			</div>
+		</section>
+	</main>
+	<script th:inline="javascript">
+	(function() {
+		var methodSelect = document.getElementById('method');
+		var installmentSelect = document.getElementById('installment');
+		var form = methodSelect && methodSelect.closest('form');
+		var BALANCE_VALUE = '残高から';
+
+		function updateInstallmentField() {
+			if (!methodSelect || !installmentSelect || !form) return;
+			if (methodSelect.value === BALANCE_VALUE) {
+				installmentSelect.disabled = true;
+				installmentSelect.removeAttribute('name');
+				var hidden = document.getElementById('installment-hidden');
+				if (!hidden) {
+					hidden = document.createElement('input');
+					hidden.type = 'hidden';
+					hidden.name = 'installment';
+					hidden.value = '一括払い';
+					hidden.id = 'installment-hidden';
+					form.appendChild(hidden);
+				}
+			} else {
+				installmentSelect.disabled = false;
+				installmentSelect.setAttribute('name', 'installment');
+				var hidden = document.getElementById('installment-hidden');
+				if (hidden) hidden.remove();
+			}
+		}
+		if (methodSelect) methodSelect.addEventListener('change', updateInstallmentField);
+		updateInstallmentField();
+	})();
+	</script>
+</body>
+
+</html>

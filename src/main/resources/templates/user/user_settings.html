@@ -3,8 +3,13 @@
 
 <head>
 	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<title>ユーザー設定</title>
+	<link rel="stylesheet" th:href="@{/css/variables.css}">
 	<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" />
+	<link rel="stylesheet" th:href="@{/css/common.css}">
+	<link rel="stylesheet" th:href="@{/css/theme.css}">
+	<script th:src="@{/js/theme.js}"></script>
 	<link rel="stylesheet" th:href="@{/css/user.css}">
 </head>
 
@@ -20,7 +25,8 @@
 					<div class="profile-icon-wrap profile-icon-wrap-edit">
 						<div class="profile-image profile-image-edit" id="profileIconDisplay"
 							th:data-imgsrc="${user.iconUrl}">
-							<span th:if="${user.iconUrl == null || user.iconUrl == ''}">アイコン画像</span>
+							<span class="material-symbols-outlined profile-icon-placeholder"
+								th:if="${user.iconUrl == null || user.iconUrl == ''}">person</span>
 							<img th:if="${user.iconUrl != null && user.iconUrl != ''}" th:src="${user.iconUrl}"
 								alt="icon">
 						</div>
@@ -54,7 +60,7 @@
 					<form id="profileEditForm">
 						<label>アイコン画像</label><br>
 						<img id="modalProfileIconPreview" class="modal-profile-icon-preview" style="display:none;">
-						<span id="modalProfileIconNoImage">（画像が未設定）</span>
+						<span id="modalProfileIconNoImage" class="modal-profile-icon-placeholder"><span class="material-symbols-outlined">person</span></span>
 
 						<label class="modal-profile-uploadlabel">画像アップロード</label>
 						<input type="file" id="modalProfileIconFile" accept="image/*">
@@ -62,15 +68,15 @@
 						<label>表示名</label>
 						<input type="text" id="modalProfileEditTitle" th:value="${user.displayTitle}" maxlength="18">
 
-						<label>ユーザー名</label>
-						<input type="text" id="modalProfileEditName" th:value="${user.username}" maxlength="12">
+						<label>メールアドレス</label>
+						<input type="text" id="modalProfileEditName" th:value="${user.username}" maxlength="12" readonly>
 
 						<label>自己紹介</label>
 						<textarea id="modalProfileEditCaption" maxlength="80">[[${user.caption}]]</textarea>
 
 						<div class="modal-btn-row">
-							<button type="button" id="modalProfileCancelBtn">キャンセル</button>
-							<button type="submit">保存</button>
+							<button type="button" id="modalProfileCancelBtn" class="modal-cancel-btn">キャンセル</button>
+							<button type="submit" class="modal-save-btn">保存</button>
 						</div>
 					</form>
 				</div>
@@ -90,7 +96,7 @@
 								class="product-card-link">
 								<div class="item-card">
 									<img th:src="${item.imageUrl}" class="item-img" alt="商品画像">
-									<div class="item-card-title" th:text="${item.name}">商品名</div>
+									<div class="item-card-title" th:text="${item.title}">商品名</div>
 									<div class="item-card-price" th:text="${item.price + '円'}">0円</div>
 								</div>
 							</a>
@@ -142,21 +148,38 @@
 
 					<div class="settings-card">
 
-						<!-- 通知設定 -->
+						<div th:if="${message}" class="settings-flash-message" style="color:#4ade80;margin-bottom:12px;" th:text="${message}">メッセージ</div>
+						<div th:if="${errorMessage}" class="settings-flash-error" style="color:#f87171;margin-bottom:12px;" th:text="${errorMessage}">エラーメッセージ</div>
+
+						<!-- パスワード変更 -->
 						<div class="settings-title">
-							通知設定 <span class="settings-title-icon">🔔</span>
+							パスワード
 						</div>
-						<div class="settings-checkbox-wrap">
-							<label class="settings-checkbox-label">
-								<input type="checkbox" class="settings-checkbox-input" name="notificationEnabled"
-									th:checked="${userSettings.notificationEnabled}">
-								通知を受け取る
-							</label>
+						<div class="settings-card-section" style="margin-bottom:18px;">
+							<a th:href="@{/password/change}" class="profile-icon-edit" style="display:inline-block;padding:6px 16px;text-decoration:none;color:inherit;">パスワードを変更する</a>
 						</div>
+
+						<!-- 通知設定 -->
+						<form th:action="@{/user/settings/notification}" method="post">
+							<th:block th:replace="~{ui/fragments :: csrf_token}"></th:block>
+							<div class="settings-title">
+								通知設定
+							</div>
+							<div class="settings-checkbox-wrap">
+								<label class="settings-checkbox-label">
+									<input type="checkbox" class="settings-checkbox-input" name="notificationEnabled"
+										value="true" th:checked="${userSettings.notificationEnabled}">
+									通知を受け取る
+								</label>
+							</div>
+							<div class="settings-save-btn-wrap" style="margin-top:16px;">
+								<button type="submit" class="settings-save-btn">全体の設定を保存</button>
+							</div>
+						</form>
 
 						<!-- 支払い状況 -->
 						<div class="settings-title" style="margin-top:32px;">
-							現在の支払い状況 <span class="settings-title-icon">💳</span>
+							現在の支払い状況
 						</div>
 
 						<div class="settings-card-section" style="margin-bottom:18px;">
@@ -189,12 +212,13 @@
 
 						<!-- 配送先情報 -->
 						<div class="settings-title">
-							配送先情報 <span class="settings-title-icon">🚚</span>
+							配送先情報
 						</div>
 
 						<div class="settings-card-section">
 							<form id="address-edit-form" th:action="@{/user/address/update}" method="post"
 								style="display:flex;flex-direction:column;gap:10px;">
+								<th:block th:replace="~{ui/fragments :: csrf_token}"></th:block>
 
 								<div>
 									<label style="color:#ffd743;">お名前</label><br>
@@ -225,10 +249,6 @@
 									配送先情報を保存
 								</button>
 							</form>
-						</div>
-
-						<div class="settings-save-btn-wrap">
-							<button class="settings-save-btn">全体の設定を保存</button>
 						</div>
 
 					</div>

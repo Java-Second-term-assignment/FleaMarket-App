@@ -34,6 +34,28 @@ public class AdminService {
 	private final AdminItemWritePort adminItemWritePort;
 
 	@Transactional
+	public void suspendItem(UUID currentUserId, UUID itemId) {
+		UUID adminAuthUserId = adminSecurityUtil.requireAdminAndGetAuthUserId(currentUserId);
+
+		boolean updated = adminItemWritePort.markSuspended(itemId);
+		if (!updated)
+			throw NotFoundBusinessException.of(ErrorCode.RESOURCE_NOT_FOUND);
+
+		auditLogService.record(adminAuthUserId, "SUSPEND_ITEM", TargetType.ITEM.name(), itemId, "出品停止");
+	}
+
+	@Transactional
+	public void unsuspendItem(UUID currentUserId, UUID itemId) {
+		UUID adminAuthUserId = adminSecurityUtil.requireAdminAndGetAuthUserId(currentUserId);
+
+		boolean updated = adminItemWritePort.restoreToPublished(itemId);
+		if (!updated)
+			throw NotFoundBusinessException.of(ErrorCode.RESOURCE_NOT_FOUND);
+
+		auditLogService.record(adminAuthUserId, "UNSUSPEND_ITEM", TargetType.ITEM.name(), itemId, "停止解除");
+	}
+
+	@Transactional
 	public void forceDeleteItem(UUID currentUserId, UUID itemId, String reason) {
 		// currentUserId = users.id を想定
 		// audit_logs.admin_user_id は auth_users.id を要求するので変換が必要
@@ -49,6 +71,39 @@ public class AdminService {
 				TargetType.ITEM.name(),
 				itemId,
 				reason);
+	}
+
+	@Transactional
+	public void updateItem(UUID currentUserId, UUID itemId, String name, Long priceAmount) {
+		UUID adminAuthUserId = adminSecurityUtil.requireAdminAndGetAuthUserId(currentUserId);
+
+		boolean updated = adminItemWritePort.updateNameAndPrice(itemId, name, priceAmount);
+		if (!updated)
+			throw NotFoundBusinessException.of(ErrorCode.RESOURCE_NOT_FOUND);
+
+		auditLogService.record(adminAuthUserId, "UPDATE_ITEM", TargetType.ITEM.name(), itemId, null);
+	}
+
+	@Transactional
+	public void restoreItem(UUID currentUserId, UUID itemId) {
+		UUID adminAuthUserId = adminSecurityUtil.requireAdminAndGetAuthUserId(currentUserId);
+
+		boolean updated = adminItemWritePort.restoreFromDeleted(itemId);
+		if (!updated)
+			throw NotFoundBusinessException.of(ErrorCode.RESOURCE_NOT_FOUND);
+
+		auditLogService.record(adminAuthUserId, "RESTORE_ITEM", TargetType.ITEM.name(), itemId, "復元");
+	}
+
+	@Transactional
+	public void deleteItemPermanently(UUID currentUserId, UUID itemId) {
+		UUID adminAuthUserId = adminSecurityUtil.requireAdminAndGetAuthUserId(currentUserId);
+
+		boolean deleted = adminItemWritePort.deletePermanently(itemId);
+		if (!deleted)
+			throw NotFoundBusinessException.of(ErrorCode.RESOURCE_NOT_FOUND);
+
+		auditLogService.record(adminAuthUserId, "DELETE_ITEM_PERMANENTLY", TargetType.ITEM.name(), itemId, "永久削除");
 	}
 
 }

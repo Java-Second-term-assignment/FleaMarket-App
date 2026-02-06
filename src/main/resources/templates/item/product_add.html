@@ -4,9 +4,12 @@
 <head>
 	<meta charset="UTF-8">
 	<title>出品確認</title>
+	<link rel="stylesheet" th:href="@{/css/variables.css}">
 	<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" />
 	<!-- 共通CSS -->
 	<link rel="stylesheet" th:href="@{/css/common.css}">
+	<link rel="stylesheet" th:href="@{/css/theme.css}">
+	<script th:src="@{/js/theme.js}"></script>
 	<!-- 画面専用CSS -->
 	<link rel="stylesheet" th:href="@{/css/product_confirm.css}">
 </head>
@@ -22,6 +25,7 @@
 
 		<form th:action="@{/product/submit}" method="post" enctype="multipart/form-data" class="confirm-card"
 			th:object="${productForm}">
+			<th:block th:replace="~{ui/fragments :: csrf_token}"></th:block>
 
 			<p th:if="${errorMessage}" th:text="${errorMessage}" class="required error-text"></p>
 			<p th:if="${#fields.hasErrors('name')}" th:errors="*{name}" class="required error-text"></p>

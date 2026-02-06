@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="ja" xmlns:th="http://www.thymeleaf.org">
+
+<head th:replace="~{ui/fragments :: common_head('注文一覧', ~{::link})}">
+	<link rel="stylesheet" th:href="@{/css/order_list.css}">
+</head>
+
+<body>
+	<div th:replace="~{ui/fragments :: header}"></div>
+
+	<main class="order-list-main">
+		<h1 class="page-title">注文一覧</h1>
+
+		<div class="order-list-tabs">
+			<a th:href="@{/user/orders(scope='buyer')}" class="tab-btn" th:classappend="${scope == 'buyer'} ? 'active' : ''">購入したもの</a>
+			<a th:href="@{/user/orders(scope='seller')}" class="tab-btn" th:classappend="${scope == 'seller'} ? 'active' : ''">売ったもの</a>
+		</div>
+
+		<section class="order-list-card">
+			<th:block th:if="${orders != null and !orders.empty}">
+				<ul class="order-list">
+					<li th:each="o : ${orders}" class="order-list-item">
+						<a th:href="@{/user/orders/{id}(id=${o.orderId})}" class="order-list-link">
+							<div class="order-item-thumb">
+								<img th:src="${o.itemThumbnailUrl}" alt="" onerror="this.src='/img/no-image.png'">
+							</div>
+							<div class="order-item-info">
+								<div class="order-item-name" th:text="${o.itemName}">商品名</div>
+								<div class="order-item-meta">
+									<span class="order-item-id" th:text="'注文番号: ' + ${#strings.substring(o.orderId.toString(), 0, 8)}">注文番号</span>
+									<span class="order-item-status status-badge" th:classappend="${o.status != null ? 'status-' + o.status : ''}" th:switch="${o.status}">
+										<span th:case="'PAID'">支払済み</span>
+										<span th:case="'AWAITING_SHIPMENT'">発送待ち</span>
+										<span th:case="'SHIPPED'">発送済み</span>
+										<span th:case="'COMPLETED'">完了</span>
+										<span th:case="'CANCELLED'">キャンセル</span>
+										<span th:case="*" th:text="${o.status}">状態</span>
+									</span>
+								</div>
+								<div class="order-item-amount" th:text="'¥' + ${#numbers.formatInteger(o.totalAmount != null ? o.totalAmount : 0, 3, 'COMMA')}">¥0</div>
+								<div class="order-item-date" th:text="${o.createdAt != null} ? ${#temporals.format(o.createdAt, 'yyyy/MM/dd HH:mm')} : ''">日付</div>
+							</div>
+						</a>
+					</li>
+				</ul>
+			</th:block>
+			<div th:if="${orders == null or orders.empty}" class="order-list-empty">
+				<span class="material-symbols-outlined order-list-empty-icon" aria-hidden="true">shopping_bag</span>
+				<p class="order-list-empty-text">注文はありません。</p>
+				<a th:href="@{/products}" class="order-list-empty-link">商品一覧へ</a>
+			</div>
+		</section>
+	</main>
+</body>
+
+</html>

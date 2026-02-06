@@ -5,9 +5,12 @@
 	<meta charset="UTF-8">
 	<title>商品一覧</title>
 
+	<link rel="stylesheet" th:href="@{/css/variables.css}">
 	<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" />
 	<!-- 共通CSS -->
 	<link rel="stylesheet" th:href="@{/css/common.css}">
+	<link rel="stylesheet" th:href="@{/css/theme.css}">
+	<script th:src="@{/js/theme.js}"></script>
 	<!-- 画面専用CSS -->
 	<link rel="stylesheet" th:href="@{/css/product-list.css}">
 </head>
@@ -27,7 +30,7 @@
 		<div class="horizontal-search-ranking">
 			<div class="product-search-card wider-search-card">
 				<div class="search-card-header">商品検索</div>
-				<form class="search-form">
+				<form class="search-form" th:action="@{/products}" method="get">
 					<div class="search-input-row">
 						<span class="search-icon material-symbols-outlined">
 							search
@@ -78,13 +81,15 @@
 				<section class="ranking-section">
 					<ol class="ranking-list">
 						<li class="ranking-item" th:each="rank, stat : ${rankings}">
-							<span class="ranking-rank" th:text="${stat.count}"></span>
-							<img th:src="${rank.imageUrl}" class="ranking-thumb" onerror="this.src='/img/no-image.png'">
+							<a th:href="@{/products/{id}(id=${rank.id != null ? rank.id.toString() : ''})}" class="ranking-item-link">
+								<span class="ranking-rank" th:text="${stat.count}"></span>
+								<img th:src="${rank.imageUrl}" class="ranking-thumb" onerror="this.src='/img/no-image.png'">
 
-							<div class="ranking-info">
-								<span class="ranking-item-title" th:text="${rank.name}"></span>
-								<span class="ranking-item-price" th:text="|${rank.price}円|"></span>
-							</div>
+								<div class="ranking-info">
+									<span class="ranking-item-title" th:text="${rank.name}"></span>
+									<span class="ranking-item-price" th:text="|${rank.price}円|"></span>
+								</div>
+							</a>
 						</li>
 					</ol>
 				</section>
@@ -94,7 +99,7 @@
 		<!-- 商品グリッド -->
 		<div class="product-grid">
 
-			<a th:each="product : ${products}" th:href="@{/products/{id}(id=${product.id})}">
+			<a th:each="product : ${products}" th:with="productId=${product.id != null ? product.id.toString() : ''}" th:href="@{/products/{id}(id=${productId})}">
 
 				<div class="item-card">
 
@@ -124,12 +129,13 @@
 			</a>
 		</div>
 		<!-- ページネーション -->
-		<nav class="pagination-wrapper" th:if="${totalPages > 1}">
+		<nav class="pagination-wrapper" th:if="${totalPages > 1}"
+			th:with="currentKeyword=${param.keyword != null && param.keyword.length > 0 ? param.keyword[0] : null}, currentCategory=${param.category != null && param.category.length > 0 ? param.category[0] : null}, currentSort=${param.sort != null && param.sort.length > 0 ? param.sort[0] : 'new'}">
 			<ul class="pagination">
 
 				<!-- 前へ -->
 				<li class="page-item" th:classappend="${currentPage == 0} ? 'disabled'">
-					<a th:href="@{/products(page=${currentPage - 1}, size=${pageSize})}">
+					<a th:href="@{/products(page=${currentPage - 1}, size=${pageSize}, keyword=${currentKeyword}, category=${currentCategory}, sort=${currentSort})}">
 						‹
 					</a>
 				</li>
@@ -137,12 +143,12 @@
 				<!-- ページ番号 -->
 				<li class="page-item" th:each="i : ${#numbers.sequence(0, totalPages - 1)}"
 					th:classappend="${i == currentPage} ? 'active'">
-					<a th:href="@{/products(page=${i}, size=${pageSize})}" th:text="${i + 1}"></a>
+					<a th:href="@{/products(page=${i}, size=${pageSize}, keyword=${currentKeyword}, category=${currentCategory}, sort=${currentSort})}" th:text="${i + 1}"></a>
 				</li>
 
 				<!-- 次へ -->
 				<li class="page-item" th:classappend="${currentPage == totalPages - 1} ? 'disabled'">
-					<a th:href="@{/products(page=${currentPage + 1}, size=${pageSize})}">
+					<a th:href="@{/products(page=${currentPage + 1}, size=${pageSize}, keyword=${currentKeyword}, category=${currentCategory}, sort=${currentSort})}">
 						›
 					</a>
 				</li>
@@ -151,7 +157,7 @@
 
 	</main>
 	<!-- 画面専用JS -->
-	<script th:src="@{/js/product_confirm.js}"></script>
+	<script th:src="@{/js/product_list.js}" defer></script>
 </body>
 
 </html>

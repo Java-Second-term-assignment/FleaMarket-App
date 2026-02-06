@@ -22,6 +22,6 @@ public class RegisterForm {
 
 	@AssertTrue(message = "パスワードとパスワード確認が一致しません")
 	public boolean isPasswordMatch() {
-		return password == null || confirmPassword == null || password.equals(confirmPassword);
+		return password != null && confirmPassword != null && password.equals(confirmPassword);
 	}
 }

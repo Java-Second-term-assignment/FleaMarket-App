@@ -22,7 +22,15 @@ public class UserMeResponse {
 
 	private boolean active;
 
-	public static UserMeResponse of(User user, String email) {
+	private String iconUrl;
+	private String caption;
+
+	private UserAddressDto address;
+
+	private boolean notificationEnabled;
+
+	public static UserMeResponse of(User user, String email, String iconUrl, String caption, UserAddressDto address,
+			boolean notificationEnabled) {
 		return new UserMeResponse(
 				user.getId(),
 				user.getDisplayName(),
@@ -31,6 +39,10 @@ public class UserMeResponse {
 				user.getRank().getRankCode(),
 				user.getRank().getRankName(),
 				user.getRank().getCommissionBps(),
-				user.isActive());
+				user.isActive(),
+				iconUrl,
+				caption != null ? caption : "",
+				address != null ? address : UserAddressDto.empty(),
+				notificationEnabled);
 	}
 }

@@ -32,10 +32,14 @@ public class AuthorizationConfig {
 		auth
 				.dispatcherTypeMatchers(DispatcherType.FORWARD, DispatcherType.ERROR).permitAll()
 				.requestMatchers("/css/**", "/js/**", "/img/**", "/fonts/**", "/*.ico").permitAll()
-				.requestMatchers("/login", "/register", "/password/forgot", "/password-reset-request", "/terms").permitAll()
+				.requestMatchers("/webhooks/**").permitAll()
+				.requestMatchers("/login", "/register", "/password/forgot", "/password-reset-request", "/password/reset", "/terms").permitAll()
+				.requestMatchers("/admin/login").permitAll()
 				.requestMatchers(HttpMethod.GET, "/products", "/products/**").permitAll()
-				.requestMatchers("/", "/products", "/products/**", "/board", "/board/**").permitAll()
-				.requestMatchers("/user/settings", "/product/add", "/items/add", "/product/submit", "/order/confirm").authenticated()
+				.requestMatchers("/", "/products", "/products/**").permitAll()
+				.requestMatchers(HttpMethod.GET, "/board", "/board/**").permitAll()
+				.requestMatchers(HttpMethod.POST, "/board/*/posts").authenticated()
+				.requestMatchers("/user/settings", "/user/settings/**", "/user/address/**", "/user/orders", "/user/orders/**", "/user/favorites", "/user/favorites/**", "/product/add", "/items/add", "/product/submit", "/product/*/review", "/products/*/report", "/order/confirm", "/payment", "/address", "/cart", "/cart/**").authenticated()
 				.requestMatchers("/admin/**").hasRole("ADMIN")
 				.requestMatchers("/password/change", "/password-change").authenticated()
 				.anyRequest().authenticated();

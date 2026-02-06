@@ -1,7 +1,7 @@
 @charset "UTF-8";
 
 body {
-	background-color: #2c2c2c;
+	background-color: var(--bg-dark);
 	margin: 0;
 	font-family: "Helvetica Neue", Arial, sans-serif;
 	padding-top: 80px;
@@ -27,7 +27,8 @@ body {
 
 .confirm-sidebar {
 	flex: 1;
-	margin-top: 60px;
+	/* 左カラムの「注文確認」見出し＋余白の高さ分下げて、注文商品カードと上端を揃える */
+	margin-top: 90px;
 }
 
 /* カード */
@@ -38,6 +39,81 @@ body {
 	padding: 24px;
 	margin-bottom: 20px;
 	box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+.section-card .section-title {
+	font-weight: bold;
+	font-size: 16px;
+	color: #333;
+	margin-bottom: 16px;
+}
+
+.section-desc {
+	margin-bottom: 16px;
+	color: #666;
+	font-size: 14px;
+}
+
+.back-link {
+	margin-top: 24px;
+}
+
+.back-link a {
+	color: #007bff;
+	text-decoration: none;
+}
+
+.back-link a:hover {
+	text-decoration: underline;
+}
+
+/* フォーム（支払い・届け先変更） */
+.form-group {
+	margin-bottom: 18px;
+}
+
+.form-group .info-label {
+	display: block;
+	margin-bottom: 6px;
+}
+
+.form-input,
+.form-select {
+	width: 100%;
+	max-width: 400px;
+	padding: 10px 12px;
+	font-size: 14px;
+	border: 1px solid #ddd;
+	border-radius: 8px;
+	background: #fff;
+	color: #222;
+	box-sizing: border-box;
+}
+
+.form-input:focus,
+.form-select:focus {
+	outline: none;
+	border-color: #007bff;
+}
+
+.form-actions {
+	margin-top: 24px;
+	margin-bottom: 8px;
+}
+
+.btn-save {
+	background-color: #007bff;
+	color: #fff;
+	border: none;
+	padding: 12px 24px;
+	border-radius: 8px;
+	font-size: 14px;
+	font-weight: 600;
+	cursor: pointer;
+}
+
+.btn-save:hover {
+	background-color: #0056b3;
 }
 
 /* 商品 */
@@ -65,16 +141,37 @@ body {
 	color: #888;
 }
 
-/* 情報 */
+/* 情報（お支払い方法・お届け先） */
 .info-grid {
 	display: grid;
 	grid-template-columns: 100px 1fr;
-	gap: 10px;
+	row-gap: 14px;
+	column-gap: 12px;
 	font-size: 14px;
+	align-items: baseline;
+}
+
+.info-grid > .info-value {
+	border-bottom: 1px solid #eee;
+	padding-bottom: 12px;
+}
+
+.info-grid > .info-value:last-child {
+	border-bottom: none;
+	padding-bottom: 0;
 }
 
 .info-label {
-	color: #888;
+	font-size: 13px;
+	color: #666;
+	font-weight: 500;
+}
+
+.info-value {
+	font-weight: 600;
+	color: #222;
+	line-height: 1.5;
+	word-break: break-all;
 }
 
 /* サマリー */
@@ -107,4 +204,34 @@ body {
 
 .btn-submit:hover {
 	background-color: #0056b3;
+}
+
+.btn-remove {
+	background: transparent;
+	color: #666;
+	border: 1px solid #ccc;
+	padding: 6px 12px;
+	border-radius: 6px;
+	font-size: 12px;
+	cursor: pointer;
+}
+
+.btn-remove:hover {
+	background: #f5f5f5;
+	color: #333;
+}
+
+.cart-empty {
+	padding: 40px 0;
+	text-align: center;
+	color: #666;
+}
+
+.cart-empty a {
+	color: #007bff;
+	text-decoration: none;
+}
+
+.cart-empty a:hover {
+	text-decoration: underline;
 }

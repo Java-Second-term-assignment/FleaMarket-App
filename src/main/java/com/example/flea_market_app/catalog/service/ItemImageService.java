@@ -43,6 +43,14 @@ public interface ItemImageService {
 	String getThumbnailImageUrl(UUID itemId);
 
 	/**
+	 * 商品の1枚目の画像のS3オブジェクトキーを取得します（モデレーション等でRekognitionに渡す用）。
+	 * 
+	 * @param itemId 商品ID
+	 * @return 1枚目のS3キー。画像が存在しない場合はnull
+	 */
+	String getFirstImageS3Key(UUID itemId);
+
+	/**
 	 * 商品の全画像をS3とDBから削除します。
 	 * 
 	 * @param itemId 商品ID

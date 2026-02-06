@@ -1,5 +1,6 @@
 package com.example.flea_market_app.admin.service.impl;
 
+import java.time.OffsetDateTime;
 import java.util.UUID;
 
 import org.springframework.stereotype.Component;
@@ -26,7 +27,37 @@ public class DbAdminUserWriteImpl implements AdminUserWritePort {
 
 	@Override
 	@Transactional
+	public boolean setActiveAndFrozenUntil(UUID userId, boolean active, OffsetDateTime frozenUntil) {
+		return userRepository.updateActiveAndFrozenUntil(userId, active, frozenUntil) > 0;
+	}
+
+	@Override
+	@Transactional
+	public boolean toggleActive(UUID userId) {
+		return userRepository.toggleActive(userId) > 0;
+	}
+
+	@Override
+	@Transactional
 	public boolean setAdminByUserId(UUID userId, boolean admin) {
 		return authUserRepository.updateAdmin(userId, admin) > 0;
+	}
+
+	@Override
+	@Transactional
+	public boolean updateUserProfile(UUID userId, String displayName, String email) {
+		int u = userRepository.updateDisplayName(userId, displayName);
+		int a = authUserRepository.updateEmailByUserId(userId, email);
+		return u > 0 && a > 0;
+	}
+
+	@Override
+	@Transactional
+	public boolean deleteUserPermanently(UUID userId) {
+		if (!userRepository.existsById(userId))
+			return false;
+		authUserRepository.findByUserId(userId).ifPresent(authUserRepository::delete);
+		userRepository.deleteById(userId);
+		return true;
 	}
 }

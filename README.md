@@ -8,9 +8,9 @@ AIモデレーションや不正検出などの高度な機能を実装してい
 
 ### プロジェクト体制
 - **開発メンバー**: 3人
-  - **Hirotaka-Tambo**: 要件定義・実装
-  - **soramame174**: 要件定義・デザイン
-  - **Kamon-Tahara-504**: 要件定義・デバッグ
+  - **Hirotaka-Tambo**: 要件定義・実装・デバック・レビュー
+  - **Kamon-Tahara-504**: 要件定義・実装・デバック・レビュー
+  - **soramame174**: 要件定義・デザイン・HTML実装
 
 ※大まかな貢献度で振り分けています。
 
@@ -222,14 +222,9 @@ FleaMarket-App/
 │   │       ├── data.sql
 │   │       ├── schema.sql
 │   │       └── db/
-│   │           └── migration/    # Flywayマイグレーション
-│   │               ├── V1__init.sql
-│   │               ├── V2_rank.sql
-│   │               ├── V3_categories.sql
-│   │               ├── V4_category_master_columns.sql
-│   │               ├── V5_prohibited_rules.sql
-│   │               ├── V6_items_fulltext_search.sql
-│   │               └── V7_dev_seed_users.sql
+│   │           └── migration/    # Flywayマイグレーション（統合版: V1=スキーマ, V2=シード）
+│   │               ├── V1__init.sql   # 全テーブル・完成形DDL
+│   │               └── V2__seed.sql   # user_ranks / categories / prohibited シード
 │   └── test/                      # テストコード
 │       └── java/
 │           └── com/example/flea_market_app/

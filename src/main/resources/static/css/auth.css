@@ -1,70 +1,158 @@
 @charset "UTF-8";
 
-/* 背景と全体のレイアウト */
+/* 背景と全体のレイアウト（variables.css の :root を参照） */
+/* 共通ヘッダー固定時用：ヘッダーとコンテンツが被らないよう上余白を確保 */
 body {
-	background-color: #b9bddb;
-	/* 背景の薄紫 */
+	background-color: var(--bg-dark);
 	display: flex;
+	flex-direction: column;
 	justify-content: center;
 	align-items: center;
 	min-height: 100vh;
 	margin: 0;
+	padding-top: 80px;
+	box-sizing: border-box;
 	font-family: "Helvetica Neue", Arial, sans-serif;
+	font-weight: 600;
 }
 
-/* 中央の白いカード */
+/* 認証画面のサイト共通ヘッダーは常にダーク（白ヘッダー・白文字の見えなくなる不具合を防止） */
+body > .header {
+	background-color: #1e2a3b !important;
+	color: #ffffff !important;
+}
+body > .header a,
+body > .header .nav-links a,
+body > .header .nav-item a,
+body > .header .btn-logout,
+body > .header .logo a {
+	color: #ffffff !important;
+}
+body > .header .nav-links a::after {
+	background: #ffffff !important;
+}
+body > .header .btn-theme-toggle,
+body > .header .theme-icon {
+	color: #ffffff !important;
+}
+
+/* 中央のシート（今風のカード） */
 .container {
-	background-color: white;
+	background-color: var(--bg-container);
 	width: 90%;
 	max-width: 500px;
-	border-radius: 12px;
-	box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+	border-radius: 16px;
+	box-shadow: 0 8px 32px rgba(0, 0, 0, 0.25);
 	overflow: hidden;
 }
 
-/* ヘッダー */
-.header {
+/* カード内ヘッダー（共通ヘッダーと区別するため .auth-card-header を使用） */
+.container .auth-card-header {
+	position: static;
 	padding: 30px 20px;
-	border-bottom: 1.5px solid #3b4d8d;
+	border-bottom: 1.5px solid rgba(255, 255, 255, 0.2);
 	text-align: center;
+	background-color: #1e2a3b;
+	color: #ffffff !important;
 }
 
-.header h1 {
+.container .auth-card-header h1 {
 	margin: 0;
 	font-size: 28px;
-	font-weight: 800;
-	color: #333;
+	font-weight: 700;
+	line-height: 1.2;
+	color: #ffffff !important;
 }
 
-/* コンテンツエリア */
+/* コンテンツエリア（余白を広めに） */
 .content {
-	padding: 30px 45px;
+	padding: 36px 48px;
+	font-weight: 600;
 }
 
 .form-group {
 	margin-bottom: 22px;
 }
 
+/* フォーム上部の説明文 */
+.form-description {
+	font-size: 13px;
+	color: var(--text-sub);
+	line-height: 1.6;
+	margin-bottom: 20px;
+}
+
+/* パスワード表示トグル用ラッパー */
+.password-input-wrapper {
+	position: relative;
+	display: flex;
+	align-items: center;
+}
+
+.password-input-wrapper input {
+	padding-right: 48px;
+}
+
+.password-toggle-btn {
+	position: absolute;
+	right: 8px;
+	top: 50%;
+	transform: translateY(-50%);
+	background: none;
+	border: none;
+	padding: 8px;
+	cursor: pointer;
+	color: var(--text-muted);
+	border-radius: 4px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	transition: color 0.2s, background-color 0.2s;
+}
+
+.password-toggle-btn:hover {
+	color: var(--text-heading);
+	background-color: rgba(255, 255, 255, 0.08);
+}
+
+.password-toggle-btn .material-symbols-outlined {
+	font-size: 22px;
+}
+
 label {
 	display: block;
 	margin-bottom: 10px;
 	font-size: 14px;
-	font-weight: 500;
+	font-weight: 600;
+	color: var(--text-label);
 }
 
 .required {
-	color: #e33e3e;
+	color: var(--text-error);
 	margin-left: 4px;
 }
 
 input {
 	width: 100%;
 	padding: 12px 15px;
-	border: 1px solid #d1d1d1;
-	border-radius: 6px;
+	border: 1px solid var(--border-light);
+	border-radius: 8px;
 	box-sizing: border-box;
 	font-size: 14px;
-	background-color: #fff;
+	font-weight: 600;
+	background-color: var(--bg-dark);
+	color: var(--text-heading);
+	transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+input:focus {
+	outline: none;
+	border-color: var(--accent-blue);
+	box-shadow: 0 0 0 3px rgba(74, 93, 153, 0.25);
+}
+
+input::placeholder {
+	color: var(--text-muted);
 }
 
 /* ボタンの共通設定 */
@@ -72,10 +160,10 @@ input {
 	width: 100%;
 	padding: 16px;
 	border: none;
-	border-radius: 6px;
-	color: white;
+	border-radius: 8px;
+	color: var(--text-main);
 	font-size: 15px;
-	font-weight: bold;
+	font-weight: 700;
 	cursor: pointer;
 	margin-top: 10px;
 	transition: opacity 0.2s;
@@ -87,18 +175,18 @@ input {
 
 /* ログイン用（紺色） */
 .btn-login {
-	background-color: #54649b;
+	background-color: var(--btn-login);
 }
 
 /* パスワード変更・登録用（緑色） */
 .btn-register,
 .btn-submit {
-	background-color: #28a745;
+	background-color: var(--btn-success);
 }
 
 .btn-register:hover,
 .btn-submit:hover {
-	background-color: #218838;
+	background-color: var(--btn-success-hover);
 }
 
 /* 下部のテキストリンク */
@@ -106,10 +194,12 @@ input {
 	text-align: center;
 	margin-top: 25px;
 	font-size: 13px;
+	font-weight: 600;
+	color: var(--text-label);
 }
 
 a {
-	color: #4a69bd;
+	color: var(--link-blue);
 	text-decoration: none;
 }
 
@@ -124,25 +214,46 @@ a:hover {
 	left: 20px;
 	color: rgba(255, 255, 255, 0.8);
 	font-size: 14px;
+	font-weight: 600;
+}
+
+/* ログインシート外の戻るボタン用 */
+.auth-actions {
+	width: 90%;
+	max-width: 500px;
+	margin-bottom: 1rem;
+	text-align: left;
+}
+
+/* 戻るリンク（ログイン画面用） */
+.link-back {
+	display: inline-block;
+	margin-bottom: 0;
+	font-weight: 600;
+}
+
+.auth-actions .link-back {
+	margin-bottom: 0;
 }
 
 /* 登録画面の補足 */
 .footer-text {
 	font-size: 12px;
-	color: #333;
+	font-weight: 600;
+	color: var(--text-sub);
 	line-height: 1.6;
 	margin-top: 10px;
 }
 
 /* バリデーションエラー */
 .error-text {
-	color: #e33e3e;
+	color: var(--text-error);
 	font-size: 12px;
 	margin-top: 6px;
 }
 
 .btn-change {
-	background-color: #54649b;
+	background-color: var(--btn-login);
 }
 
 .modal-overlay {
@@ -161,8 +272,8 @@ a:hover {
 
 /* モーダル本体 */
 .modal-content {
-	background: #2b2b2b;
-	color: #2c2c2c;
+	background: var(--bg-panel);
+	color: var(--bg-dark);
 	/* ← 全体を白文字に */
 	border-radius: 8px;
 
@@ -185,7 +296,7 @@ a:hover {
 /* 見出し */
 .modal-content h2,
 .modal-content h3 {
-	color: #2c2c2c;
+	color: var(--bg-dark);
 	font-size: 16px;
 	margin-bottom: 11px;
 	font-weight: bold;
@@ -195,11 +306,11 @@ a:hover {
 /* 本文 */
 .modal-body {
 	font-size: 13px;
-	color: #2c2c2c;
+	color: var(--bg-dark);
 }
 
 .modal-body strong {
-	color: #365292;
+	color: var(--accent-blue-link);
 }
 
 /* リスト */
@@ -218,6 +329,36 @@ a:hover {
 /* 段落 */
 .modal-content p {
 	margin: 9px 0 10px;
-	color: #2c2c2c;
+	color: var(--bg-dark);
 	font-size: 13px;
+}
+
+/* 利用規約ページ */
+.terms-body {
+	font-size: 13px;
+	line-height: 1.7;
+}
+
+.terms-body .terms-section {
+	margin-bottom: 1.5em;
+}
+
+.terms-body .terms-section h2 {
+	margin: 1.2em 0 0.6em;
+	font-size: 1.1em;
+	color: var(--accent-blue-link);
+}
+
+.terms-body .terms-section h3 {
+	margin: 0.8em 0 0.3em;
+	font-size: 1em;
+	color: var(--text-dark);
+}
+
+.terms-body .terms-section p {
+	margin: 0.4em 0;
+}
+
+.terms-body .terms-section ul {
+	margin: 0.4em 0 0.8em;
 }

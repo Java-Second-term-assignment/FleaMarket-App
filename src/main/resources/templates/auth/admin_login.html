@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="ja" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
+<head>
+	<meta charset="UTF-8">
+	<title>管理者ログイン</title>
+	<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" />
+	<link rel="stylesheet" th:href="@{/css/variables.css}">
+	<link rel="stylesheet" th:href="@{/css/common.css}">
+	<link rel="stylesheet" th:href="@{/css/theme.css}">
+	<script th:src="@{/js/theme.js}"></script>
+	<link rel="stylesheet" th:href="@{/css/login.css}">
+	<script th:src="@{/js/password-toggle.js}" defer></script>
+</head>
+
+<body>
+	<!-- 共通ヘッダー（商品一覧などと同じ） -->
+	<div th:replace="~{ui/fragments :: header}"></div>
+	<div class="container">
+		<div class="auth-card-header">
+			<h1>管理者ログイン</h1>
+		</div>
+
+		<div class="content">
+			<p th:if="${param.error != null}" class="error-text" style="color: #c00; margin-bottom: 1em;">
+				<span th:if="${param.error[0] == 'forbidden'}">管理者権限がありません。一般ユーザーは <a th:href="@{/login}">通常のログイン</a> をご利用ください。</span>
+				<span th:unless="${param.error[0] == 'forbidden'}">メールアドレスまたはパスワードが正しくありません。</span>
+			</p>
+
+			<form th:action="@{/admin/login}" method="post">
+				<th:block th:replace="~{ui/fragments :: csrf_token}"></th:block>
+				<div class="form-group">
+					<label>メールアドレス</label>
+					<input type="email" name="email" required autocomplete="username">
+				</div>
+
+				<div class="form-group">
+					<label>パスワード</label>
+					<div class="password-input-wrapper" data-password-toggle>
+						<input type="password" name="password" required autocomplete="current-password">
+						<button type="button" class="password-toggle-btn" aria-label="パスワードを表示" title="パスワードを表示">
+							<span class="material-symbols-outlined" aria-hidden="true">visibility</span>
+						</button>
+					</div>
+				</div>
+
+				<button type="submit" class="btn btn-login">
+					管理者としてログイン
+				</button>
+			</form>
+
+			<div class="link-bottom">
+				<a th:href="@{/products}">商品一覧に戻る</a>
+			</div>
+		</div>
+	</div>
+
+	<div class="copyright">©.</div>
+
+</body>
+
+</html>

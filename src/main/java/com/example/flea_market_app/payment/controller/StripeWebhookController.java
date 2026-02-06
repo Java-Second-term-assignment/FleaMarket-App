@@ -24,7 +24,10 @@ public class StripeWebhookController {
 	@PostMapping
 	public ResponseEntity<Void> handle(
 			@RequestBody String payload,
-			@RequestHeader("Stripe-Signature") String sig) {
+			@RequestHeader(value = "Stripe-Signature", required = false) String sig) {
+		if (sig == null || sig.isBlank()) {
+			return ResponseEntity.badRequest().build();
+		}
 		var verified = verifier.verify(payload, sig);
 		publisher.publish(verified); // ← ここから service に渡す（イベント）
 		return ResponseEntity.ok().build();

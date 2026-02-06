@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="ja" xmlns:th="http://www.thymeleaf.org">
+
+<head th:replace="~{ui/fragments :: common_head('お届け先', ~{::link})}">
+	<link rel="stylesheet" th:href="@{/css/order_confirm.css}">
+</head>
+
+<body>
+	<div th:replace="~{ui/fragments :: header}"></div>
+
+	<main class="confirm-container">
+		<section class="confirm-main">
+			<h1 class="page-title">お届け先</h1>
+
+			<div class="section-card">
+				<p class="section-desc">以下を入力し、保存して注文確認へ戻ってください。</p>
+				<form th:action="@{/address}" method="post" class="address-form">
+					<th:block th:replace="~{ui/fragments :: csrf_token}"></th:block>
+					<input type="hidden" name="productId" th:value="${productId}" th:if="${productId != null}">
+					<input type="hidden" name="returnTo" th:value="${returnTo}" th:if="${returnTo != null and !returnTo.isEmpty()}">
+					<div class="form-group">
+						<label class="info-label" for="name">氏名</label>
+						<input type="text" id="name" name="name" th:value="${address.name}" class="form-input" placeholder="山田 太郎">
+					</div>
+					<div class="form-group">
+						<label class="info-label" for="postcode">郵便番号</label>
+						<input type="text" id="postcode" name="postcode" th:value="${address.postcode}" class="form-input" placeholder="〒000-0000">
+					</div>
+					<div class="form-group">
+						<label class="info-label" for="fullAddress">住所</label>
+						<input type="text" id="fullAddress" name="fullAddress" th:value="${address.fullAddress}" class="form-input" placeholder="東京都〇〇区">
+					</div>
+					<div class="form-actions">
+						<button type="submit" class="btn-save">保存して注文確認へ戻る</button>
+					</div>
+				</form>
+				<p class="back-link">
+					<a th:if="${returnTo == 'cart'}" th:href="@{/cart}">カートへ戻る</a>
+					<a th:if="${returnTo != 'cart'}" th:href="${productId != null} ? @{/order/confirm(productId=${productId})} : @{/order/confirm}">注文確認へ戻る</a>
+				</p>
+			</div>
+		</section>
+	</main>
+</body>
+
+</html>

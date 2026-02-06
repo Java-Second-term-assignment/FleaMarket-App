@@ -6,9 +6,12 @@ import java.util.UUID;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.example.flea_market_app.catalog.repository.ItemRepository;
 import com.example.flea_market_app.common.exception.NotFoundBusinessException;
+import com.example.flea_market_app.common.exception.ValidationBusinessException;
 import com.example.flea_market_app.common.exception.ResourceType;
 import com.example.flea_market_app.engagement.notification.service.EmailNotificationSender;
+import com.example.flea_market_app.engagement.notification.service.NotificationService;
 import com.example.flea_market_app.transaction.domain.Order;
 import com.example.flea_market_app.transaction.domain.OrderEntity;
 import com.example.flea_market_app.transaction.domain.OrderStatus;
@@ -21,7 +24,9 @@ import lombok.RequiredArgsConstructor;
 public class OrderService {
 
 	private final OrderRepository orderRepository;
+	private final ItemRepository itemRepository;
 	private final EmailNotificationSender emailNotificationSender;
+	private final NotificationService notificationService;
 
 	@Transactional
 	public void confirmPurchase(UUID orderId, UUID currentUserId) {
@@ -83,16 +88,62 @@ public class OrderService {
 	}
 
 	/**
-	 * 注文がPAIDになったタイミングで呼ぶ。売り手に取引成立メールを送る。
-	 * 呼び出し元は決済完了（Stripe Webhook等）や注文作成APIを想定。今回の実装では呼び出し元は追加しない。
+	 * 注文がPAIDになったタイミングで呼ぶ。売り手に取引成立メールと通知を送る。
+	 * 呼び出し元は決済完了（Stripe Webhook等）または createOrderFromProduct（MVP）。
 	 */
-	@Transactional(readOnly = true)
+	@Transactional
 	public void recordOrderPaid(UUID orderId) {
 		OrderEntity e = getEntity(orderId);
 		if (!OrderStatus.PAID.name().equals(e.getStatus())) {
 			return;
 		}
-		emailNotificationSender.sendTransactionEstablished(e.getSellerId(), orderId);
+		UUID sellerId = e.getSellerId();
+		emailNotificationSender.sendTransactionEstablished(sellerId, orderId);
+		notificationService.create(sellerId, "取引が成立しました。注文ID: " + orderId);
+	}
+
+	/**
+	 * 商品1点から注文を1件作成する（MVP用・status=PAID）。
+	 * 本番では Stripe 連携時に「注文作成 → PaymentIntent → 決済 → Webhook」に差し替える想定。
+	 *
+	 * @param itemId           商品ID
+	 * @param buyerId          購入者ID
+	 * @param addressSnapshot  JSON形式の配送先スナップショット（NOT NULL）
+	 * @return 作成した注文のID
+	 */
+	@Transactional
+	public UUID createOrderFromProduct(UUID itemId, UUID buyerId, String addressSnapshot) {
+		var item = itemRepository.findById(itemId)
+				.orElseThrow(() -> NotFoundBusinessException.of(ResourceType.ITEM));
+		if (item.getSellerId().equals(buyerId)) {
+			throw new ValidationBusinessException(
+					com.example.flea_market_app.common.error.ErrorCode.INVALID_STATE,
+					"error.order.cannot_buy_own_item");
+		}
+		long price = item.getPriceAmount() != null ? item.getPriceAmount() : 0L;
+		long shippingFee = 0L;
+		long total = price + shippingFee;
+
+		OrderEntity e = new OrderEntity();
+		e.setId(UUID.randomUUID());
+		e.setItemId(itemId);
+		e.setBuyerId(buyerId);
+		e.setSellerId(item.getSellerId());
+		e.setStripePaymentIntentId(null);
+		e.setStatus(OrderStatus.PAID.name());
+		e.setAppliedCommissionBps(0);
+		e.setItemPriceAmount(price);
+		e.setShippingFeeAmount(shippingFee);
+		e.setTotalAmount(total);
+		e.setCurrency(item.getCurrency() != null ? item.getCurrency() : "JPY");
+		e.setShippingAddressSnapshot(addressSnapshot != null && !addressSnapshot.isEmpty() ? addressSnapshot : "{}");
+		OffsetDateTime now = OffsetDateTime.now();
+		e.setCreatedAt(now);
+		e.setUpdatedAt(now);
+
+		orderRepository.save(e);
+		recordOrderPaid(e.getId());
+		return e.getId();
 	}
 
 	private OrderEntity getEntity(UUID orderId) {
@@ -106,6 +157,6 @@ public class OrderService {
 				e.getItemId(),
 				e.getBuyerId(),
 				e.getSellerId(),
-				OrderStatus.valueOf(e.getStatus()));
+				OrderStatus.fromString(e.getStatus()));
 	}
 }

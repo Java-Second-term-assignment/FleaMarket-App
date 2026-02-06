@@ -1,24 +1,12 @@
 @charset "UTF-8";
 
-:root {
-	--header-bg: #1e2a3b;
-	--main-bg: #f0f2f5;
-	--card-bg: #ffffff;
-	--accent-blue: #3b5998;
-	--accent-red: #f05b5b;
-	--white: #fff;
-	--gray400: #bbb;
-	--gray600: #666;
-	--border: #444;
-	--input-border: #5a5a5a;
-	--input-bg: #181818;
-}
+/* 色は variables.css の :root を参照 */
 
 body {
-	background-color: #2c2c2c;
+	background-color: var(--bg-dark);
 	margin: 0;
 	font-family: "Helvetica Neue", Arial, sans-serif;
-	color: #333;
+	color: var(--text-dark);
 }
 
 /* --- モーダルのスタイル --- */
@@ -102,7 +90,7 @@ body.no-scroll {
 
 /* --- 既存のスタイル --- */
 .header {
-	background-color: #1e2a3b;
+	background-color: var(--header-bg);
 	color: white;
 	padding: 6px 0;
 	position: fixed;
@@ -135,8 +123,9 @@ body.no-scroll {
 
 .nav-links {
 	display: flex;
-	align-items: center;
-	gap: 2px;
+	align-items: stretch;
+	min-height: 36px;
+	gap: 0;
 }
 
 .nav-links a {
@@ -144,16 +133,16 @@ body.no-scroll {
 	text-decoration: none;
 	font-size: 14px;
 	position: relative;
-	margin-top: 10px;
-	padding: 0 6px 5px 6px;
-	display: inline-block;
+	padding: 0 6px;
+	display: flex;
+	align-items: center;
 	white-space: nowrap;
 }
 
 .nav-links a::after {
 	content: '';
 	position: absolute;
-	bottom: 0;
+	bottom: 6px;
 	left: 0;
 	width: 0;
 	height: 2px;
@@ -166,7 +155,7 @@ body.no-scroll {
 }
 
 .btn-post {
-	background-color: #007bff;
+	background-color: var(--btn-primary);
 	color: white;
 	border: none;
 	padding: 8px 21px;
@@ -180,13 +169,13 @@ body.no-scroll {
 }
 
 .btn-post:hover {
-	background-color: #0056b3;
+	background-color: var(--btn-primary-hover);
 }
 
 .btn-logout {
 	background: none;
-	border: 1px solid #ffffff99;
-	color: #fff;
+	border: 1px solid var(--border-white-60);
+	color: var(--white);
 	border-radius: 20px;
 	padding: 8px 15px;
 	font-size: 14px;
@@ -197,15 +186,15 @@ body.no-scroll {
 }
 
 .btn-logout:hover {
-	background-color: #394963;
-	color: #ff6b6b;
-	border-color: #ff6b6b;
+	background-color: var(--nav-hover-border);
+	color: var(--btn-danger);
+	border-color: var(--btn-danger);
 }
 
 .lang-selector {
 	font-size: 13px;
 	margin-left: 15px;
-	color: #ccddf0;
+	color: var(--link-subtle);
 	cursor: pointer;
 	padding: 4px 8px;
 	border-radius: 8px;
@@ -214,8 +203,8 @@ body.no-scroll {
 }
 
 .lang-selector:hover {
-	background: #263247;
-	color: #fff;
+	background: var(--nav-hover-bg);
+	color: var(--white);
 }
 
 .main-container {

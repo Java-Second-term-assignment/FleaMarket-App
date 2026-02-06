@@ -1,11 +1,14 @@
 <!DOCTYPE html>
-<html lang="ja" xmlns:th="http://www.thymeleaf.org">
+<html lang="ja" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 
 <head>
 	<meta charset="UTF-8">
-	<title>掲示板詳細</title>
+	<title>掲示板</title>
+	<link rel="stylesheet" th:href="@{/css/variables.css}">
 	<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" />
 	<link rel="stylesheet" th:href="@{/css/common.css}">
+	<link rel="stylesheet" th:href="@{/css/theme.css}">
+	<script th:src="@{/js/theme.js}"></script>
 	<link rel="stylesheet" th:href="@{/css/board-detail.css}">
 </head>
 
@@ -13,80 +16,35 @@
 	<div th:replace="~{ui/fragments :: header}"></div>
 
 	<main>
-		<section class="post-detail">
-			<h1 class="page-title" th:text="${post.title}">タイトル</h1>
-			<p class="post-content" th:text="${post.content}">投稿内容</p>
-		</section>
+		<h1 class="page-title">掲示板</h1>
 
-		<section class="comment-form-container">
-			<form th:action="@{/comments}" method="post">
-				<input type="hidden" name="postId" th:value="${post.id}">
+		<section class="post-form-container" sec:authorize="isAuthenticated()">
+			<form th:action="@{/board/{boardId}/posts(boardId=${boardId})}" method="post">
+				<th:block th:replace="~{ui/fragments :: csrf_token}"></th:block>
 				<div class="form-group">
-					<label>タイトル</label>
-					<input type="text" name="title" required placeholder="コメントのタイトルを入力してください">
-				</div>
-				<div class="form-group">
-					<label>コメント</label>
-					<textarea name="body" required placeholder="コメント内容を入力..."></textarea>
+					<label for="content">投稿</label>
+					<textarea id="content" name="content" required maxlength="1000" placeholder="投稿内容を入力..."></textarea>
+					<div class="char-count"><span id="contentCharCount">0</span>/1000</div>
 				</div>
 				<button type="submit" class="btn-submit">投稿する</button>
 			</form>
 		</section>
 
-		<section class="comments-list">
-			<div th:each="comment : ${comments}" class="comment-item"
-				th:classappend="${comment.parent != null} ? 'is-reply'">
+		<p class="login-to-post" sec:authorize="isAnonymous()">
+			<a th:href="@{/login(returnUrl=${'/board/' + boardId})}">ログイン</a>すると投稿できます
+		</p>
 
-				<div th:if="${comment.parent != null}" class="reply-line"></div>
-
-				<div class="comment-content">
-					<div class="comment-title" th:text="${comment.title}">コメントタイトル</div>
-					<div class="comment-body" th:text="${comment.body}">コメント本文</div>
-
-					<div class="comment-footer">
-						<span th:text="${#temporals.format(comment.createdAt, 'yyyy/MM/dd HH:mm')}"></span>
-						<span th:text="|返信数: ${comment.replyCount}|"></span>
-						<a href="#" class="reply-link" th:attr="data-id=${comment.id}, data-user=${comment.userName}">
-							<span th:text="|@${comment.userName}に返信|"></span>
-						</a>
-					</div>
-				</div>
-
-				<div class="comment-actions" th:if="${comment.editable}">
-					<button class="icon-btn btn-edit">
-						<span class="material-symbols-outlined">border_color</span>
-					</button>
-					<button class="icon-btn btn-delete">
-						<span class="material-symbols-outlined">delete</span>
-					</button>
+		<section class="posts-list">
+			<div th:if="${#lists.isEmpty(posts)}" class="empty-message">まだ投稿がありません</div>
+			<div th:each="post : ${posts}" class="post-item">
+				<div class="post-content" th:text="${post.content}">投稿内容</div>
+				<div class="post-footer">
+					<span class="post-author" th:text="${post.authorDisplayName != null ? post.authorDisplayName : 'ユーザー'}">著者</span>
+					<span class="post-date" th:text="${post.createdAt != null ? #temporals.format(post.createdAt, 'yyyy/MM/dd HH:mm') : ''}">日時</span>
 				</div>
 			</div>
 		</section>
 	</main>
-
-	<div class="modal-backdrop" id="replyModalBackdrop"></div>
-	<div class="reply-modal" id="replyModal">
-		<div class="reply-modal-dialog">
-			<button class="reply-modal-close-btn" id="replyModalCloseBtn">&times;</button>
-			<div class="reply-modal-title" id="replyModalTitle">返信する</div>
-
-			<form th:action="@{/comments/reply}" method="post">
-				<input type="hidden" name="parentId" id="replyParentId">
-				<div class="form-group">
-					<label>タイトル</label>
-					<input type="text" name="title" required maxlength="64">
-				</div>
-				<div class="form-group">
-					<label>返信コメント</label>
-					<textarea name="body" required maxlength="500" id="reply-body"></textarea>
-					<div style="text-align: right; font-size: 12px; color: #666;">
-						<span id="replyCharCount">0</span>/500
-					</div>
-				</div>
-				<button type="submit" class="reply-modal-submit-btn">投稿する</button>
-			</form>
-		</div>
-	</div>
 
 	<script th:src="@{/js/board-detail.js}"></script>
 </body>

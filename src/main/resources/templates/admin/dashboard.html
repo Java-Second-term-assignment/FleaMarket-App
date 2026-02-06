@@ -4,115 +4,178 @@
     <meta charset="UTF-8">
     <title>管理者ダッシュボード</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" th:href="@{/css/variables.css}">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" />
     <link rel="stylesheet" th:href="@{/css/common.css}">
+    <link rel="stylesheet" th:href="@{/css/theme.css}">
+    <script th:src="@{/js/theme.js}"></script>
     <link rel="stylesheet" th:href="@{/css/admin.css}">
-    <script th:src="@{/js/admin.js}" defer></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.6/dist/chart.umd.min.js"></script>
 </head>
 <body>
     <div th:replace="~{ui/fragments :: header}"></div>
 
     <main>
         <h1 class="page-title">管理者ダッシュボード</h1>
+        <p class="admin-dashboard-actions">
+            <a th:href="@{/admin/dashboard/stats.csv(days=${statsDays})}" class="btn-link btn-csv-export" download>
+                <span class="material-symbols-outlined">download</span> 統計をCSVでダウンロード
+            </a>
+        </p>
 
-        <div class="admin-tabs">
-            <button class="tab-btn active" data-target="user-section">ユーザー管理</button>
-            <button class="tab-btn" data-target="product-section">商品管理</button>
-            <button class="tab-btn" onclick="location.href='/admin/blacklist'">ブラックリスト管理</button>
-        </div>
-
-        <section id="user-section" class="admin-card tab-content active">
-            <div class="card-header"><h3>ユーザー一覧</h3></div>
-            <table>
-                <thead>
-                    <tr>
-                        <th>ID</th><th>ユーザー名</th><th>メール</th><th>状態</th><th>操作</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr th:each="user : ${users}">
-                        <td th:text="${user.id}">1</td>
-                        <td th:text="${user.username}">ユーザー名</td>
-                        <td th:text="${user.email}">mail@example.com</td>
-                        <td>
-                            <span class="status-badge" 
-                                  th:classappend="${user.enabled ? 'status-active' : 'status-disabled'}"
-                                  th:text="${user.enabled ? '有効' : '無効'}">状態</span>
-                        </td>
-                        <td>
-                            <div class="action-group">
-                                <button class="icon-btn edit-user-btn" 
-                                        th:data-id="${user.id}" th:data-name="${user.username}" th:data-email="${user.email}">
-                                    <span class="material-symbols-outlined">edit</span>
-                                </button>
-                                <form th:action="@{/admin/users/toggle}" method="post" style="display:inline;">
-                                    <input type="hidden" name="id" th:value="${user.id}">
-                                    <button type="submit" class="icon-btn disable">
-                                        <span class="material-symbols-outlined" th:text="${user.enabled ? 'block' : 'check_circle'}">block</span>
-                                    </button>
-                                </form>
-                            </div>
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
+        <!-- グラフエリア -->
+        <section class="admin-stats-charts">
+            <div class="admin-chart-card">
+                <h2 class="admin-chart-title">商品のステータス別件数</h2>
+                <p class="admin-chart-caption">公開：<span th:text="${stats.totalActiveItems}">0</span>件</p>
+                <div class="admin-chart-wrap">
+                    <canvas id="chartItemStatus"></canvas>
+                </div>
+            </div>
+            <div class="admin-chart-card">
+                <h2 class="admin-chart-title">商品登録数(直近<span th:text="${statsDays}">30</span>日)</h2>
+                <div class="admin-chart-wrap">
+                    <canvas id="chartItemCountsByDay"></canvas>
+                </div>
+            </div>
+            <div class="admin-chart-card">
+                <h2 class="admin-chart-title">ユーザー登録数(直近<span th:text="${statsDays}">30</span>日)</h2>
+                <p class="admin-chart-caption">総数：<span th:text="${stats.totalUsers}">0</span></p>
+                <div class="admin-chart-wrap">
+                    <canvas id="chartUserSignupsByDay"></canvas>
+                </div>
+            </div>
+            <div class="admin-chart-card">
+                <h2 class="admin-chart-title">閲覧数トップ10</h2>
+                <div class="admin-chart-wrap">
+                    <canvas id="chartTopViewed"></canvas>
+                </div>
+            </div>
         </section>
 
-        <section id="product-section" class="admin-card tab-content">
-            <div class="card-header"><h3>商品一覧</h3></div>
-            <table>
-                <thead>
-                    <tr>
-                        <th>ID</th><th>商品名</th><th>価格</th><th>出品者</th><th>状態</th><th>操作</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr th:each="product : ${products}">
-                        <td th:text="${product.id}">1</td>
-                        <td th:text="${product.name}">商品名</td>
-                        <td th:text="${product.price + '円'}">1000円</td>
-                        <td th:text="${product.sellerName}">出品者</td>
-                        <td><span class="status-badge status-active">公開中</span></td>
-                        <td>
-                            <div class="action-group">
-                                <button class="icon-btn edit-product-btn" 
-                                        th:data-id="${product.id}" th:data-name="${product.name}" th:data-price="${product.price}">
-                                    <span class="material-symbols-outlined">edit</span>
-                                </button>
-                            </div>
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
-        </section>
+        <script type="application/json" id="itemStatusCountsJson" th:inline="text">[(${itemStatusCountsJson})]</script>
+        <script type="application/json" id="itemCountsByDayJson" th:inline="text">[(${itemCountsByDayJson})]</script>
+        <script type="application/json" id="userSignupCountsByDayJson" th:inline="text">[(${userSignupCountsByDayJson})]</script>
+        <script type="application/json" id="topViewedItemsJson" th:inline="text">[(${topViewedItemsJson})]</script>
+        <script th:inline="javascript">
+            (function() {
+                var isLight = document.documentElement.getAttribute('data-theme') === 'light';
+                var textColor = isLight ? '#333333' : '#cccccc';
+                var gridColor = isLight ? '#e0e0e0' : '#444';
+                var chartDefaults = {
+                    responsive: true,
+                    maintainAspectRatio: true,
+                    scales: {
+                        x: { ticks: { color: textColor }, grid: { color: gridColor } },
+                        y: { ticks: { color: textColor }, grid: { color: gridColor } }
+                    },
+                    plugins: {
+                        legend: { labels: { color: textColor } }
+                    }
+                };
+                function parseJson(id) {
+                    var el = document.getElementById(id);
+                    return el && el.textContent ? JSON.parse(el.textContent) : [];
+                }
+                var itemStatusCounts = parseJson('itemStatusCountsJson');
+                if (itemStatusCounts.length > 0) {
+                    var ctx = document.getElementById('chartItemStatus');
+                    if (ctx) {
+                        new Chart(ctx, {
+                            type: 'doughnut',
+                            data: {
+                                labels: itemStatusCounts.map(function(d) { return d.label; }),
+                                datasets: [{
+                                    data: itemStatusCounts.map(function(d) { return d.count; }),
+                                    backgroundColor: ['#007bff', '#6c757d', '#dc3545', '#ffc107', '#28a745'].slice(0, itemStatusCounts.length),
+                                    borderColor: isLight ? '#ffffff' : '#1e2a3b',
+                                    borderWidth: 2
+                                }]
+                            },
+                            options: {
+                                responsive: true,
+                                maintainAspectRatio: true,
+                                plugins: { legend: { position: 'bottom', labels: { color: textColor } } }
+                            }
+                        });
+                    }
+                }
+                var itemCountsByDay = parseJson('itemCountsByDayJson');
+                if (itemCountsByDay.length > 0) {
+                    var ctx = document.getElementById('chartItemCountsByDay');
+                    if (ctx) {
+                        new Chart(ctx, {
+                            type: 'bar',
+                            data: {
+                                labels: itemCountsByDay.map(function(d) { return d.date; }),
+                                datasets: [{
+                                    label: '商品数',
+                                    data: itemCountsByDay.map(function(d) { return d.count; }),
+                                    backgroundColor: 'rgba(0, 123, 255, 0.7)',
+                                    borderColor: '#007bff',
+                                    borderWidth: 1
+                                }]
+                            },
+                            options: chartDefaults
+                        });
+                    }
+                }
+                var userSignupCountsByDay = parseJson('userSignupCountsByDayJson');
+                if (userSignupCountsByDay.length > 0) {
+                    var ctx = document.getElementById('chartUserSignupsByDay');
+                    if (ctx) {
+                        new Chart(ctx, {
+                            type: 'line',
+                            data: {
+                                labels: userSignupCountsByDay.map(function(d) { return d.date; }),
+                                datasets: [{
+                                    label: '登録数',
+                                    data: userSignupCountsByDay.map(function(d) { return d.count; }),
+                                    borderColor: '#4caf50',
+                                    backgroundColor: 'rgba(76, 175, 80, 0.2)',
+                                    fill: true,
+                                    tension: 0.2
+                                }]
+                            },
+                            options: chartDefaults
+                        });
+                    }
+                }
+                var topViewedItems = parseJson('topViewedItemsJson');
+                if (topViewedItems.length > 0) {
+                    var ctx = document.getElementById('chartTopViewed');
+                    if (ctx) {
+                        var labels = topViewedItems.map(function(d) {
+                            var name = d.itemName || '';
+                            return name.length > 15 ? name.substring(0, 15) + '…' : name;
+                        });
+                        new Chart(ctx, {
+                            type: 'bar',
+                            data: {
+                                labels: labels,
+                                datasets: [{
+                                    label: '閲覧数',
+                                    data: topViewedItems.map(function(d) { return d.viewCount; }),
+                                    backgroundColor: 'rgba(255, 152, 0, 0.7)',
+                                    borderColor: '#ff9800',
+                                    borderWidth: 1
+                                }]
+                            },
+                            options: {
+                                indexAxis: 'y',
+                                responsive: true,
+                                maintainAspectRatio: true,
+                                scales: {
+                                    x: { ticks: { color: textColor }, grid: { color: gridColor } },
+                                    y: { ticks: { color: textColor, font: { size: 11 } }, grid: { color: gridColor } }
+                                },
+                                plugins: { legend: { display: false } }
+                            }
+                        });
+                    }
+                }
+            })();
+        </script>
     </main>
-
-    <div class="modal-backdrop" id="adminModalBackdrop"></div>
-    <div id="adminEditModal" class="modal-content">
-        <div class="modal-header">
-            <h3 id="modalTitle">編集</h3>
-            <span class="material-symbols-outlined close-modal" style="cursor:pointer;">close</span>
-        </div>
-        <form id="editForm" method="post">
-            <div class="modal-body">
-                <input type="hidden" name="id" id="editId">
-                <div class="form-group">
-                    <label>名前</label>
-                    <input type="text" name="name" id="editName" required>
-                </div>
-                <div class="form-group" id="emailGroup">
-                    <label>メールアドレス</label>
-                    <input type="email" name="email" id="editEmail">
-                </div>
-                <div class="form-group" id="priceGroup" style="display:none;">
-                    <label>価格</label>
-                    <input type="number" name="price" id="editPrice">
-                </div>
-            </div>
-            <div class="modal-footer">
-                <button type="submit" class="btn-submit-post">保存する</button>
-            </div>
-        </form>
-    </div>
 </body>
 </html>

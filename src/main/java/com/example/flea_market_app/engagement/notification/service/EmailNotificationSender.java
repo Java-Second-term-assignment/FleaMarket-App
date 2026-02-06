@@ -23,4 +23,12 @@ public interface EmailNotificationSender {
 	 * @param orderId         注文ID
 	 */
 	void sendChatReceived(UUID recipientUserId, UUID orderId);
+
+	/**
+	 * パスワード再設定：指定メールアドレスに再設定リンクを送る。
+	 *
+	 * @param email    送信先メールアドレス
+	 * @param resetLink パスワード再設定URL（トークン付き）
+	 */
+	void sendPasswordResetLink(String email, String resetLink);
 }

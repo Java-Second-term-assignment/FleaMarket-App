@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="ja" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>ユーザー管理 - 管理画面</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" th:href="@{/css/variables.css}">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" />
+    <link rel="stylesheet" th:href="@{/css/common.css}">
+    <link rel="stylesheet" th:href="@{/css/theme.css}">
+    <script th:src="@{/js/theme.js}"></script>
+    <link rel="stylesheet" th:href="@{/css/admin.css}">
+    <script th:src="@{/js/admin.js}" defer></script>
+</head>
+<body>
+    <div th:replace="~{ui/fragments :: header}"></div>
+
+    <main>
+        <h1 class="page-title">ユーザー管理</h1>
+
+        <div th:if="${message}" class="flash-message" style="color: var(--accent-green); margin-bottom: 16px;" th:text="${message}"></div>
+        <div th:if="${error}" class="flash-error" style="color: var(--accent-red); margin-bottom: 16px;" th:text="${error}"></div>
+
+        <div class="admin-tabs">
+            <a th:href="@{/admin/users(tab='list')}" class="tab-btn" th:classappend="${activeTab == 'list'} ? 'active' : ''">一覧</a>
+            <a th:href="@{/admin/users(tab='blacklist')}" class="tab-btn" th:classappend="${activeTab == 'blacklist'} ? 'active' : ''">ブラックリスト</a>
+        </div>
+
+        <!-- 一覧タブ -->
+        <div class="tab-content" th:classappend="${activeTab == 'list'} ? 'active' : ''" id="tabList">
+            <section class="admin-card">
+                <div class="card-header"><h3>ユーザー一覧</h3></div>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>ID</th><th>ユーザー名</th><th>メール</th><th>状態</th><th>管理者</th><th>操作</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each="user : ${users}">
+                            <td th:text="${user.id != null ? #strings.substring(user.id.toString(), 24) : ''}">1</td>
+                            <td th:text="${user.username}">ユーザー名</td>
+                            <td th:text="${user.email}">mail@example.com</td>
+                            <td>
+                                <span class="status-badge status-cell"
+                                      th:classappend="${user.enabled ? 'status-active' : 'status-disabled'}"
+                                      th:text="${user.enabled ? '有効' : '無効'}">状態</span>
+                                <form th:if="${user.enabled and user.id != currentUserId}" th:action="@{/admin/users/toggle}" method="post" class="inline-form toggle-form">
+                                    <th:block th:replace="~{ui/fragments :: csrf_token}"></th:block>
+                                    <input type="hidden" name="id" th:value="${user.id}">
+                                    <button type="submit" class="icon-btn btn-sm toggle-disable-btn" title="無効にする">
+                                        <span class="material-symbols-outlined">toggle_off</span>
+                                    </button>
+                                </form>
+                                <form th:if="${!user.enabled}" th:action="@{/admin/users/toggle}" method="post" class="inline-form toggle-form">
+                                    <th:block th:replace="~{ui/fragments :: csrf_token}"></th:block>
+                                    <input type="hidden" name="id" th:value="${user.id}">
+                                    <button type="submit" class="icon-btn btn-sm toggle-enable-btn" title="有効にする">
+                                        <span class="material-symbols-outlined">toggle_on</span>
+                                    </button>
+                                </form>
+                            </td>
+                            <td>
+                                <span class="status-badge status-cell" th:classappend="${user.admin ? 'status-active' : 'status-disabled'}"
+                                      th:text="${user.admin ? '管理者' : '一般'}">一般</span>
+                                <form th:if="${user.admin and user.id != currentUserId}" th:action="@{/admin/users/admin-role}" method="post" class="inline-form admin-role-confirm">
+                                    <th:block th:replace="~{ui/fragments :: csrf_token}"></th:block>
+                                    <input type="hidden" name="id" th:value="${user.id}">
+                                    <input type="hidden" name="makeAdmin" value="false">
+                                    <button type="submit" class="icon-btn btn-sm" title="管理者権限を剥奪">剥奪</button>
+                                </form>
+                                <form th:if="${!user.admin}" th:action="@{/admin/users/admin-role}" method="post" class="inline-form admin-role-confirm">
+                                    <th:block th:replace="~{ui/fragments :: csrf_token}"></th:block>
+                                    <input type="hidden" name="id" th:value="${user.id}">
+                                    <input type="hidden" name="makeAdmin" value="true">
+                                    <button type="submit" class="icon-btn btn-sm" title="管理者権限を付与">付与</button>
+                                </form>
+                            </td>
+                            <td>
+                                <div class="action-group">
+                                    <button class="icon-btn edit-user-btn"
+                                            th:data-id="${user.id}" th:data-name="${user.username}" th:data-email="${user.email}">
+                                        <span class="material-symbols-outlined">edit</span>
+                                    </button>
+                                    <th:block th:if="${user.enabled}">
+                                        <button type="button" class="icon-btn disable freeze-open-btn"
+                                                th:data-user-id="${user.id}"
+                                                th:data-user-name="${user.username}"
+                                                th:data-form-action="@{/admin/users/freeze}"
+                                                th:data-modal-title="ユーザー凍結の確認"
+                                                th:data-submit-label="凍結する"
+                                                title="凍結">
+                                            <span class="material-symbols-outlined">block</span>
+                                        </button>
+                                        <button type="button" class="icon-btn freeze-open-btn"
+                                                th:data-user-id="${user.id}"
+                                                th:data-user-name="${user.username}"
+                                                th:data-form-action="@{/admin/users/force-withdraw}"
+                                                th:data-modal-title="強制退会の確認"
+                                                th:data-submit-label="強制退会させる"
+                                                title="強制退会">
+                                            <span class="material-symbols-outlined">person_off</span>
+                                        </button>
+                                    </th:block>
+                                    <form th:if="${!user.enabled}" th:action="@{/admin/users/blacklist/restore}" method="post" style="display:inline;">
+                                        <th:block th:replace="~{ui/fragments :: csrf_token}"></th:block>
+                                        <input type="hidden" name="id" th:value="${user.id}">
+                                        <button type="submit" class="icon-btn" title="有効化">
+                                            <span class="material-symbols-outlined">check_circle</span>
+                                        </button>
+                                    </form>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </section>
+        </div>
+
+        <!-- ブラックリストタブ -->
+        <div class="tab-content" th:classappend="${activeTab == 'blacklist'} ? 'active' : ''" id="tabBlacklist">
+            <section class="admin-card">
+                <div class="card-header"><h3>ブラックリスト（制限中ユーザー）</h3></div>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>ID</th><th>ユーザー名</th><th>メール</th><th>状態</th><th>管理者</th><th>操作</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each="user : ${blacklistUsers}">
+                            <td th:text="${user.id != null ? #strings.substring(user.id.toString(), 24) : ''}">1</td>
+                            <td th:text="${user.username}">ユーザー名</td>
+                            <td th:text="${user.email}">mail@example.com</td>
+                            <td><span class="status-tag status-restricted">制限中</span></td>
+                            <td>
+                                <span class="status-badge status-cell" th:classappend="${user.admin ? 'status-active' : 'status-disabled'}"
+                                      th:text="${user.admin ? '管理者' : '一般'}">一般</span>
+                                <form th:if="${user.admin and user.id != currentUserId}" th:action="@{/admin/users/admin-role}" method="post" class="inline-form admin-role-confirm">
+                                    <th:block th:replace="~{ui/fragments :: csrf_token}"></th:block>
+                                    <input type="hidden" name="id" th:value="${user.id}">
+                                    <input type="hidden" name="makeAdmin" value="false">
+                                    <button type="submit" class="icon-btn btn-sm" title="管理者権限を剥奪">剥奪</button>
+                                </form>
+                                <form th:if="${!user.admin}" th:action="@{/admin/users/admin-role}" method="post" class="inline-form admin-role-confirm">
+                                    <th:block th:replace="~{ui/fragments :: csrf_token}"></th:block>
+                                    <input type="hidden" name="id" th:value="${user.id}">
+                                    <input type="hidden" name="makeAdmin" value="true">
+                                    <button type="submit" class="icon-btn btn-sm" title="管理者権限を付与">付与</button>
+                                </form>
+                            </td>
+                            <td>
+                                <div class="action-group">
+                                    <form th:action="@{/admin/users/blacklist/restore}" method="post" style="display:inline;">
+                                        <th:block th:replace="~{ui/fragments :: csrf_token}"></th:block>
+                                        <input type="hidden" name="id" th:value="${user.id}">
+                                        <button type="submit" class="btn-action btn-restore" title="制限解除">
+                                            <span class="material-symbols-outlined">settings_backup_restore</span>
+                                        </button>
+                                    </form>
+                                    <button type="button" class="btn-action btn-hard-delete delete-confirm-open"
+                                            th:data-form-action="@{/admin/users/blacklist/delete}"
+                                            th:data-target-id="${user.id}"
+                                            th:data-target-name="${user.username}"
+                                            title="永久削除">
+                                        <span class="material-symbols-outlined">delete_forever</span>
+                                    </button>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr th:if="${#lists.isEmpty(blacklistUsers)}">
+                            <td colspan="6" style="text-align:center; padding: 40px; color: var(--text-sub);">
+                                制限中のユーザーはありません。
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </section>
+        </div>
+    </main>
+
+    <div class="modal-backdrop" id="adminModalBackdrop"></div>
+    <div id="adminEditModal" class="modal-content">
+        <div class="modal-header">
+            <h3 id="modalTitle">編集</h3>
+            <span class="material-symbols-outlined close-modal" style="cursor:pointer;">close</span>
+        </div>
+        <form id="editForm" method="post">
+            <th:block th:replace="~{ui/fragments :: csrf_token}"></th:block>
+            <div class="modal-body">
+                <input type="hidden" name="id" id="editId">
+                <div class="form-group">
+                    <label>名前</label>
+                    <input type="text" name="name" id="editName" required>
+                </div>
+                <div class="form-group" id="emailGroup">
+                    <label>メールアドレス</label>
+                    <input type="email" name="email" id="editEmail">
+                </div>
+                <div class="form-group" id="priceGroup" style="display:none;">
+                    <label>価格</label>
+                    <input type="number" name="price" id="editPrice">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="submit" class="btn-submit-post">保存する</button>
+            </div>
+        </form>
+    </div>
+
+    <div class="modal-backdrop" id="freezeModalBackdrop"></div>
+    <div id="freezeModal" class="modal-content">
+        <div class="modal-header">
+            <h3 id="freezeModalTitle">ユーザー凍結の確認</h3>
+            <span class="material-symbols-outlined" id="freezeModalClose" style="cursor:pointer;">close</span>
+        </div>
+        <form id="freezeForm" method="post">
+            <th:block th:replace="~{ui/fragments :: csrf_token}"></th:block>
+            <div class="modal-body">
+                <p><strong id="freezeUserName">ユーザー名</strong> の操作を実行しますか？</p>
+                <div class="form-group" id="freezeDurationGroup">
+                    <label for="freezeFrozenUntilDays">凍結期限</label>
+                    <select name="frozenUntilDays" id="freezeFrozenUntilDays">
+                        <option value="">無期限</option>
+                        <option value="7">7日間</option>
+                        <option value="30">30日間</option>
+                        <option value="90">90日間</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="freezeReason">理由</label>
+                    <input type="text" name="reason" id="freezeReason" required placeholder="理由を入力">
+                </div>
+                <input type="hidden" name="id" id="freezeUserId">
+            </div>
+            <div class="modal-footer">
+                <button type="submit" class="btn-submit-post" id="freezeSubmitBtn" style="background: var(--accent-orange);">凍結する</button>
+            </div>
+        </form>
+    </div>
+
+    <div class="modal-backdrop" id="deleteConfirmModalBackdrop"></div>
+    <div id="deleteConfirmModal" class="modal-content">
+        <div class="modal-header">
+            <h3>永久削除の確認</h3>
+            <span class="material-symbols-outlined" id="deleteConfirmModalClose" style="cursor:pointer;">close</span>
+        </div>
+        <div class="modal-body">
+            <p><strong id="deleteConfirmTargetName">対象名</strong> を完全に削除しますか？</p>
+            <p style="color: var(--accent-red); font-size: 12px;">※この操作は取り消せません。データベースから抹消されます。</p>
+        </div>
+        <div class="modal-footer">
+            <form id="deleteConfirmForm" method="post">
+                <th:block th:replace="~{ui/fragments :: csrf_token}"></th:block>
+                <input type="hidden" name="id" id="deleteConfirmTargetId">
+                <button type="submit" class="btn-submit-post" style="background: var(--accent-red);">削除を確定する</button>
+            </form>
+        </div>
+    </div>
+</body>
+</html>

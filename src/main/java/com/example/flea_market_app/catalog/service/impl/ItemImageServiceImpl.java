@@ -200,6 +200,16 @@ public class ItemImageServiceImpl implements ItemImageService {
 	}
 
 	@Override
+	@Transactional(readOnly = true)
+	public String getFirstImageS3Key(UUID itemId) {
+		List<ItemImageEntity> images = itemImageRepository.findByItemIdOrderByDisplayOrderAsc(itemId);
+		if (images.isEmpty()) {
+			return null;
+		}
+		return images.get(0).getS3Key();
+	}
+
+	@Override
 	@Transactional
 	public void deleteItemImages(UUID itemId) {
 		log.info("Deleting all images for item: {}", itemId);

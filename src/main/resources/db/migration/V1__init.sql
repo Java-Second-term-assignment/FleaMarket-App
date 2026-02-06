@@ -1,4 +1,4 @@
--- V1__init.sql
+-- V1__init.sql（統合版）
 -- PostgreSQL 13+ 推奨（gen_random_uuid() のため pgcrypto 使用）
 -- 方針:
 -- - PKはUUID
@@ -7,6 +7,7 @@
 -- - 手数料率はbps（0..10000）
 -- - 画像はS3 object keyを保存（URLは保存しない）
 -- - 監査/通報は target_type + target_id
+-- テーブル定義は最初から完成形（ADD COLUMN による後付けなし）
 
 BEGIN;
 
@@ -15,6 +16,7 @@ BEGIN;
 -- =========
 CREATE EXTENSION IF NOT EXISTS pgcrypto;  -- gen_random_uuid()
 CREATE EXTENSION IF NOT EXISTS citext;    -- case-insensitive email
+CREATE EXTENSION IF NOT EXISTS pg_trgm;   -- items の LIKE 検索用
 
 -- =========
 -- Common: updated_at自動更新
@@ -49,19 +51,36 @@ CREATE TABLE users (
   user_rank_id    smallint NOT NULL REFERENCES user_ranks(id),
   identity_status text NOT NULL CHECK (identity_status IN ('UNVERIFIED','PENDING','VERIFIED','REJECTED')),
   is_active       boolean NOT NULL DEFAULT true,
-  -- プロフィール画像: S3のobject keyを保存（URLは保存しない）
-  -- 命名規則: profiles/{userId}/{uuid}.{ext}
+  frozen_until    timestamptz NULL,
   profile_image_s3_key text NULL,
+  profile_image_url    varchar(500) NULL,
+  caption         varchar(200) NULL,
+  recipient_name  varchar(100) NULL,
+  postal_code     varchar(20) NULL,
+  address         varchar(500) NULL,
+  phone           varchar(30) NULL,
+  notification_enabled boolean NOT NULL DEFAULT true,
   created_at      timestamptz NOT NULL DEFAULT now(),
   updated_at      timestamptz NOT NULL DEFAULT now()
 );
 
 CREATE INDEX idx_users_rank   ON users(user_rank_id);
 CREATE INDEX idx_users_active ON users(is_active);
+CREATE INDEX idx_users_frozen_until ON users(frozen_until) WHERE frozen_until IS NOT NULL;
 
 CREATE TRIGGER trg_users_updated_at
 BEFORE UPDATE ON users
 FOR EACH ROW EXECUTE FUNCTION set_updated_at();
+
+-- ユーザー向け通知（設定画面の通知タブで表示）
+CREATE TABLE notifications (
+  id         uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+  user_id    uuid NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+  message    text NOT NULL,
+  created_at timestamptz NOT NULL DEFAULT now()
+);
+
+CREATE INDEX idx_notifications_user_created ON notifications(user_id, created_at DESC);
 
 -- =========
 -- 2) Auth (認証情報をUserから分離)
@@ -71,7 +90,7 @@ CREATE TABLE auth_users (
   user_id        uuid NOT NULL UNIQUE REFERENCES users(id) ON DELETE CASCADE,
   email          citext NOT NULL UNIQUE,
   password_hash  text NOT NULL,
-  is_admin       boolean NOT NULL DEFAULT false, -- 最小。将来 roles 化可
+  is_admin       boolean NOT NULL DEFAULT false,
   created_at     timestamptz NOT NULL DEFAULT now(),
   updated_at     timestamptz NOT NULL DEFAULT now()
 );
@@ -82,7 +101,6 @@ CREATE TRIGGER trg_auth_users_updated_at
 BEFORE UPDATE ON auth_users
 FOR EACH ROW EXECUTE FUNCTION set_updated_at();
 
--- RefreshTokenは漏洩対策で生トークンを保存しない（hash推奨）
 CREATE TABLE refresh_tokens (
   id          uuid PRIMARY KEY DEFAULT gen_random_uuid(),
   user_id      uuid NOT NULL REFERENCES users(id) ON DELETE CASCADE,
@@ -95,6 +113,18 @@ CREATE TABLE refresh_tokens (
 CREATE INDEX idx_refresh_tokens_user_id  ON refresh_tokens(user_id);
 CREATE INDEX idx_refresh_tokens_expires  ON refresh_tokens(expires_at);
 
+CREATE TABLE password_reset_tokens (
+  id          uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+  token_hash  text NOT NULL UNIQUE,
+  user_id     uuid NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+  expires_at  timestamptz NOT NULL,
+  created_at  timestamptz NOT NULL DEFAULT now()
+);
+
+CREATE INDEX idx_password_reset_tokens_token_hash ON password_reset_tokens(token_hash);
+CREATE INDEX idx_password_reset_tokens_user_id ON password_reset_tokens(user_id);
+CREATE INDEX idx_password_reset_tokens_expires_at ON password_reset_tokens(expires_at);
+
 -- =========
 -- 3) Category / Item (Catalog + Listing を初期は一本化)
 -- =========
@@ -102,30 +132,30 @@ CREATE TABLE categories (
   id          uuid PRIMARY KEY DEFAULT gen_random_uuid(),
   parent_id    uuid NULL REFERENCES categories(id) ON DELETE SET NULL,
   name        text NOT NULL,
+  code        text NULL,
+  sort_order   integer NOT NULL DEFAULT 0,
+  is_active    boolean NOT NULL DEFAULT true,
   created_at  timestamptz NOT NULL DEFAULT now(),
   updated_at  timestamptz NOT NULL DEFAULT now(),
   UNIQUE (parent_id, name)
 );
 
 CREATE INDEX idx_categories_parent ON categories(parent_id);
+CREATE UNIQUE INDEX uq_categories_code ON categories(code) WHERE code IS NOT NULL;
+CREATE INDEX idx_categories_active ON categories(is_active);
+CREATE INDEX idx_categories_parent_sort ON categories(parent_id, sort_order);
 
 CREATE TRIGGER trg_categories_updated_at
 BEFORE UPDATE ON categories
 FOR EACH ROW EXECUTE FUNCTION set_updated_at();
 
--- items.status:
--- 'DRAFT','PUBLISHED','IN_TRADE','SOLD','SUSPENDED','DELETED'
--- items.condition:
--- 'NEW','LIKE_NEW','USED_GOOD','USED_FAIR','USED_POOR'
--- shipping_fee_payer:
--- 'SELLER','BUYER'
+-- items.status: 'DRAFT','PUBLISHED','IN_TRADE','SOLD','SUSPENDED','DELETED'
+-- items.condition: 'NEW','LIKE_NEW','USED_GOOD','USED_FAIR','USED_POOR'
+-- shipping_fee_payer: 'SELLER','BUYER'
 CREATE TABLE items (
   id                  uuid PRIMARY KEY DEFAULT gen_random_uuid(),
-
-  -- コピー出品対応：元の出品を辿れる
   copied_from_item_id  uuid NULL REFERENCES items(id) ON DELETE SET NULL,
   copy_source          text NULL CHECK (copy_source IS NULL OR copy_source IN ('USER_COPY','RELIST','ADMIN_COPY')),
-
   seller_id            uuid NOT NULL REFERENCES users(id),
   category_id          uuid NOT NULL REFERENCES categories(id),
   name                text NOT NULL,
@@ -135,10 +165,12 @@ CREATE TABLE items (
   status              text NOT NULL CHECK (status IN ('DRAFT','PUBLISHED','IN_TRADE','SOLD','SUSPENDED','DELETED')),
   condition           text NOT NULL CHECK (condition IN ('NEW','LIKE_NEW','USED_GOOD','USED_FAIR','USED_POOR')),
   shipping_fee_payer  text NOT NULL CHECK (shipping_fee_payer IN ('SELLER','BUYER')),
-
+  search_tsv          tsvector GENERATED ALWAYS AS (
+    setweight(to_tsvector('simple', coalesce(name,'')), 'A')
+    || setweight(to_tsvector('simple', coalesce(description,'')), 'B')
+  ) STORED,
   created_at          timestamptz NOT NULL DEFAULT now(),
   updated_at          timestamptz NOT NULL DEFAULT now(),
-
   CHECK (copied_from_item_id IS NULL OR copied_from_item_id <> id)
 );
 
@@ -146,27 +178,22 @@ CREATE INDEX idx_items_status_created          ON items(status, created_at DESC)
 CREATE INDEX idx_items_category_status_created ON items(category_id, status, created_at DESC);
 CREATE INDEX idx_items_seller_created          ON items(seller_id, created_at DESC);
 CREATE INDEX idx_items_copied_from             ON items(copied_from_item_id);
+CREATE INDEX idx_items_search_tsv              ON items USING GIN (search_tsv);
+CREATE INDEX idx_items_name_trgm               ON items USING GIN (name gin_trgm_ops);
 
 CREATE TRIGGER trg_items_updated_at
 BEFORE UPDATE ON items
 FOR EACH ROW EXECUTE FUNCTION set_updated_at();
 
--- 画像：S3のobject key を保存する（URL直保存しない）
--- 例: bucketは環境変数/設定で管理し、ここには key のみ
--- s3_key: "items/{itemId}/{uuid}.jpg" のようなパス
 CREATE TABLE item_images (
   id            uuid PRIMARY KEY DEFAULT gen_random_uuid(),
   item_id        uuid NOT NULL REFERENCES items(id) ON DELETE CASCADE,
   s3_key         text NOT NULL,
-  content_type   text NULL,           -- image/jpeg など（任意）
+  content_type   text NULL,
   byte_size      bigint NULL CHECK (byte_size IS NULL OR byte_size >= 0),
   display_order  smallint NOT NULL DEFAULT 0 CHECK (display_order >= 0),
   created_at     timestamptz NOT NULL DEFAULT now(),
-
-  -- 同一item内で順序が被らないようにする
   UNIQUE (item_id, display_order),
-
-  -- 同一item内で同じキーを二重登録しない
   UNIQUE (item_id, s3_key)
 );
 
@@ -175,35 +202,21 @@ CREATE INDEX idx_item_images_item_order ON item_images(item_id, display_order);
 -- =========
 -- 4) Transaction / Chat / Review
 -- =========
--- orders.status:
--- 'PAID','AWAITING_SHIPMENT','SHIPPED','COMPLETED','CANCELLED'
 CREATE TABLE orders (
   id                       uuid PRIMARY KEY DEFAULT gen_random_uuid(),
-
-  -- 1出品1取引（再出品は item をコピーして新しい id を発行するため成立）
   item_id                   uuid NOT NULL UNIQUE REFERENCES items(id),
   buyer_id                  uuid NOT NULL REFERENCES users(id),
   seller_id                 uuid NOT NULL REFERENCES users(id),
-
   stripe_payment_intent_id  text NULL UNIQUE,
   status                   text NOT NULL CHECK (status IN ('PAID','AWAITING_SHIPMENT','SHIPPED','COMPLETED','CANCELLED')),
-
-  -- 取引時点の手数料率を固定（bps）
   applied_commission_bps   integer NOT NULL CHECK (applied_commission_bps >= 0 AND applied_commission_bps <= 10000),
-
-  -- 金額（最小通貨単位）
   item_price_amount        bigint NOT NULL CHECK (item_price_amount >= 0),
   shipping_fee_amount      bigint NOT NULL DEFAULT 0 CHECK (shipping_fee_amount >= 0),
   total_amount             bigint NOT NULL CHECK (total_amount >= 0),
   currency                 char(3) NOT NULL DEFAULT 'JPY',
-
-  -- 住所スナップショット：NOT NULL問題回避のため DEFAULT を付与
-  -- 例: { "postalCode": "...", "pref": "...", "city": "...", "line1": "...", "name": "...", "phone": "..." }
   shipping_address_snapshot jsonb NOT NULL DEFAULT '{}'::jsonb,
-
   created_at               timestamptz NOT NULL DEFAULT now(),
   updated_at               timestamptz NOT NULL DEFAULT now(),
-
   CHECK (buyer_id <> seller_id)
 );
 
@@ -215,7 +228,6 @@ CREATE TRIGGER trg_orders_updated_at
 BEFORE UPDATE ON orders
 FOR EACH ROW EXECUTE FUNCTION set_updated_at();
 
--- 取引チャット：編集不可運用が前提
 CREATE TABLE order_messages (
   id           uuid PRIMARY KEY DEFAULT gen_random_uuid(),
   order_id      uuid NOT NULL REFERENCES orders(id) ON DELETE CASCADE,
@@ -228,7 +240,6 @@ CREATE TABLE order_messages (
 CREATE INDEX idx_order_messages_order_created  ON order_messages(order_id, created_at ASC);
 CREATE INDEX idx_order_messages_sender_created ON order_messages(sender_id, created_at DESC);
 
--- 評価：1取引につき reviewer は1回まで
 CREATE TABLE reviews (
   id          uuid PRIMARY KEY DEFAULT gen_random_uuid(),
   order_id     uuid NOT NULL REFERENCES orders(id) ON DELETE CASCADE,
@@ -237,7 +248,6 @@ CREATE TABLE reviews (
   rating       text NOT NULL CHECK (rating IN ('GOOD','BAD')),
   comment      text NULL CHECK (length(comment) <= 2000),
   created_at   timestamptz NOT NULL DEFAULT now(),
-
   CHECK (reviewer_id <> reviewee_id),
   UNIQUE (order_id, reviewer_id)
 );
@@ -257,7 +267,7 @@ CREATE TABLE audit_logs (
   reason        text NOT NULL CHECK (length(reason) <= 2000),
   occurred_at   timestamptz NOT NULL DEFAULT now(),
   request_id    text NULL,
-  ip_address    inet NULL,
+  ip_address    text NULL,
   user_agent    text NULL
 );
 
@@ -277,5 +287,79 @@ CREATE TABLE reports (
 CREATE INDEX idx_reports_target_created   ON reports(target_type, target_id, created_at DESC);
 CREATE INDEX idx_reports_reporter_created ON reports(reporter_id, created_at DESC);
 
+-- =========
+-- 6) Prohibited rules (V5)
+-- =========
+CREATE TABLE prohibited_categories (
+  category_id uuid PRIMARY KEY REFERENCES categories(id) ON DELETE CASCADE,
+  reason      text NOT NULL DEFAULT '',
+  created_at  timestamptz NOT NULL DEFAULT now()
+);
+
+CREATE TABLE prohibited_terms (
+  id          uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+  term        text NOT NULL UNIQUE,
+  reason      text NOT NULL DEFAULT '',
+  severity    smallint NOT NULL DEFAULT 1 CHECK (severity BETWEEN 1 AND 5),
+  created_at  timestamptz NOT NULL DEFAULT now()
+);
+
+-- =========
+-- 7) Favorites (V8)
+-- =========
+CREATE TABLE favorites (
+  id         uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+  user_id    uuid NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+  item_id    uuid NOT NULL REFERENCES items(id) ON DELETE CASCADE,
+  created_at timestamptz NOT NULL DEFAULT now(),
+  UNIQUE (user_id, item_id)
+);
+
+CREATE INDEX idx_favorites_user_created ON favorites(user_id, created_at DESC);
+CREATE INDEX idx_favorites_item ON favorites(item_id);
+
+-- =========
+-- 8) Board posts (V9)
+-- =========
+CREATE TABLE board_posts (
+  id         uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+  item_id    uuid NOT NULL REFERENCES items(id) ON DELETE CASCADE,
+  author_id  uuid NOT NULL REFERENCES users(id),
+  content    text NOT NULL,
+  created_at timestamptz NOT NULL DEFAULT now()
+);
+
+CREATE INDEX idx_board_posts_item_created ON board_posts(item_id, created_at DESC);
+
+-- =========
+-- 9) Item views (V10)
+-- =========
+CREATE TABLE item_views (
+  id         uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+  user_id    uuid NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+  item_id    uuid NOT NULL REFERENCES items(id) ON DELETE CASCADE,
+  viewed_at  timestamptz NOT NULL DEFAULT now(),
+  UNIQUE (user_id, item_id)
+);
+
+CREATE INDEX idx_item_views_item_id ON item_views(item_id);
+CREATE INDEX idx_item_views_user_item ON item_views(user_id, item_id);
+
+-- =========
+-- 10) Item moderation (V13)
+-- =========
+CREATE TABLE item_moderation (
+  id                  uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+  item_id             uuid NOT NULL REFERENCES items(id) ON DELETE CASCADE,
+  rejected            boolean NOT NULL,
+  text_flagged        boolean,
+  text_negative_score double precision,
+  image_adult         boolean,
+  image_violence      boolean,
+  image_risk_score    double precision,
+  created_at          timestamptz NOT NULL DEFAULT now()
+);
+
+CREATE INDEX idx_item_moderation_rejected_created ON item_moderation(rejected, created_at DESC);
 
 COMMIT;

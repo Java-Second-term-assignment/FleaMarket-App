@@ -37,7 +37,7 @@ public class ReviewService {
 				orderEntity.getItemId(),
 				orderEntity.getBuyerId(),
 				orderEntity.getSellerId(),
-				OrderStatus.valueOf(orderEntity.getStatus()));
+				OrderStatus.fromString(orderEntity.getStatus()));
 
 		order.assertParticipant(currentUserId);
 

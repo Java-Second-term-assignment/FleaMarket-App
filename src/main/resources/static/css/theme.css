@@ -1,0 +1,325 @@
+@charset "UTF-8";
+
+/**
+ * テーマ切替（ライト/ダーク）
+ * common を読まないページ用に :root でデフォルトを定義し、
+ * html[data-theme="light"] でライト時の変数を上書きする。
+ */
+:root {
+	--bg-color: #2c2c2c;
+	--bg-dark: #2c2c2c;
+}
+
+html[data-theme="light"] {
+	--bg-color: #ffffff;
+	--bg-dark: #ffffff;
+	--bg-container: #f0f0f0;
+	--bg-panel: #f5f5f5;
+	--detail-card-bg: #f0f0f0;
+	--text-main: #1a1a1a;
+	--text-sub: #555555;
+	--text-heading: #1a1a1a;
+	--text-label: #333333;
+	--text-muted: #666666;
+	--border-light: #d1d1d1;
+	--input-bg: #f5f5f5;
+}
+
+/* ライトテーマでもヘッダーは常に同じ色（ダークのまま） */
+html[data-theme="light"] .header {
+	background-color: #1e2a3b;
+	color: #ffffff;
+}
+html[data-theme="light"] .header a,
+html[data-theme="light"] .header .nav-links a,
+html[data-theme="light"] .header .btn-post,
+html[data-theme="light"] .header .btn-theme-toggle {
+	color: #ffffff !important;
+}
+html[data-theme="light"] .header .nav-links a::after {
+	background: #ffffff;
+}
+
+/* ライトテーマ時でもログイン・新規登録カードのヘッダーは色を変えない（常にダーク・文字は白） */
+html[data-theme="light"] .container .auth-card-header {
+	background-color: #1e2a3b;
+	border-bottom-color: rgba(255, 255, 255, 0.2);
+}
+html[data-theme="light"] .container .auth-card-header h1 {
+	color: #e8e8e8 !important;
+}
+
+/* ライトテーマ時：ログイン・新規登録の文字色・太字は固定（テーマで変わらない） */
+html[data-theme="light"] .container .content,
+html[data-theme="light"] .container .content label,
+html[data-theme="light"] .container .content .link-bottom,
+html[data-theme="light"] .container .content .footer-text {
+	color: #333333;
+	font-weight: 600;
+}
+html[data-theme="light"] .container .content input {
+	background-color: #ffffff;
+	color: #1a1a1a;
+	border-color: #d1d1d1;
+	font-weight: 600;
+}
+html[data-theme="light"] .container .content input::placeholder {
+	color: #888888;
+}
+html[data-theme="light"] .container .content .link-bottom {
+	color: #555555;
+}
+html[data-theme="light"] .container .content a {
+	color: #4a69bd;
+}
+html[data-theme="light"] .container .content .footer-text {
+	color: #555555;
+}
+html[data-theme="light"] .container .content .required {
+	color: #e33e3e;
+}
+html[data-theme="light"] .container .content .error-text {
+	color: #e33e3e;
+}
+html[data-theme="light"] .container .content .btn {
+	color: #ffffff;
+}
+
+html[data-theme="light"] .container .content .password-toggle-btn {
+	color: #888888;
+}
+
+html[data-theme="light"] .container .content .password-toggle-btn:hover {
+	color: #333333;
+	background-color: rgba(0, 0, 0, 0.06);
+}
+
+html[data-theme="light"] .copyright {
+	color: rgba(0, 0, 0, 0.6);
+}
+html[data-theme="light"] .modal-content,
+html[data-theme="light"] .modal-content h2,
+html[data-theme="light"] .modal-content h3,
+html[data-theme="light"] .modal-body {
+	color: var(--text-main);
+}
+
+/* ヘッダー内テーマ切替ボタン */
+.btn-theme-toggle {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	background: none;
+	border: none;
+	color: inherit;
+	cursor: pointer;
+	padding: 4px 8px;
+	margin: 0 4px;
+	border-radius: 6px;
+	font-size: 22px;
+	line-height: 1;
+}
+.btn-theme-toggle:hover {
+	opacity: 0.9;
+}
+.theme-icon {
+	font-family: "Material Symbols Outlined";
+	font-weight: 400;
+	font-style: normal;
+	font-size: 22px;
+	line-height: 1;
+	letter-spacing: normal;
+}
+.theme-icon-light {
+	display: none;
+}
+.theme-icon-dark {
+	display: inline-flex;
+}
+html[data-theme="light"] .theme-icon-light {
+	display: inline-flex;
+}
+html[data-theme="light"] .theme-icon-dark {
+	display: none;
+}
+
+/* ヘッダーなし画面用（ログイン等）の固定トグル */
+.theme-toggle-fixed {
+	position: fixed;
+	top: 16px;
+	right: 16px;
+	z-index: 1000;
+}
+.theme-toggle-fixed .btn-theme-toggle {
+	color: var(--text-main);
+}
+
+/* ライトモード時：商品詳細・商品一覧の表示を崩さない（文字色・背景を明示） */
+html[data-theme="light"] .detail-card,
+html[data-theme="light"] .detail-card .product-title,
+html[data-theme="light"] .detail-card .long-text,
+html[data-theme="light"] .detail-card .stock-info {
+	color: #1a1a1a;
+}
+html[data-theme="light"] .detail-card .category-tag {
+	background: #eef2ff;
+	border-color: #1e2a3b;
+	color: #4e6294;
+}
+html[data-theme="light"] .detail-card .btn-gray {
+	background: #e0e4e8;
+	color: #4a5568;
+}
+html[data-theme="light"] .detail-card .btn-all-reviews:hover {
+	background: #f8f9fa;
+}
+html[data-theme="light"] .detail-card .icon-btn {
+	background: #fff;
+}
+html[data-theme="light"] .detail-card .icon-btn svg {
+	stroke: #5a6fa5;
+}
+html[data-theme="light"] .detail-card .price-display,
+html[data-theme="light"] .detail-card .price-row {
+	color: #1e2a3b;
+}
+html[data-theme="light"] .related-section .section-title {
+	color: #1a1a1a;
+}
+html[data-theme="light"] .review-title,
+html[data-theme="light"] .rating-score,
+html[data-theme="light"] .btn-all-reviews {
+	color: #1e2a3b;
+}
+html[data-theme="light"] .review-login-message {
+	color: #1a1a1a;
+}
+html[data-theme="light"] .review-login-message a {
+	color: #365292;
+}
+html[data-theme="light"] .main-container .page-title {
+	color: #333333;
+}
+/* ライトモード時：人気ランキングのタイトルも商品一覧と同じく黒系に */
+html[data-theme="light"] .ranking-title {
+	color: #333333;
+}
+
+/* ライトモード：管理者ダッシュボードのグラフカード */
+html[data-theme="light"] .admin-chart-card {
+	background-color: #f0f0f0;
+	border-color: #e0e0e0;
+}
+html[data-theme="light"] .admin-link-card {
+	background-color: #ffffff;
+	border-color: #e0e0e0;
+}
+/* ユーザー管理・商品管理のテーブルカード：統計画面と同じ薄いグレーで見やすく */
+html[data-theme="light"] .admin-card {
+	background-color: #f0f0f0;
+	border-color: #e0e0e0;
+}
+html[data-theme="light"] .admin-section-title {
+	color: #333333;
+}
+html[data-theme="light"] .admin-chart-title,
+html[data-theme="light"] .admin-chart-caption {
+	color: #555555;
+}
+html[data-theme="light"] .admin-link-card {
+	color: #1a1a1a;
+}
+html[data-theme="light"] .admin-link-card:hover {
+	background-color: #f5f5f5;
+	border-color: #4a5d99;
+}
+/* ユーザー管理・商品管理：テーブル文字色・罫線を薄いグレー背景で見やすく */
+html[data-theme="light"] .admin-card th,
+html[data-theme="light"] .admin-card td {
+	color: #333333;
+	border-bottom-color: #e0e0e0;
+}
+html[data-theme="light"] .admin-card .card-header h3 {
+	color: #1a1a1a;
+}
+html[data-theme="light"] .admin-tabs .tab-btn {
+	color: #555555;
+}
+html[data-theme="light"] .admin-tabs .tab-btn.active {
+	color: #1e2a3b;
+}
+html[data-theme="light"] main .page-title {
+	color: #1e2a3b;
+}
+
+/* =============== ユーザー設定：注文一覧と同様の薄いグレーでメリハリ =============== */
+html[data-theme="light"] .profile-card {
+	background-color: var(--bg-panel);
+	border-color: var(--border-light);
+}
+
+html[data-theme="light"] .profile-card-main {
+	border-bottom-color: var(--border-light);
+}
+
+html[data-theme="light"] .profile-card .tab-bar {
+	background: var(--bg-panel);
+}
+
+html[data-theme="light"] .profile-card .tab-bar .tab {
+	color: #555555;
+}
+
+html[data-theme="light"] .profile-card .tab-bar .tab.active,
+html[data-theme="light"] .profile-card .tab-bar .tab:hover {
+	background: #e8e8e8;
+	color: #1e2a3b;
+}
+
+html[data-theme="light"] .profile-card .tab-bar .tab:not(.active) {
+	color: #666666;
+}
+
+/* ユーザー設定：タブコンテンツ領域も薄いグレーで統一 */
+html[data-theme="light"] .profile-tab-content,
+html[data-theme="light"] .favorite-scroll-list,
+html[data-theme="light"] .product-scroll-list,
+html[data-theme="light"] .notification-scroll-list,
+html[data-theme="light"] .settings-card {
+	background-color: var(--input-bg);
+	border: 1px solid var(--border-light);
+	border-radius: 0 0 8px 8px;
+	color: var(--text-dark);
+}
+
+html[data-theme="light"] .profile-card-main,
+html[data-theme="light"] .profile-info-title,
+html[data-theme="light"] .profile-info-name,
+html[data-theme="light"] .profile-info-caption-edit,
+html[data-theme="light"] .profile-info-title-edit,
+html[data-theme="light"] .profile-info-name-edit {
+	color: #333333;
+}
+
+html[data-theme="light"] .profile-info-caption {
+	color: #555555;
+}
+
+html[data-theme="light"] .settings-title {
+	color: #1a1a1a;
+}
+
+html[data-theme="light"] .settings-card .settings-checkbox-label,
+html[data-theme="light"] .settings-card-section {
+	color: #333333;
+}
+
+/* 設定タブ内のラベル・値をライトモードで読みやすい色に */
+html[data-theme="light"] .settings-card [style*="color:#ffd743"] {
+	color: #1e2a3b !important;
+}
+
+/* #ffd743 はラベル用のため除外して #fff のみ上書き */
+html[data-theme="light"] .settings-card [style*="color:#fff"]:not([style*="color:#ffd743"]) {
+	color: #333333 !important;
+}

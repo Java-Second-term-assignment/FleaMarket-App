@@ -6,7 +6,6 @@ import java.util.stream.Collectors;
 
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -42,10 +41,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 				.map(SimpleGrantedAuthority::new)
 				.collect(Collectors.toList());
 
-		return User.builder()
-				.username(authUser.getUserId())
-				.password(authUser.getPasswordHash())
-				.authorities(authorities)
-				.build();
+		java.util.UUID userId = java.util.UUID.fromString(authUser.getUserId());
+		return new UserIdUserDetails(userId, authUser.getPasswordHash(), authorities);
 	}
 }

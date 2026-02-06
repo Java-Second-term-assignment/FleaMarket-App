@@ -13,4 +13,7 @@ public class UpdateProfileRequest {
 	@NotBlank
 	@Size(max = 50)
 	private String displayName;
+
+	@Size(max = 200)
+	private String caption;
 }

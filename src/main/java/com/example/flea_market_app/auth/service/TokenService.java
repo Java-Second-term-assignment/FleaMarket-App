@@ -14,10 +14,10 @@ import lombok.RequiredArgsConstructor;
 public class TokenService {
 
 	private final TokenHasher tokenHasher;
+	private final JwtSupport jwtSupport;
 
 	public String generateAccessToken(UUID userId) {
-		// JWT生成(簡略)
-		return "access-" + UUID.randomUUID();
+		return jwtSupport.createAccessToken(userId);
 	}
 
 	public IssuedRefreshToken issueRefreshToken(UUID userId) {

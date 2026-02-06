@@ -8,6 +8,21 @@ document.addEventListener('DOMContentLoaded', function() {
 		});
 	}
 
+	// シート内スクロール優先: シート内を全てスクロールしたらページがスクロールするように制御
+	var sheetScroll = document.querySelector('.detail-card-scroll');
+	if (sheetScroll) {
+		sheetScroll.addEventListener('wheel', function(e) {
+			var el = sheetScroll;
+			var atTop = el.scrollTop <= 1;
+			var atBottom = el.scrollTop + el.clientHeight >= el.scrollHeight - 1;
+			if (e.deltaY > 0) {
+				if (!atBottom) e.stopPropagation();
+			} else {
+				if (!atTop) e.stopPropagation();
+			}
+		});
+	}
+
 	// 星の色の制御（selectに応じて）
 	var star = document.getElementById('single-star');
 	var ratingInput = document.getElementById('review-rating');

@@ -2,16 +2,26 @@
 
 .main-container {
 	max-width: 1100px;
-	margin: 40px auto;
+	margin: 20px auto;
 	padding: 0 20px;
 }
 
 .detail-card {
-	background: #fff;
+	max-height: calc(100vh - 120px);
+	display: flex;
+	flex-direction: column;
+	overflow: hidden;
+	background: var(--detail-card-bg);
 	border-radius: 24px;
 	box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
 	padding: 40px;
 	margin-bottom: 60px;
+}
+
+.detail-card-scroll {
+	flex: 1;
+	min-height: 0;
+	overflow-y: auto;
 }
 
 .detail-layout {
@@ -29,7 +39,7 @@
 
 .sticky-wrapper {
 	position: sticky;
-	top: 100px;
+	top: 0;
 	height: fit-content;
 }
 
@@ -96,7 +106,7 @@
 	font-size: 26px;
 	line-height: 1.4;
 	margin: 0 0 15px 0;
-	color: #1e2a3b;
+	color: var(--text-heading);
 }
 
 .price-row {
@@ -123,8 +133,7 @@
 
 .price-display {
 	font-size: 48px;
-	color: #e8efff;
-	/* 画像のような薄い青色 */
+	color: var(--text-sub);
 	margin-bottom: 10px;
 	letter-spacing: 1px;
 	font-weight: 300;
@@ -132,12 +141,12 @@
 
 .category-tag {
 	display: inline-block;
-	border: 1px solid #1e2a3b;
-	color: #4e6294;
+	border: 1px solid rgba(255, 255, 255, 0.35);
+	color: var(--text-heading);
 	padding: 4px 15px;
 	border-radius: 20px;
 	font-size: 14px;
-	background: #eef2ff;
+	background: rgba(255, 255, 255, 0.1);
 	margin-bottom: 0;
 }
 
@@ -153,6 +162,7 @@
 
 .stock-info {
 	font-size: 18px;
+	color: var(--text-heading);
 }
 
 .action-row {
@@ -163,7 +173,7 @@
 
 /* お気に入り・旗アイコンの四角ボタン */
 .icon-btn {
-	background: #fff;
+	background: rgba(255, 255, 255, 0.12);
 	border: none;
 	width: 55px;
 	height: 45px;
@@ -182,15 +192,38 @@
 .icon-btn svg {
 	width: 24px;
 	height: 24px;
-	stroke: #5a6fa5;
-	/* アイコンの色 */
+	stroke: var(--text-sub);
 	fill: none;
 	stroke-width: 1.5;
 }
 
-/* 購入に進むボタン */
+/* お気に入りトグル：済みのときアイコンを赤で表示 */
+.favorite-toggle-btn .favorite-icon {
+	font-variation-settings: "FILL" 0;
+	color: var(--text-sub, #666);
+}
+.favorite-toggle-btn.is-favorited .favorite-icon {
+	font-variation-settings: "FILL" 1;
+	color: #e53935;
+}
+
+.favorite-error {
+	font-size: 13px;
+	color: var(--accent-red, #e53935);
+	visibility: hidden;
+	margin-left: 8px;
+}
+.favorite-error.visible {
+	visibility: visible;
+}
+
+/* 購入に進むボタン（リンクとして表示） */
 .btn-purchase {
+	display: inline-block;
 	width: 100%;
+	box-sizing: border-box;
+	text-align: center;
+	text-decoration: none;
 	background-color: #5a6fa5;
 	/* 画像のボタン色 */
 	color: white;
@@ -205,10 +238,17 @@
 
 .btn-purchase:hover {
 	background-color: #4a5a8a;
+	color: white;
+}
+
+.btn-purchase.disabled {
+	pointer-events: none;
+	opacity: 0.6;
+	cursor: not-allowed;
 }
 
 .long-text {
-	color: #666;
+	color: var(--text-sub);
 	line-height: 1.8;
 }
 
@@ -230,8 +270,8 @@
 }
 
 .btn-gray {
-	background-color: #e0e4e8;
-	color: #4a5568;
+	background-color: var(--btn-gray-bg);
+	color: var(--btn-gray-color);
 	border: none;
 	padding: 16px;
 	border-radius: 30px;
@@ -340,32 +380,39 @@
 	color: #5662a6;
 }
 
-/* 関連商品 */
+/* 関連商品（商品一覧と同じフォーマット） */
 .related-section {
 	border-top: 1px solid #dee2e6;
 	padding-top: 50px;
 }
 
-.section-title {
+.related-section .section-title {
 	text-align: center;
 	font-size: 24px;
 	margin-bottom: 30px;
 	color: #fff;
 }
 
-.product-grid {
+.related-section .product-grid {
 	display: grid;
-	grid-template-columns: repeat(4, 1fr);
-	gap: 20px;
+	grid-template-columns: repeat(5, 1fr);
+	gap: 15px;
 }
 
-/* カードのコンテナ（紫の点線枠） */
+.related-section .item-card-title {
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+
+/* カードのコンテナ（影付き） */
 .item-card {
 	width: 200px;
 	border-radius: 4px;
 	overflow: hidden;
 	font-family: sans-serif;
 	border: 1px solid #ccc;
+	box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12), 0 2px 4px rgba(0, 0, 0, 0.08);
 }
 
 a {
@@ -477,7 +524,7 @@ a {
 
 /* --- ホバー状態（下のカード） --- */
 .item-card {
-	transition: border 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+	transition: border 0.6s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.25s ease;
 }
 
 .item-card-content {
@@ -494,6 +541,7 @@ a {
 
 .item-card:hover {
 	border: 1px solid #4e6294;
+	box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12), 0 4px 8px rgba(0, 0, 0, 0.08);
 }
 
 .item-card:hover .item-card-content {
@@ -519,10 +567,26 @@ a {
 	border-top: 1px solid var(--border-color);
 }
 
+.review-login-message {
+	color: var(--text-main);
+	font-size: 15px;
+	margin: 0 0 20px 0;
+}
+
+.review-login-message a {
+	color: var(--link-blue);
+	text-decoration: underline;
+	text-underline-offset: 3px;
+}
+
+.review-login-message a:hover {
+	opacity: 0.9;
+}
+
 .review-title {
 	font-size: 18px;
 	margin-bottom: 15px;
-	color: var(--header-bg);
+	color: var(--text-heading);
 }
 
 .rating-summary {
@@ -535,7 +599,7 @@ a {
 .rating-score {
 	font-size: 28px;
 	font-weight: bold;
-	color: var(--accent-blue);
+	color: var(--text-sub);
 }
 
 .stars {
@@ -545,14 +609,14 @@ a {
 }
 
 .review-count {
-	color: #888;
+	color: var(--text-muted);
 	font-size: 14px;
 }
 
 .review-item {
 	margin-bottom: 20px;
 	padding-bottom: 15px;
-	border-bottom: 1px solid #f0f0f0;
+	border-bottom: 1px solid var(--border-light);
 }
 
 .review-item:last-child {
@@ -563,7 +627,7 @@ a {
 	display: flex;
 	justify-content: space-between;
 	font-size: 13px;
-	color: #666;
+	color: var(--text-sub);
 	margin-bottom: 5px;
 }
 
@@ -577,7 +641,7 @@ a {
 	font-size: 14px;
 	line-height: 1.5;
 	margin: 0;
-	color: #444;
+	color: var(--text-sub);
 }
 
 .btn-all-reviews {
@@ -585,8 +649,8 @@ a {
 	background: none;
 	border: 1px solid var(--border-color);
 	padding: 10px;
-	border-radius: var(--radius-sm);
-	color: var(--accent-blue);
+	border-radius: 4px;
+	color: var(--text-heading);
 	cursor: pointer;
 	font-size: 14px;
 	margin-top: 10px;
@@ -594,10 +658,184 @@ a {
 }
 
 .btn-all-reviews:hover {
-	background: #f8f9fa;
+	background: var(--btn-all-reviews-hover-bg);
 }
 
 .page-title {
-	margin-top: 100px;
+	margin-top: 50px;
 	color: #F2EEB8;
+}
+
+/* ログイン誘導モーダル（商品詳細） */
+#loginRequiredModal.modal-overlay {
+	align-items: center;
+	justify-content: center;
+	padding: 24px;
+}
+#loginRequiredModal .modal-content {
+	position: relative;
+	margin: auto; /* auth.css の margin-left/right を上書きして中央配置 */
+	max-width: 440px;
+}
+#loginRequiredModal .modal-close-btn {
+	position: absolute;
+	top: 12px;
+	right: 16px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	width: 36px;
+	height: 36px;
+	background: none;
+	border: none;
+	font-size: 28px;
+	line-height: 1;
+	cursor: pointer;
+	color: rgba(255, 255, 255, 0.9);
+	opacity: 0.9;
+	padding: 0;
+	margin: 0;
+}
+#loginRequiredModal .modal-close-btn:hover {
+	opacity: 1;
+}
+/* ダークモード：明るい文字で視認性を確保 */
+#loginRequiredModal .modal-content,
+#loginRequiredModal .modal-content h2,
+#loginRequiredModal .modal-content h3,
+#loginRequiredModal .modal-body,
+#loginRequiredModal .modal-body p {
+	color: #ffffff;
+}
+#loginRequiredModal .modal-content > h2 {
+	font-size: 18px;
+	font-weight: 700;
+	margin: 0 0 12px 0;
+	padding-right: 48px;
+}
+#loginRequiredModal .modal-body {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+}
+#loginRequiredModal .modal-body p {
+	font-size: 15px;
+	line-height: 1.6;
+	margin: 0;
+	text-align: center;
+	width: 100%;
+}
+#loginRequiredModal .btn.btn-login {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	width: auto;
+	min-width: 160px;
+	padding: 12px 28px;
+	font-size: 14px;
+	line-height: 1.2;
+	color: #ffffff;
+	font-weight: 600;
+	text-align: center;
+	text-decoration: none;
+	box-sizing: border-box;
+	margin-top: 16px;
+	border-radius: 6px;
+}
+/* ライトモード：暗い文字で視認性を確保 */
+html[data-theme="light"] #loginRequiredModal .modal-content {
+	background: #ffffff;
+	box-shadow: 0 8px 40px rgba(0, 0, 0, 0.2);
+}
+html[data-theme="light"] #loginRequiredModal .modal-content,
+html[data-theme="light"] #loginRequiredModal .modal-content h2,
+html[data-theme="light"] #loginRequiredModal .modal-content h3,
+html[data-theme="light"] #loginRequiredModal .modal-body,
+html[data-theme="light"] #loginRequiredModal .modal-body p {
+	color: #1a1a1a;
+}
+html[data-theme="light"] #loginRequiredModal .modal-close-btn {
+	color: #333;
+}
+html[data-theme="light"] #loginRequiredModal .btn.btn-login {
+	color: #ffffff;
+	background-color: var(--btn-login);
+}
+
+/* 通報モーダル（商品詳細） */
+#reportModal.modal-overlay {
+	align-items: center;
+	justify-content: center;
+	padding: 24px;
+}
+#reportModal .modal-content {
+	position: relative;
+	margin: auto;
+	max-width: 440px;
+}
+#reportModal .modal-close-btn {
+	position: absolute;
+	top: 12px;
+	right: 16px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	width: 36px;
+	height: 36px;
+	background: none;
+	border: none;
+	font-size: 28px;
+	line-height: 1;
+	cursor: pointer;
+	color: rgba(255, 255, 255, 0.9);
+	opacity: 0.9;
+	padding: 0;
+	margin: 0;
+}
+#reportModal .modal-close-btn:hover {
+	opacity: 1;
+}
+#reportModal .modal-content,
+#reportModal .modal-content h2,
+#reportModal .modal-body,
+#reportModal .form-group label {
+	color: #ffffff;
+}
+#reportModal .modal-content > h2 {
+	font-size: 18px;
+	font-weight: 700;
+	margin: 0 0 12px 0;
+	padding-right: 48px;
+}
+#reportModal .modal-body .form-group {
+	margin-bottom: 16px;
+}
+#reportModal .modal-body select,
+#reportModal .modal-body textarea {
+	width: 100%;
+	padding: 8px 12px;
+	border-radius: 6px;
+	border: 1px solid var(--border-color, #444);
+	background: var(--bg-dark, #1a1a1a);
+	color: var(--text-main, #fff);
+	box-sizing: border-box;
+}
+#reportModal .modal-actions {
+	display: flex;
+	gap: 12px;
+	justify-content: flex-end;
+	margin-top: 20px;
+}
+html[data-theme="light"] #reportModal .modal-content,
+html[data-theme="light"] #reportModal .form-group label {
+	color: #1a1a1a;
+}
+html[data-theme="light"] #reportModal .modal-body select,
+html[data-theme="light"] #reportModal .modal-body textarea {
+	background: #fff;
+	color: #1a1a1a;
+	border-color: #ccc;
+}
+html[data-theme="light"] #reportModal .modal-close-btn {
+	color: #333;
 }
