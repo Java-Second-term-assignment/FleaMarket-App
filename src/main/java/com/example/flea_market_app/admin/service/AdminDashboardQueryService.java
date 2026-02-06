@@ -11,7 +11,9 @@ import com.example.flea_market_app.admin.controller.dto.AdminDashboardStatsDto;
 import com.example.flea_market_app.admin.controller.dto.AdminProductRowDto;
 import com.example.flea_market_app.admin.controller.dto.AdminUserRowDto;
 import com.example.flea_market_app.admin.domain.ItemModerationEntity;
+import com.example.flea_market_app.admin.domain.ReportEntity;
 import com.example.flea_market_app.admin.repository.ItemModerationRepository;
+import com.example.flea_market_app.admin.repository.ReportRepository;
 import com.example.flea_market_app.auth.domain.AuthUserEntity;
 import com.example.flea_market_app.auth.repository.AuthUserRepository;
 import com.example.flea_market_app.catalog.domain.ItemEntity;
@@ -35,6 +37,7 @@ public class AdminDashboardQueryService {
 	private final AuthUserRepository authUserRepository;
 	private final ItemRepository itemRepository;
 	private final ItemModerationRepository itemModerationRepository;
+	private final ReportRepository reportRepository;
 
 	public AdminDashboardStatsDto getDashboardStats() {
 		long totalActiveItems = itemRepository.countByStatus(STATUS_PUBLISHED);
@@ -156,6 +159,49 @@ public class AdminDashboardQueryService {
 							item.getPriceAmount() != null ? item.getPriceAmount() : 0L,
 							sellerName,
 							"違反検知");
+				})
+				.toList();
+	}
+
+	private static final String TARGET_TYPE_ITEM = "ITEM";
+
+	/**
+	 * ユーザーから通報された商品の一覧（通報が1件以上ある商品）。通報が新しい順。
+	 */
+	public List<AdminProductRowDto> getReportedProducts() {
+		List<ReportEntity> reports = reportRepository.findByTargetTypeOrderByCreatedAtDesc(TARGET_TYPE_ITEM);
+		List<UUID> itemIdsOrdered = reports.stream()
+				.map(ReportEntity::getTargetId)
+				.distinct()
+				.toList();
+		if (itemIdsOrdered.isEmpty()) {
+			return List.of();
+		}
+		List<ItemEntity> items = itemRepository.findAllById(itemIdsOrdered);
+		Map<UUID, Integer> orderIndex = new java.util.HashMap<>();
+		for (int i = 0; i < itemIdsOrdered.size(); i++) {
+			orderIndex.put(itemIdsOrdered.get(i), i);
+		}
+		items.sort((a, b) -> Integer.compare(
+				orderIndex.getOrDefault(a.getId(), Integer.MAX_VALUE),
+				orderIndex.getOrDefault(b.getId(), Integer.MAX_VALUE)));
+		List<UUID> sellerIds = items.stream()
+				.map(ItemEntity::getSellerId)
+				.distinct()
+				.toList();
+		Map<UUID, String> sellerNames = userRepository.findAllById(sellerIds).stream()
+				.collect(Collectors.toMap(UserEntity::getId, UserEntity::getDisplayName, (a, b) -> a));
+
+		return items.stream()
+				.map(item -> {
+					String sellerName = sellerNames.getOrDefault(item.getSellerId(), "—");
+					String statusLabel = toStatusLabel(item.getStatus());
+					return new AdminProductRowDto(
+							item.getId(),
+							item.getName(),
+							item.getPriceAmount() != null ? item.getPriceAmount() : 0L,
+							sellerName,
+							"通報あり（" + statusLabel + "）");
 				})
 				.toList();
 	}

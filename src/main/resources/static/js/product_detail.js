@@ -142,3 +142,59 @@
 		});
 	});
 })();
+
+/**
+ * 通報ボタン：クリックで通報モーダルを表示。未ログイン時はログインモーダルを表示。
+ */
+(function () {
+	"use strict";
+
+	document.addEventListener("DOMContentLoaded", function () {
+		var reportBtn = document.getElementById("reportBtn");
+		var reportModal = document.getElementById("reportModal");
+		var reportModalClose = document.getElementById("reportModalClose");
+		var reportModalCancel = document.getElementById("reportModalCancel");
+		if (!reportBtn || !reportModal) return;
+
+		var main = document.querySelector(".main-container");
+		var productId = main && main.getAttribute("data-product-id");
+		var body = document.body;
+		var isAnonymous = body && body.getAttribute("data-anonymous") === "true";
+		var loginModal = document.getElementById("loginRequiredModal");
+		var loginModalLink = document.getElementById("loginRequiredModalLink");
+
+		function openReportModal() {
+			reportModal.style.display = "flex";
+			reportModal.setAttribute("aria-hidden", "false");
+		}
+
+		function closeReportModal() {
+			reportModal.style.display = "none";
+			reportModal.setAttribute("aria-hidden", "true");
+		}
+
+		function openLoginModalForReport() {
+			if (!loginModal || !loginModalLink || !productId) return;
+			loginModalLink.href = "/login?returnUrl=" + encodeURIComponent("/products/" + productId);
+			loginModal.style.display = "flex";
+			loginModal.setAttribute("aria-hidden", "false");
+		}
+
+		reportBtn.addEventListener("click", function () {
+			if (isAnonymous) {
+				openLoginModalForReport();
+			} else {
+				openReportModal();
+			}
+		});
+
+		if (reportModalClose) reportModalClose.addEventListener("click", closeReportModal);
+		if (reportModalCancel) reportModalCancel.addEventListener("click", closeReportModal);
+		reportModal.addEventListener("click", function (e) {
+			if (e.target === reportModal) closeReportModal();
+		});
+		document.addEventListener("keydown", function (e) {
+			if (e.key === "Escape" && reportModal.style.display === "flex") closeReportModal();
+		});
+	});
+})();

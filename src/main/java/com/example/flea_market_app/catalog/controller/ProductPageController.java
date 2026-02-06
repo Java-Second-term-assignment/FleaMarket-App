@@ -14,14 +14,19 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import com.example.flea_market_app.admin.domain.ReportType;
+import com.example.flea_market_app.admin.domain.TargetType;
+import com.example.flea_market_app.admin.service.ReportService;
 import com.example.flea_market_app.catalog.controller.dto.ReviewForm;
 import com.example.flea_market_app.catalog.service.ItemViewService;
 import com.example.flea_market_app.catalog.service.ProductListService.ProductListResult;
 import com.example.flea_market_app.catalog.service.ProductListService;
 import com.example.flea_market_app.catalog.service.ProductReviewQueryService;
 import com.example.flea_market_app.common.exception.NotFoundBusinessException;
+import com.example.flea_market_app.common.exception.ValidationBusinessException;
 import com.example.flea_market_app.config.security.SecurityUtil;
 import com.example.flea_market_app.engagement.favorite.repository.FavoriteRepository;
 import com.example.flea_market_app.transaction.domain.OrderEntity;
@@ -44,6 +49,7 @@ public class ProductPageController {
 	private final ProductReviewQueryService productReviewQueryService;
 	private final OrderRepository orderRepository;
 	private final ReviewService reviewService;
+	private final ReportService reportService;
 
 	@Value("${app.product-list.page-size:50}")
 	private int defaultPageSize;
@@ -137,6 +143,34 @@ public class ProductPageController {
 		reviewService.submitReview(order.getId(), userId, rating, comment);
 
 		ra.addFlashAttribute("message", "レビューを投稿しました。");
+		return "redirect:/products/" + itemId;
+	}
+
+	@PostMapping("/products/{id}/report")
+	public String reportProduct(
+			@PathVariable("id") UUID itemId,
+			@RequestParam(name = "reportType", required = false) String reportTypeStr,
+			@RequestParam(name = "description", required = false) String description,
+			RedirectAttributes ra) {
+		UUID reporterId = SecurityUtil.getCurrentUserId();
+		ReportType reportType;
+		try {
+			if (reportTypeStr == null || reportTypeStr.isBlank()) {
+				ra.addFlashAttribute("reportErrorMessage", "通報理由を選択してください。");
+				return "redirect:/products/" + itemId;
+			}
+			reportType = ReportType.valueOf(reportTypeStr.trim());
+		} catch (IllegalArgumentException e) {
+			ra.addFlashAttribute("reportErrorMessage", "通報理由が不正です。");
+			return "redirect:/products/" + itemId;
+		}
+		try {
+			reportService.submitReport(reporterId, TargetType.ITEM, itemId, reportType, description);
+		} catch (ValidationBusinessException e) {
+			ra.addFlashAttribute("reportErrorMessage", e.getMessage());
+			return "redirect:/products/" + itemId;
+		}
+		ra.addFlashAttribute("reportSuccessMessage", "通報を受け付けました。ご協力ありがとうございます。");
 		return "redirect:/products/" + itemId;
 	}
 }

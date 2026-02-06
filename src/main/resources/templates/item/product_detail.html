@@ -37,6 +37,8 @@
 
 					<h1 class="product-title" th:text="${product.name}">商品名</h1>
 
+					<div th:if="${reportSuccessMessage}" class="flash-message" style="color: var(--accent-green, green); margin-bottom: 12px;" th:text="${reportSuccessMessage}"></div>
+					<div th:if="${reportErrorMessage}" class="flash-error" style="color: var(--accent-red, #c00); margin-bottom: 12px;" th:text="${reportErrorMessage}"></div>
 					<div class="price-header-row">
 						<span class="current-label">価格:</span>
 						<div class="price-row" th:text="'¥ ' + ${#numbers.formatInteger(product.price,3,'COMMA')}">
@@ -61,10 +63,8 @@
 							th:attr="aria-pressed=${isFavorited}">
 							<span class="material-symbols-outlined favorite-icon" th:text="${isFavorited} ? 'favorite' : 'favorite_border'">favorite_border</span>
 						</button>
-						<button class="icon-btn" title="通報">
-							<span class="material-symbols-outlined">
-							error
-							</span>
+						<button type="button" class="icon-btn" id="reportBtn" title="通報" aria-label="この商品を通報する">
+							<span class="material-symbols-outlined">error</span>
 						</button>
 					</div>
 
@@ -222,6 +222,38 @@
 			<div class="modal-body">
 				<p>購入やカートの利用にはログインが必要です。<br>ログインすると続行できます。</p>
 				<a id="loginRequiredModalLink" href="#" class="btn btn-login">ログインする</a>
+			</div>
+		</div>
+	</div>
+
+	<!-- 通報モーダル（ログイン時） -->
+	<div id="reportModal" class="modal-overlay" style="display:none;" aria-hidden="true">
+		<div class="modal-content">
+			<button type="button" class="modal-close-btn" id="reportModalClose" aria-label="閉じる">&times;</button>
+			<h2>この商品を通報する</h2>
+			<div class="modal-body">
+				<form id="reportForm" th:action="@{/products/{id}/report(id=${product.id})}" method="post">
+					<th:block th:replace="~{ui/fragments :: csrf_token}"></th:block>
+					<div class="form-group">
+						<label for="reportType">通報理由<span class="required">（必須）</span></label>
+						<select id="reportType" name="reportType" required>
+							<option value="">選択してください</option>
+							<option value="COUNTERFEIT">偽物・贋作</option>
+							<option value="HARASSMENT">嫌がらせ</option>
+							<option value="SPAM">スパム</option>
+							<option value="INAPPROPRIATE">不適切な内容</option>
+							<option value="OTHER">その他</option>
+						</select>
+					</div>
+					<div class="form-group">
+						<label for="reportDescription">詳細（任意・2000文字以内）</label>
+						<textarea id="reportDescription" name="description" rows="4" maxlength="2000" placeholder="具体的な理由や状況をご記入ください"></textarea>
+					</div>
+					<div class="modal-actions">
+						<button type="button" class="btn-gray" id="reportModalCancel">キャンセル</button>
+						<button type="submit" class="btn-blue">通報する</button>
+					</div>
+				</form>
 			</div>
 		</div>
 	</div>

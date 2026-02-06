@@ -761,3 +761,81 @@ html[data-theme="light"] #loginRequiredModal .btn.btn-login {
 	color: #ffffff;
 	background-color: var(--btn-login);
 }
+
+/* 通報モーダル（商品詳細） */
+#reportModal.modal-overlay {
+	align-items: center;
+	justify-content: center;
+	padding: 24px;
+}
+#reportModal .modal-content {
+	position: relative;
+	margin: auto;
+	max-width: 440px;
+}
+#reportModal .modal-close-btn {
+	position: absolute;
+	top: 12px;
+	right: 16px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	width: 36px;
+	height: 36px;
+	background: none;
+	border: none;
+	font-size: 28px;
+	line-height: 1;
+	cursor: pointer;
+	color: rgba(255, 255, 255, 0.9);
+	opacity: 0.9;
+	padding: 0;
+	margin: 0;
+}
+#reportModal .modal-close-btn:hover {
+	opacity: 1;
+}
+#reportModal .modal-content,
+#reportModal .modal-content h2,
+#reportModal .modal-body,
+#reportModal .form-group label {
+	color: #ffffff;
+}
+#reportModal .modal-content > h2 {
+	font-size: 18px;
+	font-weight: 700;
+	margin: 0 0 12px 0;
+	padding-right: 48px;
+}
+#reportModal .modal-body .form-group {
+	margin-bottom: 16px;
+}
+#reportModal .modal-body select,
+#reportModal .modal-body textarea {
+	width: 100%;
+	padding: 8px 12px;
+	border-radius: 6px;
+	border: 1px solid var(--border-color, #444);
+	background: var(--bg-dark, #1a1a1a);
+	color: var(--text-main, #fff);
+	box-sizing: border-box;
+}
+#reportModal .modal-actions {
+	display: flex;
+	gap: 12px;
+	justify-content: flex-end;
+	margin-top: 20px;
+}
+html[data-theme="light"] #reportModal .modal-content,
+html[data-theme="light"] #reportModal .form-group label {
+	color: #1a1a1a;
+}
+html[data-theme="light"] #reportModal .modal-body select,
+html[data-theme="light"] #reportModal .modal-body textarea {
+	background: #fff;
+	color: #1a1a1a;
+	border-color: #ccc;
+}
+html[data-theme="light"] #reportModal .modal-close-btn {
+	color: #333;
+}

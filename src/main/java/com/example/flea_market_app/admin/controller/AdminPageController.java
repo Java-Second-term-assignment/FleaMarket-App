@@ -183,7 +183,9 @@ public class AdminPageController {
 			violationProducts = Collections.emptyList();
 		}
 		model.addAttribute("violationProducts", violationProducts);
-		String activeTab = "violations".equals(tab) ? "violations" : "blacklist".equals(tab) ? "blacklist" : "list";
+		List<AdminProductRowDto> reportedProducts = adminDashboardQueryService.getReportedProducts();
+		model.addAttribute("reportedProducts", reportedProducts);
+		String activeTab = "violations".equals(tab) ? "violations" : "blacklist".equals(tab) ? "blacklist" : "reports".equals(tab) ? "reports" : "list";
 		model.addAttribute("activeTab", activeTab);
 		log.info("Admin products list displayed, tab={}", tab);
 		return "admin/products";
