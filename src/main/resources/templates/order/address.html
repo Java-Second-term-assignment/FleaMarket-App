@@ -17,6 +17,7 @@
 				<form th:action="@{/address}" method="post" class="address-form">
 					<th:block th:replace="~{ui/fragments :: csrf_token}"></th:block>
 					<input type="hidden" name="productId" th:value="${productId}" th:if="${productId != null}">
+					<input type="hidden" name="returnTo" th:value="${returnTo}" th:if="${returnTo != null and !returnTo.isEmpty()}">
 					<div class="form-group">
 						<label class="info-label" for="name">氏名</label>
 						<input type="text" id="name" name="name" th:value="${address.name}" class="form-input" placeholder="山田 太郎">
@@ -34,7 +35,8 @@
 					</div>
 				</form>
 				<p class="back-link">
-					<a th:href="${productId != null} ? @{/order/confirm(productId=${productId})} : @{/order/confirm}">注文確認へ戻る</a>
+					<a th:if="${returnTo == 'cart'}" th:href="@{/cart}">カートへ戻る</a>
+					<a th:if="${returnTo != 'cart'}" th:href="${productId != null} ? @{/order/confirm(productId=${productId})} : @{/order/confirm}">注文確認へ戻る</a>
 				</p>
 			</div>
 		</section>

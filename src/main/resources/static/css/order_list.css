@@ -238,6 +238,43 @@ html[data-theme="light"] .order-list-empty-link {
 	color: var(--accent-blue-link);
 }
 
+/* カート一覧：注文一覧と同じフォーマット + 削除ボタン */
+.cart-list-item .cart-list-item-inner {
+	display: flex;
+	align-items: center;
+	gap: 16px;
+	padding: 16px;
+	min-height: 100%;
+}
+
+.cart-list-item .order-list-link {
+	flex: 1;
+	min-width: 0;
+}
+
+.cart-remove-form {
+	flex-shrink: 0;
+}
+
+.cart-remove-form .btn-remove {
+	background: transparent;
+	color: var(--text-sub);
+	border: 1px solid var(--border-color);
+	padding: 8px 16px;
+	border-radius: 8px;
+	font-size: 13px;
+	cursor: pointer;
+}
+
+.cart-remove-form .btn-remove:hover {
+	background: rgba(255, 255, 255, 0.08);
+	color: var(--text-main);
+}
+
+html[data-theme="light"] .cart-remove-form .btn-remove:hover {
+	background: rgba(0, 0, 0, 0.06);
+}
+
 /* 2-F: レスポンシブ */
 @media (max-width: 480px) {
 	.order-list-main .page-title {

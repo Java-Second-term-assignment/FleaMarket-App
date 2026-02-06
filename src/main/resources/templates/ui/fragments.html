@@ -61,6 +61,11 @@
 
 					<!-- ログイン時（管理者画面では非表示） -->
 					<div class="nav-item" sec:authorize="isAuthenticated()" th:if="${isAdminContext != true}">
+						<a th:href="@{/cart}">
+							カート
+						</a>
+					</div>
+					<div class="nav-item" sec:authorize="isAuthenticated()" th:if="${isAdminContext != true}">
 						<a th:href="@{/user/orders}">
 							注文一覧
 						</a>

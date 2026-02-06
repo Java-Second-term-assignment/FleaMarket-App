@@ -205,3 +205,33 @@ body {
 .btn-submit:hover {
 	background-color: #0056b3;
 }
+
+.btn-remove {
+	background: transparent;
+	color: #666;
+	border: 1px solid #ccc;
+	padding: 6px 12px;
+	border-radius: 6px;
+	font-size: 12px;
+	cursor: pointer;
+}
+
+.btn-remove:hover {
+	background: #f5f5f5;
+	color: #333;
+}
+
+.cart-empty {
+	padding: 40px 0;
+	text-align: center;
+	color: #666;
+}
+
+.cart-empty a {
+	color: #007bff;
+	text-decoration: none;
+}
+
+.cart-empty a:hover {
+	text-decoration: underline;
+}

@@ -121,10 +121,14 @@ public class OrderPageController {
 	}
 
 	@GetMapping("/address")
-	public String address(@RequestParam(required = false) UUID productId, Model model, HttpSession session) {
+	public String address(
+			@RequestParam(required = false) UUID productId,
+			@RequestParam(required = false) String returnTo,
+			Model model, HttpSession session) {
 		if (productId != null) {
 			model.addAttribute("productId", productId);
 		}
+		model.addAttribute("returnTo", returnTo);
 		@SuppressWarnings("unchecked")
 		Map<String, String> sessionAddress = (Map<String, String>) session.getAttribute(ORDER_ADDRESS);
 		var userId = SecurityUtil.getCurrentUserId();
@@ -141,8 +145,12 @@ public class OrderPageController {
 			@RequestParam String postcode,
 			@RequestParam String fullAddress,
 			@RequestParam(required = false) UUID productId,
+			@RequestParam(required = false) String returnTo,
 			HttpSession session) {
 		session.setAttribute(ORDER_ADDRESS, Map.of("name", name, "postcode", postcode, "fullAddress", fullAddress));
+		if ("cart".equals(returnTo)) {
+			return "redirect:/cart";
+		}
 		return productId != null ? "redirect:/order/confirm?productId=" + productId : "redirect:/order/confirm";
 	}
 
