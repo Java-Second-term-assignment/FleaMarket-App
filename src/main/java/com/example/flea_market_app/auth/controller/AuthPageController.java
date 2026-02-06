@@ -11,8 +11,10 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.example.flea_market_app.auth.controller.dto.RegisterForm;
+import com.example.flea_market_app.auth.service.PasswordResetService;
 import com.example.flea_market_app.auth.service.RegistrationService;
 import com.example.flea_market_app.common.exception.ValidationBusinessException;
+import com.example.flea_market_app.common.validation.EmailValidator;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -24,6 +26,7 @@ public class AuthPageController {
 	private static final Logger log = LoggerFactory.getLogger(AuthPageController.class);
 
 	private final RegistrationService registrationService;
+	private final PasswordResetService passwordResetService;
 
 	@GetMapping("/login")
 	public String loginPage(@RequestParam(required = false) String returnUrl, Model model) {
@@ -80,8 +83,60 @@ public class AuthPageController {
 	}
 
 	@PostMapping("/password-reset-request")
-	public String passwordResetRequest() {
+	public String passwordResetRequest(
+			@RequestParam(name = "email", required = false) String email,
+			RedirectAttributes redirectAttributes) {
+		if (email != null && !email.isBlank()) {
+			try {
+				EmailValidator.validate(email.trim());
+			} catch (ValidationBusinessException e) {
+				redirectAttributes.addFlashAttribute("errorMessage", "メールアドレスの形式が正しくありません。");
+				return "redirect:/password/forgot";
+			}
+			passwordResetService.requestReset(email.trim());
+		}
+		redirectAttributes.addFlashAttribute("successMessage",
+				"ご入力いただいたメールアドレスにパスワード再設定用のリンクを送信しました。有効期限は1時間です。");
 		return "redirect:/password/forgot";
+	}
+
+	@GetMapping("/password/reset")
+	public String passwordResetFormPage(@RequestParam(name = "token", required = false) String token,
+			Model model,
+			RedirectAttributes redirectAttributes) {
+		if (token == null || token.isBlank()) {
+			redirectAttributes.addFlashAttribute("errorMessage", "リンクが無効です。再度パスワード再設定を申請してください。");
+			return "redirect:/password/forgot";
+		}
+		model.addAttribute("token", token);
+		return "auth/password_reset_form";
+	}
+
+	@PostMapping("/password/reset")
+	public String passwordResetSubmit(
+			@RequestParam(name = "token", required = false) String token,
+			@RequestParam(name = "password", required = false) String password,
+			@RequestParam(name = "confirmPassword", required = false) String confirmPassword,
+			Model model,
+			RedirectAttributes redirectAttributes) {
+		if (token == null || token.isBlank()) {
+			model.addAttribute("errorMessage", "リンクが無効です。再度パスワード再設定を申請してください。");
+			return "auth/password_reset_form";
+		}
+		if (password == null || !password.equals(confirmPassword)) {
+			model.addAttribute("token", token);
+			model.addAttribute("errorMessage", "パスワードとパスワード確認が一致しません。");
+			return "auth/password_reset_form";
+		}
+		try {
+			passwordResetService.resetPassword(token, password);
+		} catch (ValidationBusinessException e) {
+			model.addAttribute("token", token);
+			model.addAttribute("errorMessage", "リンクが無効または期限切れです。再度パスワード再設定を申請してください。");
+			return "auth/password_reset_form";
+		}
+		redirectAttributes.addFlashAttribute("successMessage", "パスワードを変更しました。新しいパスワードでログインしてください。");
+		return "redirect:/login";
 	}
 
 	@GetMapping("/password/change")
