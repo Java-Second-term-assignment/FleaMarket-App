@@ -30,8 +30,12 @@ public class CorsConfig {
 
 		source.registerCorsConfiguration("/api/**", config);
 		source.registerCorsConfiguration("/auth/**", config);
+		source.registerCorsConfiguration("/user/**", config);
+		source.registerCorsConfiguration("/orders/**", config);
+		source.registerCorsConfiguration("/community/**", config);
 
 		return source;
 	}
 
 }
+1
