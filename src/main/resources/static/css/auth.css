@@ -362,3 +362,7 @@ a:hover {
 .terms-body .terms-section ul {
 	margin: 0.4em 0 0.8em;
 }
+
+.terms-page .container {
+	max-width: 1000px;
+}
