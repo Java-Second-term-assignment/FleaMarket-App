@@ -30,7 +30,7 @@
 		<div class="horizontal-search-ranking">
 			<div class="product-search-card wider-search-card">
 				<div class="search-card-header">商品検索</div>
-				<form class="search-form">
+				<form class="search-form" th:action="@{/products}" method="get">
 					<div class="search-input-row">
 						<span class="search-icon material-symbols-outlined">
 							search
@@ -157,7 +157,7 @@
 
 	</main>
 	<!-- 画面専用JS -->
-	<script th:src="@{/js/product_confirm.js}"></script>
+	<script th:src="@{/js/product_list.js}" defer></script>
 </body>
 
 </html>
