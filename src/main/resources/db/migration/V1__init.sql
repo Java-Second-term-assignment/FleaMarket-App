@@ -59,6 +59,7 @@ CREATE TABLE users (
   postal_code     varchar(20) NULL,
   address         varchar(500) NULL,
   phone           varchar(30) NULL,
+  notification_enabled boolean NOT NULL DEFAULT true,
   created_at      timestamptz NOT NULL DEFAULT now(),
   updated_at      timestamptz NOT NULL DEFAULT now()
 );
@@ -70,6 +71,16 @@ CREATE INDEX idx_users_frozen_until ON users(frozen_until) WHERE frozen_until IS
 CREATE TRIGGER trg_users_updated_at
 BEFORE UPDATE ON users
 FOR EACH ROW EXECUTE FUNCTION set_updated_at();
+
+-- ユーザー向け通知（設定画面の通知タブで表示）
+CREATE TABLE notifications (
+  id         uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+  user_id    uuid NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+  message    text NOT NULL,
+  created_at timestamptz NOT NULL DEFAULT now()
+);
+
+CREATE INDEX idx_notifications_user_created ON notifications(user_id, created_at DESC);
 
 -- =========
 -- 2) Auth (認証情報をUserから分離)
