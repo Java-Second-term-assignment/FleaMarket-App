@@ -11,6 +11,8 @@ import com.example.flea_market_app.admin.service.port.AdminUserWritePort;
 import com.example.flea_market_app.admin.util.AdminSecurityUtil;
 import com.example.flea_market_app.common.error.ErrorCode;
 import com.example.flea_market_app.common.exception.NotFoundBusinessException;
+import com.example.flea_market_app.user.domain.UserEntity;
+import com.example.flea_market_app.user.repository.UserRepository;
 
 import lombok.RequiredArgsConstructor;
 
@@ -30,6 +32,7 @@ public class AdminUserService {
 	private final AuditLogService auditLogService;
 
 	private final AdminUserWritePort adminUserWritePort;
+	private final UserRepository userRepository;
 
 	@Transactional
 	public void freezeUser(UUID currentUserId, UUID targetUserId, String reason, OffsetDateTime frozenUntil) {
@@ -51,7 +54,11 @@ public class AdminUserService {
 	@Transactional
 	public void toggleUserActive(UUID currentUserId, UUID targetUserId) {
 		UUID adminAuthUserId = adminSecurityUtil.requireAdminAndGetAuthUserId(currentUserId);
-		boolean updated = adminUserWritePort.toggleActive(targetUserId);
+		UserEntity user = userRepository.findById(targetUserId)
+				.orElseThrow(() -> NotFoundBusinessException.of(ErrorCode.RESOURCE_NOT_FOUND));
+		boolean newActive = !user.isActive();
+		// 有効化時は frozen_until もクリアして制限解除と一貫させる
+		boolean updated = adminUserWritePort.setActiveAndFrozenUntil(targetUserId, newActive, null);
 		if (!updated)
 			throw NotFoundBusinessException.of(ErrorCode.RESOURCE_NOT_FOUND);
 		auditLogService.record(adminAuthUserId, "TOGGLE_USER_ACTIVE", TargetType.USER.name(), targetUserId, null);
