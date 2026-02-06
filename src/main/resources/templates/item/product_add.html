@@ -26,6 +26,7 @@
 		<form th:action="@{/product/submit}" method="post" enctype="multipart/form-data" class="confirm-card"
 			th:object="${productForm}">
 			<th:block th:replace="~{ui/fragments :: csrf_token}"></th:block>
+			<input type="hidden" name="shippingFeePayer" value="SELLER">
 
 			<p th:if="${errorMessage}" th:text="${errorMessage}" class="required error-text"></p>
 			<p th:if="${#fields.hasErrors('name')}" th:errors="*{name}" class="required error-text"></p>
@@ -335,8 +336,6 @@
 	</div>
 
 	<!-- ================= JS ================= -->
-	<script th:src="@{/js/product_confirm.js}"></script>
-
 	<script>
 		function openModal() {
 			document.getElementById("welcomeModal").style.display = "flex";

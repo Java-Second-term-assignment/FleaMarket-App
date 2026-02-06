@@ -54,7 +54,7 @@ public class ListingPageController {
 			RedirectAttributes redirectAttributes) {
 		List<MultipartFile> imageList = images != null ? images : new ArrayList<>();
 		if (imageList.isEmpty() || imageList.stream().allMatch(f -> f == null || f.isEmpty())) {
-			bindingResult.reject("images.required", "商品画像を1枚以上アップロードしてください");
+			bindingResult.reject("images.required", "画像を1枚以上選択してください");
 		}
 		if (bindingResult.hasErrors()) {
 			model.addAttribute("productForm", form);
