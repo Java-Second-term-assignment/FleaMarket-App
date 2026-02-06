@@ -74,6 +74,14 @@ body > .header .theme-icon {
 	margin-bottom: 22px;
 }
 
+/* フォーム上部の説明文 */
+.form-description {
+	font-size: 13px;
+	color: var(--text-sub);
+	line-height: 1.6;
+	margin-bottom: 20px;
+}
+
 /* パスワード表示トグル用ラッパー */
 .password-input-wrapper {
 	position: relative;
