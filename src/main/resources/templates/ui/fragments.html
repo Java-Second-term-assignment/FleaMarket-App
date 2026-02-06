@@ -24,6 +24,13 @@
 	<th:block th:fragment="csrf_token">
 		<input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
 	</th:block>
+	<!-- ログアウトフォーム（POST必須・CSRF保護のため） -->
+	<th:block th:fragment="logout_form">
+		<form th:action="@{/logout}" method="post" style="display:inline;">
+			<th:block th:replace="~{ui/fragments :: csrf_token}"></th:block>
+			<button type="submit" class="btn-logout">ログアウト</button>
+		</form>
+	</th:block>
 	<div th:fragment="header" class="header">
 		<div class="header-inner">
 
@@ -98,9 +105,7 @@
 					出品する
 				</button>
 
-				<a sec:authorize="isAuthenticated()" th:href="@{/logout}" class="btn-logout">
-					ログアウト
-				</a>
+				<th:block sec:authorize="isAuthenticated()" th:replace="~{ui/fragments :: logout_form}"></th:block>
 
 			</nav>
 		</div>

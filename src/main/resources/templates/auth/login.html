@@ -43,7 +43,7 @@
 						<a th:href="@{/admin/login}" class="nav-admin-link">管理者はこちら</a>
 					</div>
 				</div>
-				<a sec:authorize="isAuthenticated()" th:href="@{/logout}" class="btn-logout">ログアウト</a>
+				<th:block sec:authorize="isAuthenticated()" th:replace="~{ui/fragments :: logout_form}"></th:block>
 			</nav>
 		</div>
 	</div>
