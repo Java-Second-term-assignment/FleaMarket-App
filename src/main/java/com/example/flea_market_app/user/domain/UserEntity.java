@@ -56,4 +56,7 @@ public class UserEntity {
 
 	@Column(name = "phone", length = 30)
 	private String phone;
+
+	@Column(name = "notification_enabled", nullable = false)
+	private boolean notificationEnabled = true;
 }

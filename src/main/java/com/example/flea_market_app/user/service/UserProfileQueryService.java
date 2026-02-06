@@ -49,6 +49,6 @@ public class UserProfileQueryService {
 				entity.getAddress(),
 				entity.getPhone());
 
-		return UserMeResponse.of(user, email, iconUrl, caption, address);
+		return UserMeResponse.of(user, email, iconUrl, caption, address, entity.isNotificationEnabled());
 	}
 }

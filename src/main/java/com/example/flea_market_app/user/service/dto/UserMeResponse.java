@@ -27,7 +27,10 @@ public class UserMeResponse {
 
 	private UserAddressDto address;
 
-	public static UserMeResponse of(User user, String email, String iconUrl, String caption, UserAddressDto address) {
+	private boolean notificationEnabled;
+
+	public static UserMeResponse of(User user, String email, String iconUrl, String caption, UserAddressDto address,
+			boolean notificationEnabled) {
 		return new UserMeResponse(
 				user.getId(),
 				user.getDisplayName(),
@@ -39,6 +42,7 @@ public class UserMeResponse {
 				user.isActive(),
 				iconUrl,
 				caption != null ? caption : "",
-				address != null ? address : UserAddressDto.empty());
+				address != null ? address : UserAddressDto.empty(),
+				notificationEnabled);
 	}
 }

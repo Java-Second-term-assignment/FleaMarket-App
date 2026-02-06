@@ -21,6 +21,9 @@ public interface ItemRepository extends JpaRepository<ItemEntity, UUID> {
 
 	List<ItemEntity> findAllByStatusNot(String status);
 
+	/** 出品者ごとの商品一覧（更新日時降順）。指定 status 以外（例: DELETED 除外）を取得。 */
+	List<ItemEntity> findBySellerIdAndStatusNotOrderByUpdatedAtDesc(UUID sellerId, String status);
+
 	@Query("SELECT i FROM ItemEntity i WHERE i.status = :status")
 	Page<ItemEntity> findByStatus(@Param("status") String status, Pageable pageable);
 

@@ -11,6 +11,7 @@ import com.example.flea_market_app.common.exception.NotFoundBusinessException;
 import com.example.flea_market_app.common.exception.ValidationBusinessException;
 import com.example.flea_market_app.common.exception.ResourceType;
 import com.example.flea_market_app.engagement.notification.service.EmailNotificationSender;
+import com.example.flea_market_app.engagement.notification.service.NotificationService;
 import com.example.flea_market_app.transaction.domain.Order;
 import com.example.flea_market_app.transaction.domain.OrderEntity;
 import com.example.flea_market_app.transaction.domain.OrderStatus;
@@ -25,6 +26,7 @@ public class OrderService {
 	private final OrderRepository orderRepository;
 	private final ItemRepository itemRepository;
 	private final EmailNotificationSender emailNotificationSender;
+	private final NotificationService notificationService;
 
 	@Transactional
 	public void confirmPurchase(UUID orderId, UUID currentUserId) {
@@ -86,16 +88,18 @@ public class OrderService {
 	}
 
 	/**
-	 * 注文がPAIDになったタイミングで呼ぶ。売り手に取引成立メールを送る。
-	 * 呼び出し元は決済完了（Stripe Webhook等）や注文作成APIを想定。今回の実装では呼び出し元は追加しない。
+	 * 注文がPAIDになったタイミングで呼ぶ。売り手に取引成立メールと通知を送る。
+	 * 呼び出し元は決済完了（Stripe Webhook等）または createOrderFromProduct（MVP）。
 	 */
-	@Transactional(readOnly = true)
+	@Transactional
 	public void recordOrderPaid(UUID orderId) {
 		OrderEntity e = getEntity(orderId);
 		if (!OrderStatus.PAID.name().equals(e.getStatus())) {
 			return;
 		}
-		emailNotificationSender.sendTransactionEstablished(e.getSellerId(), orderId);
+		UUID sellerId = e.getSellerId();
+		emailNotificationSender.sendTransactionEstablished(sellerId, orderId);
+		notificationService.create(sellerId, "取引が成立しました。注文ID: " + orderId);
 	}
 
 	/**
@@ -138,6 +142,7 @@ public class OrderService {
 		e.setUpdatedAt(now);
 
 		orderRepository.save(e);
+		recordOrderPaid(e.getId());
 		return e.getId();
 	}
 

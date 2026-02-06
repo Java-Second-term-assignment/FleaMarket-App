@@ -64,4 +64,12 @@ public interface UserRepository extends JpaRepository<UserEntity, UUID> {
 	int restoreExpiredFreeze(
 			@Param("userId") UUID userId,
 			@Param("now") OffsetDateTime now);
+
+	@Modifying
+	@Query("""
+			    UPDATE UserEntity u
+			       SET u.notificationEnabled = :enabled
+			     WHERE u.id = :userId
+			""")
+	int updateNotificationEnabled(@Param("userId") UUID userId, @Param("enabled") boolean enabled);
 }

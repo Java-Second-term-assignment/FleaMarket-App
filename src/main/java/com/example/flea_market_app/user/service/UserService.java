@@ -75,6 +75,14 @@ public class UserService {
 	}
 
 	/**
+	 * 通知を受け取る設定を更新します。
+	 */
+	@Transactional
+	public void updateNotificationEnabled(UUID userId, boolean enabled) {
+		userRepository.updateNotificationEnabled(userId, enabled);
+	}
+
+	/**
 	 * 注文フロー用の既定配送先を返します。キーは name, postcode, fullAddress。
 	 * 未設定の場合は空文字の Map を返します。
 	 */
