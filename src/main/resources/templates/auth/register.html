@@ -15,37 +15,8 @@
 </head>
 
 <body>
-	<!-- 共通ヘッダー（商品一覧などと同じ） -->
-	<div class="header">
-		<div class="header-inner">
-			<div class="logo">
-				<a th:href="@{/}" style="color:white; text-decoration:none;">LOGO</a>
-			</div>
-			<nav class="nav">
-				<div class="nav-links">
-					<div class="nav-item nav-item-theme">
-						<th:block th:replace="~{ui/fragments :: theme_toggle_button}"></th:block>
-					</div>
-					<div class="nav-item">
-						<a th:href="@{/products}">商品一覧</a>
-					</div>
-					<div class="nav-item">
-						<a th:href="@{/board}">掲示板一覧</a>
-					</div>
-					<div class="nav-item">
-						<a th:href="@{/login}">ログイン</a>
-					</div>
-					<div class="nav-item">
-						<a th:href="@{/register}">新規登録</a>
-					</div>
-					<div class="nav-item">
-						<a th:href="@{/admin/login}" class="nav-admin-link">管理者はこちら</a>
-					</div>
-				</div>
-				<th:block sec:authorize="isAuthenticated()" th:replace="~{ui/fragments :: logout_form}"></th:block>
-			</nav>
-		</div>
-	</div>
+	<!-- 共通ヘッダー（商品一覧などと同じ・新規登録はヘッダーに表示しない） -->
+	<div th:replace="~{ui/fragments :: header}"></div>
 	<div class="container">
 		<div class="auth-card-header">
 			<h1>新規登録</h1>

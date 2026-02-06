@@ -1,11 +1,12 @@
 <!DOCTYPE html>
-<html lang="ja" xmlns:th="http://www.thymeleaf.org">
+<html lang="ja" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 
 <head>
 	<meta charset="UTF-8">
 	<title>管理者ログイン</title>
 	<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" />
 	<link rel="stylesheet" th:href="@{/css/variables.css}">
+	<link rel="stylesheet" th:href="@{/css/common.css}">
 	<link rel="stylesheet" th:href="@{/css/theme.css}">
 	<script th:src="@{/js/theme.js}"></script>
 	<link rel="stylesheet" th:href="@{/css/login.css}">
@@ -13,14 +14,10 @@
 </head>
 
 <body>
-	<div class="theme-toggle-fixed" th:replace="~{ui/fragments :: theme_toggle_button}"></div>
-	<div class="auth-actions">
-		<div class="link-back">
-			<a th:href="@{/products}">← 商品一覧に戻る</a>
-		</div>
-	</div>
+	<!-- 共通ヘッダー（商品一覧などと同じ） -->
+	<div th:replace="~{ui/fragments :: header}"></div>
 	<div class="container">
-		<div class="header">
+		<div class="auth-card-header">
 			<h1>管理者ログイン</h1>
 		</div>
 
@@ -51,6 +48,10 @@
 					管理者としてログイン
 				</button>
 			</form>
+
+			<div class="link-bottom">
+				<a th:href="@{/products}">商品一覧に戻る</a>
+			</div>
 		</div>
 	</div>
 
