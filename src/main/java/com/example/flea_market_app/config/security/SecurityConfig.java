@@ -137,7 +137,9 @@ public class SecurityConfig {
 						}))
 				.formLogin(form -> form
 						.loginPage("/login")
+						.loginProcessingUrl("/login")
 						.successHandler(webLoginSuccessHandler())
+						.failureUrl("/login?error")
 						.usernameParameter("email")
 						.passwordParameter("password"))
 				.logout(logout -> logout

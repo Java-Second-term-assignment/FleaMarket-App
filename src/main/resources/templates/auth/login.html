@@ -58,6 +58,10 @@
 
 			<p th:if="${successMessage}" th:text="${successMessage}" style="color: green; margin-bottom: 1em;"></p>
 
+			<p th:if="${param.error != null}" class="error-text" style="color: #c00; margin-bottom: 1em;">
+				メールアドレスまたはパスワードが正しくありません。
+			</p>
+
 			<!-- ログインフォーム -->
 			<form th:action="@{/login}" method="post">
 				<th:block th:replace="~{ui/fragments :: csrf_token}"></th:block>
