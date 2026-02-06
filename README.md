@@ -222,14 +222,9 @@ FleaMarket-App/
 │   │       ├── data.sql
 │   │       ├── schema.sql
 │   │       └── db/
-│   │           └── migration/    # Flywayマイグレーション
-│   │               ├── V1__init.sql
-│   │               ├── V2_rank.sql
-│   │               ├── V3_categories.sql
-│   │               ├── V4_category_master_columns.sql
-│   │               ├── V5_prohibited_rules.sql
-│   │               ├── V6_items_fulltext_search.sql
-│   │               └── V7_dev_seed_users.sql
+│   │           └── migration/    # Flywayマイグレーション（統合版: V1=スキーマ, V2=シード）
+│   │               ├── V1__init.sql   # 全テーブル・完成形DDL
+│   │               └── V2__seed.sql   # user_ranks / categories / prohibited シード
 │   └── test/                      # テストコード
 │       └── java/
 │           └── com/example/flea_market_app/
