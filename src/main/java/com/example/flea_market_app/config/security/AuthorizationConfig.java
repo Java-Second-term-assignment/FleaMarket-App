@@ -39,7 +39,7 @@ public class AuthorizationConfig {
 				.requestMatchers("/", "/products", "/products/**").permitAll()
 				.requestMatchers(HttpMethod.GET, "/board", "/board/**").permitAll()
 				.requestMatchers(HttpMethod.POST, "/board/*/posts").authenticated()
-				.requestMatchers("/user/settings", "/user/address/**", "/user/orders", "/user/orders/**", "/user/favorites", "/user/favorites/**", "/product/add", "/items/add", "/product/submit", "/order/confirm", "/payment", "/address", "/cart", "/cart/**").authenticated()
+				.requestMatchers("/user/settings", "/user/address/**", "/user/orders", "/user/orders/**", "/user/favorites", "/user/favorites/**", "/product/add", "/items/add", "/product/submit", "/product/*/review", "/order/confirm", "/payment", "/address", "/cart", "/cart/**").authenticated()
 				.requestMatchers("/admin/**").hasRole("ADMIN")
 				.requestMatchers("/password/change", "/password-change").authenticated()
 				.anyRequest().authenticated();

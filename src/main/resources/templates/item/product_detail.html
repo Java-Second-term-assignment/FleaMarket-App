@@ -91,6 +91,8 @@
 					<!-- ================= レビュー ================= -->
 					<section class="review-section">
 						<h3 class="review-title">カスタマーレビュー</h3>
+						<div th:if="${message}" class="flash-message" style="color: var(--accent-green, green); margin-bottom: 12px;" th:text="${message}"></div>
+						<div th:if="${errorMessage}" class="flash-error" style="color: var(--accent-red, #c00); margin-bottom: 12px;" th:text="${errorMessage}"></div>
 
 						<!-- レビュー要約 -->
 						<div class="rating-summary">
@@ -145,7 +147,7 @@
 								</label>
 
 								<textarea id="review-text" class="review-form-textarea" th:field="*{comment}"
-									maxlength="500" required placeholder="レビューを書く"></textarea>
+									maxlength="500" placeholder="レビューを書く（任意）"></textarea>
 
 								<div id="review-charcount" class="review-charcount">
 									0/500
@@ -165,8 +167,8 @@
 									<span id="single-star" class="star">★</span>
 									<select id="review-rating" class="review-form-select" th:field="*{rating}" required>
 										<option value="" disabled>選択</option>
-										<option th:each="r : ${ratings}" th:value="${r}" th:text="${r}">
-										</option>
+										<option value="GOOD">良い</option>
+										<option value="BAD">悪い</option>
 									</select>
 								</div>
 

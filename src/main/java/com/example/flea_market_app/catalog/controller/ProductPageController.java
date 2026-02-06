@@ -9,16 +9,27 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import com.example.flea_market_app.catalog.controller.dto.ReviewForm;
 import com.example.flea_market_app.catalog.service.ItemViewService;
 import com.example.flea_market_app.catalog.service.ProductListService.ProductListResult;
 import com.example.flea_market_app.catalog.service.ProductListService;
+import com.example.flea_market_app.catalog.service.ProductReviewQueryService;
 import com.example.flea_market_app.common.exception.NotFoundBusinessException;
 import com.example.flea_market_app.config.security.SecurityUtil;
 import com.example.flea_market_app.engagement.favorite.repository.FavoriteRepository;
+import com.example.flea_market_app.transaction.domain.OrderEntity;
+import com.example.flea_market_app.transaction.domain.ReviewRating;
+import com.example.flea_market_app.transaction.repository.OrderRepository;
+import com.example.flea_market_app.transaction.service.ReviewService;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
 @Controller
@@ -30,6 +41,9 @@ public class ProductPageController {
 	private final ProductListService productListService;
 	private final ItemViewService itemViewService;
 	private final FavoriteRepository favoriteRepository;
+	private final ProductReviewQueryService productReviewQueryService;
+	private final OrderRepository orderRepository;
+	private final ReviewService reviewService;
 
 	@Value("${app.product-list.page-size:50}")
 	private int defaultPageSize;
@@ -76,10 +90,9 @@ public class ProductPageController {
 							.orElse(false);
 					model.addAttribute("product", product);
 					model.addAttribute("isFavorited", isFavorited);
-					model.addAttribute("reviewSummary", new ReviewSummaryStub());
-					model.addAttribute("reviews", List.<ReviewStub>of());
-					model.addAttribute("reviewForm", new com.example.flea_market_app.catalog.controller.dto.ReviewFormStub());
-					model.addAttribute("ratings", List.of(1, 2, 3, 4, 5));
+					model.addAttribute("reviewSummary", productReviewQueryService.getReviewSummary(id));
+					model.addAttribute("reviews", productReviewQueryService.getReviewsForItem(id));
+					model.addAttribute("reviewForm", new ReviewForm());
 					model.addAttribute("relatedProducts", productListService.getRelatedProducts(product.getId(), 8));
 					return "item/product_detail";
 				})
@@ -94,12 +107,36 @@ public class ProductPageController {
 		}
 	}
 
-	private record ReviewSummaryStub(double average, String stars, int count) {
-		ReviewSummaryStub() {
-			this(0.0, "★★★★☆", 0);
-		}
-	}
+	@PostMapping("/product/{id}/review")
+	public String productReviewPost(
+			@PathVariable("id") UUID itemId,
+			@Valid @ModelAttribute ReviewForm form,
+			BindingResult bindingResult,
+			RedirectAttributes ra) {
+		UUID userId = SecurityUtil.getCurrentUserId();
 
-	private record ReviewStub(String userName, Object createdAt, String stars, String comment) {
+		OrderEntity order = orderRepository.findByItemIdAndStatus(itemId, "COMPLETED")
+				.orElse(null);
+		if (order == null) {
+			ra.addFlashAttribute("errorMessage", "この商品の取引を完了していないためレビューできません。");
+			return "redirect:/products/" + itemId;
+		}
+		if (!order.getBuyerId().equals(userId) && !order.getSellerId().equals(userId)) {
+			ra.addFlashAttribute("errorMessage", "この商品の取引に参加していないためレビューできません。");
+			return "redirect:/products/" + itemId;
+		}
+
+		if (bindingResult.hasErrors()) {
+			ra.addFlashAttribute("org.springframework.validation.BindingResult.reviewForm", bindingResult);
+			ra.addFlashAttribute("reviewForm", form);
+			return "redirect:/products/" + itemId;
+		}
+
+		ReviewRating rating = "GOOD".equals(form.getRating()) ? ReviewRating.GOOD : ReviewRating.BAD;
+		String comment = form.getComment() != null ? form.getComment().trim() : "";
+		reviewService.submitReview(order.getId(), userId, rating, comment);
+
+		ra.addFlashAttribute("message", "レビューを投稿しました。");
+		return "redirect:/products/" + itemId;
 	}
 }
