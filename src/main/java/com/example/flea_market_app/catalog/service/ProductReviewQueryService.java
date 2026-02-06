@@ -1,6 +1,6 @@
 package com.example.flea_market_app.catalog.service;
 
-import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.UUID;
 
@@ -23,26 +23,24 @@ public class ProductReviewQueryService {
 	private final UserRepository userRepository;
 
 	/**
-	 * 商品に紐づく注文のレビュー一覧を取得する。
+	 * 商品に紐づく全COMPLETED注文のレビューを取得し、作成日時順で返す。
 	 */
 	@Transactional(readOnly = true)
 	public List<ProductReviewViewDto> getReviewsForItem(UUID itemId) {
-		return orderRepository.findByItemIdAndStatus(itemId, "COMPLETED")
-				.map(order -> reviewRepository.findByOrderIdOrderByCreatedAtAsc(order.getId()))
-				.orElse(Collections.emptyList())
-				.stream()
+		List<ReviewEntity> allReviews = collectReviewsForItem(itemId);
+		return allReviews.stream()
+				.sorted(Comparator.comparing(ReviewEntity::getCreatedAt))
 				.map(this::toViewDto)
 				.toList();
 	}
 
 	/**
 	 * 商品のレビューサマリ（件数・平均・表示用スター）を取得する。
+	 * その商品に紐づく全COMPLETED注文のレビューを集計する。
 	 */
 	@Transactional(readOnly = true)
 	public ReviewSummaryDto getReviewSummary(UUID itemId) {
-		List<ReviewEntity> reviews = orderRepository.findByItemIdAndStatus(itemId, "COMPLETED")
-				.map(order -> reviewRepository.findByOrderIdOrderByCreatedAtAsc(order.getId()))
-				.orElse(Collections.emptyList());
+		List<ReviewEntity> reviews = collectReviewsForItem(itemId);
 
 		if (reviews.isEmpty()) {
 			return new ReviewSummaryDto(0, 0.0, "★★★★☆");
@@ -50,10 +48,17 @@ public class ProductReviewQueryService {
 
 		long goodCount = reviews.stream().filter(r -> "GOOD".equals(r.getRating())).count();
 		long badCount = reviews.size() - goodCount;
-		double average = goodCount > 0 ? (5.0 * goodCount + 1.0 * badCount) / reviews.size() : 0.0;
+		double average = (5.0 * goodCount + 1.0 * badCount) / reviews.size();
 		String stars = toStarsDisplay(average);
 
 		return new ReviewSummaryDto(reviews.size(), average, stars);
+	}
+
+	private List<ReviewEntity> collectReviewsForItem(UUID itemId) {
+		return orderRepository.findByItemIdAndStatusOrderByCreatedAtDesc(itemId, "COMPLETED")
+				.stream()
+				.flatMap(order -> reviewRepository.findByOrderIdOrderByCreatedAtAsc(order.getId()).stream())
+				.toList();
 	}
 
 	private ProductReviewViewDto toViewDto(ReviewEntity r) {

@@ -15,4 +15,10 @@ public interface OrderRepository extends JpaRepository<OrderEntity, UUID> {
 	List<OrderEntity> findBySellerIdOrderByUpdatedAtDesc(UUID sellerId);
 
 	Optional<OrderEntity> findByItemIdAndStatus(UUID itemId, String status);
+
+	/**
+	 * 同一商品で指定ステータスの注文を、作成日時の新しい順で取得する。
+	 * 1商品が複数回売れた場合に複数件返る。
+	 */
+	List<OrderEntity> findByItemIdAndStatusOrderByCreatedAtDesc(UUID itemId, String status);
 }
