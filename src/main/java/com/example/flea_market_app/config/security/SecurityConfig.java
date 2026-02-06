@@ -24,6 +24,7 @@ import lombok.RequiredArgsConstructor;
 public class SecurityConfig {
 
 	private final JwtAuthenticationFilter jwtAuthenticationFilter;
+	private final SessionFallbackFilter sessionFallbackFilter;
 	private final AuthorizationConfig authorizationConfig;
 
 	@Bean
@@ -83,6 +84,7 @@ public class SecurityConfig {
 				.sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
 				.authorizeHttpRequests(auth -> authorizationConfig.configureApi(auth))
 				.addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
+				.addFilterAfter(sessionFallbackFilter, JwtAuthenticationFilter.class)
 				.exceptionHandling(ex -> ex
 						.authenticationEntryPoint((request, response, authException) -> {
 							response.setStatus(401);

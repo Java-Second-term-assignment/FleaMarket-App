@@ -21,7 +21,7 @@ public class AuthorizationConfig {
 				.requestMatchers(HttpMethod.GET, "/community/boards/**").permitAll()
 				.requestMatchers(HttpMethod.POST, "/community/boards/**").hasRole("USER")
 				// 商品出品APIは /api/listings（ListingController）で提供
-				.requestMatchers("/user/me/**").hasRole("USER")
+				.requestMatchers("/api/user/**").hasRole("USER")
 				.requestMatchers("/api/favorites/**").hasRole("USER")
 				.requestMatchers("/admin/**").hasRole("ADMIN")
 				.anyRequest().authenticated();

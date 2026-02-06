@@ -68,7 +68,7 @@ document.addEventListener("DOMContentLoaded", () => {
 		});
 	}
 
-	// ===== 4. プロフィール保存（PATCH /user/me + 画像ありなら PUT /user/me/profile-image） =====
+	// ===== 4. プロフィール保存（PATCH /api/user/me + 画像ありなら PUT /api/user/me/profile-image） =====
 	const profileEditForm = document.getElementById("profileEditForm");
 	if (profileEditForm) {
 		profileEditForm.addEventListener("submit", async (e) => {
@@ -82,7 +82,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
 			try {
 				// 表示名・自己紹介を更新
-				const patchRes = await fetch("/user/me", {
+				const patchRes = await fetch("/api/user/me", {
 					method: "PATCH",
 					headers: { "Content-Type": "application/json" },
 					body: JSON.stringify({ displayName, caption }),
@@ -98,7 +98,7 @@ document.addEventListener("DOMContentLoaded", () => {
 				if (imageFile) {
 					const formData = new FormData();
 					formData.append("image", imageFile);
-					const putRes = await fetch("/user/me/profile-image", {
+					const putRes = await fetch("/api/user/me/profile-image", {
 						method: "PUT",
 						body: formData,
 						credentials: "same-origin"
