@@ -11,13 +11,17 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.example.flea_market_app.auth.controller.dto.RegisterForm;
+import com.example.flea_market_app.auth.service.PasswordChangeService;
 import com.example.flea_market_app.auth.service.PasswordResetService;
 import com.example.flea_market_app.auth.service.RegistrationService;
 import com.example.flea_market_app.common.exception.ValidationBusinessException;
 import com.example.flea_market_app.common.validation.EmailValidator;
+import com.example.flea_market_app.config.security.SecurityUtil;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+
+import java.util.UUID;
 
 @Controller
 @RequiredArgsConstructor
@@ -27,6 +31,7 @@ public class AuthPageController {
 
 	private final RegistrationService registrationService;
 	private final PasswordResetService passwordResetService;
+	private final PasswordChangeService passwordChangeService;
 
 	@GetMapping("/login")
 	public String loginPage(@RequestParam(required = false) String returnUrl, Model model) {
@@ -145,8 +150,28 @@ public class AuthPageController {
 	}
 
 	@PostMapping("/password-change")
-	public String passwordChange() {
-		return "redirect:/password/change";
+	public String passwordChange(
+			@RequestParam(name = "password", required = false) String password,
+			@RequestParam(name = "confirmPassword", required = false) String confirmPassword,
+			RedirectAttributes redirectAttributes) {
+		UUID userId = SecurityUtil.getCurrentUserId();
+		if (password == null || password.isBlank()) {
+			redirectAttributes.addFlashAttribute("errorMessage", "パスワードとパスワード確認が一致しません。");
+			return "redirect:/password/change";
+		}
+		if (!password.equals(confirmPassword)) {
+			redirectAttributes.addFlashAttribute("errorMessage", "パスワードとパスワード確認が一致しません。");
+			return "redirect:/password/change";
+		}
+		try {
+			passwordChangeService.changePassword(userId, password);
+		} catch (ValidationBusinessException e) {
+			redirectAttributes.addFlashAttribute("errorMessage",
+					"パスワードは10文字以上64文字以内で、英数字・記号を含む必要があります。");
+			return "redirect:/password/change";
+		}
+		redirectAttributes.addFlashAttribute("successMessage", "パスワードを変更しました。");
+		return "redirect:/user/settings";
 	}
 
 	@GetMapping("/terms")
