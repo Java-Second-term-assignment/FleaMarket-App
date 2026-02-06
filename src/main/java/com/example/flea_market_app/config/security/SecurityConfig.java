@@ -78,6 +78,9 @@ public class SecurityConfig {
 	@Order(2)
 	SecurityFilterChain apiSecurityFilterChain(HttpSecurity http) throws Exception {
 		http
+				// /user/orders, /user/favorites はセッション認証用のため Web チェーンで処理している。
+				// JWT のみのクライアント（タイムリーフ等）でこれらを利用する場合は、
+				// API 用マッチャに /user/** を追加するか、同等機能を /api/** で提供する必要がある。
 				.securityMatcher("/api/**", "/auth/**", "/community/**", "/orders/**")
 				.csrf(AbstractHttpConfigurer::disable)
 				.cors(Customizer.withDefaults())

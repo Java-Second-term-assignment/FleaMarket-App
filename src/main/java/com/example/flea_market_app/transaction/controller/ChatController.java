@@ -49,6 +49,8 @@ public class ChatController {
 	/**
 	 * 一覧: GET /orders/{orderId}/messages
 	 * MVPで不要ならコメントアウトしてOK（Service側は残しても害はない）
+	 *
+	 * <p>レスポンスは ApiResponse でラップしていない。タイムリーフで success/data 形式を期待する場合は要対応。
 	 */
 	@GetMapping("/{orderId}/messages")
 	public ResponseEntity<List<OrderMessageEntity>> list(@PathVariable UUID orderId) {

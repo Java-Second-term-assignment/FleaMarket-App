@@ -73,6 +73,7 @@ public class BoardController {
 
 		UUID postId = boardService.createPost(boardId, userId, request.getContent());
 
+		// Location に相対パスを設定している。SPA/タイムリーフからは絶対 URL の方が扱いやすい場合は要対応。
 		URI location = URI.create("/community/boards/" + boardId + "/posts/" + postId);
 		log.info("Created post: postId={}", postId);
 		return ResponseEntity.created(location).build();

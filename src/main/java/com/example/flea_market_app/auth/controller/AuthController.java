@@ -15,6 +15,10 @@ import com.example.flea_market_app.auth.service.dto.RefreshResponse;
 
 import lombok.RequiredArgsConstructor;
 
+/**
+ * 認証 API。レスポンスは ResponseEntity / ApiResponse でラップしていない。
+ * タイムリーフで統一形式を期待する場合は要対応。
+ */
 @RestController
 @RequestMapping("/auth")
 @RequiredArgsConstructor

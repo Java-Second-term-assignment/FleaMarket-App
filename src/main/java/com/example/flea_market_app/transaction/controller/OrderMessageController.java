@@ -24,6 +24,10 @@ import lombok.RequiredArgsConstructor;
 /**
  * 取引チャット用エンドポイント（セッション認証）。
  * 注文詳細画面から fetch で呼び出す。JWT 不要。
+ *
+ * <p>このコントローラはタイムリーフを想定していない。セッション認証専用。
+ * レスポンスは ApiResponse でラップしていない。既存の order_detail.js が同一オリジンで利用。
+ * タイムリーフ利用時は JWT 対応の API（例: /api/orders/{id}/messages）の利用を検討すること。
  */
 @RestController
 @RequestMapping("/user/orders")
