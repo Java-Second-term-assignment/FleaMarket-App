@@ -9,6 +9,7 @@
 	<link rel="stylesheet" th:href="@{/css/theme.css}">
 	<script th:src="@{/js/theme.js}"></script>
 	<link rel="stylesheet" th:href="@{/css/login.css}">
+	<script th:src="@{/js/password-toggle.js}" defer></script>
 </head>
 
 <body>
@@ -38,7 +39,12 @@
 
 				<div class="form-group">
 					<label>パスワード</label>
-					<input type="password" name="password" required autocomplete="current-password">
+					<div class="password-input-wrapper" data-password-toggle>
+						<input type="password" name="password" required autocomplete="current-password">
+						<button type="button" class="password-toggle-btn" aria-label="パスワードを表示" title="パスワードを表示">
+							<span class="material-symbols-outlined" aria-hidden="true">visibility</span>
+						</button>
+					</div>
 				</div>
 
 				<button type="submit" class="btn btn-login">

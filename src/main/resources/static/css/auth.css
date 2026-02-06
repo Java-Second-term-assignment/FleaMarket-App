@@ -74,6 +74,43 @@ body > .header .theme-icon {
 	margin-bottom: 22px;
 }
 
+/* パスワード表示トグル用ラッパー */
+.password-input-wrapper {
+	position: relative;
+	display: flex;
+	align-items: center;
+}
+
+.password-input-wrapper input {
+	padding-right: 48px;
+}
+
+.password-toggle-btn {
+	position: absolute;
+	right: 8px;
+	top: 50%;
+	transform: translateY(-50%);
+	background: none;
+	border: none;
+	padding: 8px;
+	cursor: pointer;
+	color: var(--text-muted);
+	border-radius: 4px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	transition: color 0.2s, background-color 0.2s;
+}
+
+.password-toggle-btn:hover {
+	color: var(--text-heading);
+	background-color: rgba(255, 255, 255, 0.08);
+}
+
+.password-toggle-btn .material-symbols-outlined {
+	font-size: 22px;
+}
+
 label {
 	display: block;
 	margin-bottom: 10px;

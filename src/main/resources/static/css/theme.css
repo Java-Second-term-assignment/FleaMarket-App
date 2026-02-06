@@ -85,6 +85,15 @@ html[data-theme="light"] .container .content .btn {
 	color: #ffffff;
 }
 
+html[data-theme="light"] .container .content .password-toggle-btn {
+	color: #888888;
+}
+
+html[data-theme="light"] .container .content .password-toggle-btn:hover {
+	color: #333333;
+	background-color: rgba(0, 0, 0, 0.06);
+}
+
 html[data-theme="light"] .copyright {
 	color: rgba(0, 0, 0, 0.6);
 }
