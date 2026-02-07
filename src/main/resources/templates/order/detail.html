@@ -38,7 +38,7 @@
 				<div class="order-detail-item">
 					<a th:href="@{/products/{id}(id=${order.itemId})}" class="order-detail-item-link">
 						<div class="order-item-thumb">
-							<img th:src="${order.itemThumbnailUrl}" alt="" onerror="this.src='/img/no-image.png'">
+							<img th:src="${order.itemThumbnailUrl}" alt="" onerror="this.src='/img/no-image.svg'">
 						</div>
 						<div class="order-item-info">
 							<div class="order-item-name" th:text="${order.itemName}">商品名</div>

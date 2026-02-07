@@ -17,6 +17,9 @@ public class WebMvcConfig implements WebMvcConfigurer {
 	@Value("${app.upload.dir:./uploads}")
 	private String uploadDir;
 
+	@Value("${app.demo-images.dir:./picture}")
+	private String demoImagesDir;
+
 	@Override
 	public void addResourceHandlers(ResourceHandlerRegistry registry) {
 		Path base = Path.of(uploadDir).toAbsolutePath().normalize();
@@ -24,5 +27,9 @@ public class WebMvcConfig implements WebMvcConfigurer {
 		String profilesLocation = "file:" + base.resolve("profiles") + "/";
 		registry.addResourceHandler("/img/items/**").addResourceLocations(itemsLocation);
 		registry.addResourceHandler("/img/profiles/**").addResourceLocations(profilesLocation);
+
+		Path demoBase = Path.of(demoImagesDir).toAbsolutePath().normalize();
+		String demoLocation = "file:" + demoBase + "/";
+		registry.addResourceHandler("/img/demo/**").addResourceLocations(demoLocation);
 	}
 }

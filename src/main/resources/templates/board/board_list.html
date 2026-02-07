@@ -113,7 +113,7 @@
 		                 onclick="selectProduct(this)">
 		                
 		                <div class="item-card-image">
-		                    <img th:src="${product.imageUrl != null ? product.imageUrl : '/images/no-image.png'}" class="item-img" alt="商品画像">
+		                    <img th:src="${product.imageUrl != null ? product.imageUrl : '/img/no-image.svg'}" class="item-img" alt="商品画像">
 		                    <div th:if="${product.soldOut}" class="soldout-badge">
 		                        <span>Sold out</span>
 		                    </div>

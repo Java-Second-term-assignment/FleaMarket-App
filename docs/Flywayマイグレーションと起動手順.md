@@ -157,7 +157,29 @@ SPRING_PROFILES_ACTIVE=pg ./mvnw spring-boot:run
 
 ### Flyway の「Validate failed」エラー
 - 既存の `flyway_schema_history` テーブルとマイグレーションファイルの整合性が取れていない可能性があります
-- 開発環境で DB を初期化してよい場合は、データベースを削除して再作成し、マイグレーションをやり直してください
+- 開発環境で DB を初期化してよい場合は、データベースを削除して再作成するか、下記「Flyway clean で開発用DBをリセット」を実行してください。
+
+### Flyway clean で開発用DBをリセット
+開発用のみで、スキーマごとすべて消してマイグレーションを最初からやり直したい場合に使います。**本番DBでは絶対に実行しないでください。**
+
+Flyway は安全のため `clean` がデフォルトで無効です。有効にして実行するには `-Dflyway.cleanDisabled=false` を付けます。
+
+```bash
+# 1. target を消してから（古い dev_migration が target に残っていると migrate が失敗することがあります）
+./mvnw clean compile -DskipTests
+
+# 2. clean でスキーマを削除（要 -Dflyway.cleanDisabled=false）
+./mvnw flyway:clean -Dflyway.cleanDisabled=false
+
+# 3. マイグレーションを最初から実行
+./mvnw flyway:migrate
+```
+
+パスワードを指定する場合:
+```bash
+./mvnw flyway:clean -Dflyway.cleanDisabled=false -Dflyway.password=postgres
+./mvnw flyway:migrate -Dflyway.password=postgres
+```
 
 ### 開発用シード（V70/V71）が反映されない・表示名が「購入者B」のまま
 

@@ -9,5 +9,5 @@ public final class ImageConstants {
 	}
 
 	/** 画像なし時のフォールバックパス */
-	public static final String NO_IMAGE_PATH = "/img/no-image.png";
+	public static final String NO_IMAGE_PATH = "/img/no-image.svg";
 }

@@ -21,7 +21,7 @@
 				<aside class="image-aside">
 					<div class="sticky-wrapper">
 						<div class="main-image-container">
-							<img id="target-main-image" class="main-image" th:src="${product.mainImageUrl}" alt="商品画像" onerror="this.src='/img/no-image.png'">
+							<img id="target-main-image" class="main-image" th:src="${product.mainImageUrl}" alt="商品画像" onerror="this.src='/img/no-image.svg'">
 						</div>
 
 						<ul class="thumbnail-list">
@@ -190,7 +190,7 @@
 				<a th:each="product : ${relatedProducts}" th:with="productId=${product.id != null ? product.id.toString() : ''}" th:href="@{/products/{id}(id=${productId})}">
 					<div class="item-card">
 						<div class="item-card-image">
-							<img th:src="${product.imageUrl}" class="item-img" onerror="this.src='/img/no-image.png'">
+							<img th:src="${product.imageUrl}" class="item-img" onerror="this.src='/img/no-image.svg'">
 							<div class="soldout-badge" th:if="${product.soldOut}">
 								<span>Sold out</span>
 							</div>
