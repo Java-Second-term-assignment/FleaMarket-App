@@ -100,6 +100,9 @@ public class ListingServiceImpl implements ListingService {
 			log.warn("Moderation check skipped or failed for item {}: {}", itemId, e.getMessage());
 		}
 
+		// 下書きを公開状態にして商品詳細・一覧に表示できるようにする
+		itemService.publishItem(itemId);
+
 		log.info("Successfully created item with {} images: {}", imageUrls.size(), itemId);
 		return new CreateItemResponse(itemId, imageUrls);
 	}

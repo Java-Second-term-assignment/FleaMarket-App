@@ -27,7 +27,8 @@
 						<ul class="thumbnail-list">
 							<li th:each="img, stat : ${product.images}" class="thumbnail-item"
 								th:classappend="${stat.first} ? 'active'"
-								th:onclick="|changeImage('${img.largeUrl}', this)|">
+								th:attr="data-image-url=${img.largeUrl}"
+								onclick="changeImage(this.dataset.imageUrl, this)">
 								<img th:src="${img.thumbnailUrl}" alt="サムネイル">
 							</li>
 						</ul>

@@ -8,6 +8,9 @@ import org.springframework.transaction.annotation.Transactional;
 import com.example.flea_market_app.catalog.domain.ItemEntity;
 import com.example.flea_market_app.catalog.repository.ItemRepository;
 import com.example.flea_market_app.catalog.service.ItemService;
+import com.example.flea_market_app.common.exception.NotFoundBusinessException;
+
+import static com.example.flea_market_app.common.exception.ResourceType.ITEM;
 
 import lombok.RequiredArgsConstructor;
 
@@ -16,6 +19,7 @@ import lombok.RequiredArgsConstructor;
 public class ItemServiceImpl implements ItemService {
 
 	private static final String DRAFT = "DRAFT";
+	private static final String PUBLISHED = "PUBLISHED";
 	private static final String JPY = "JPY";
 
 	private final ItemRepository itemRepository;
@@ -39,5 +43,14 @@ public class ItemServiceImpl implements ItemService {
 		entity.setCopySource(null);
 		ItemEntity saved = itemRepository.save(entity);
 		return saved.getId();
+	}
+
+	@Override
+	@Transactional
+	public void publishItem(UUID itemId) {
+		ItemEntity entity = itemRepository.findById(itemId)
+				.orElseThrow(() -> NotFoundBusinessException.of(ITEM));
+		entity.setStatus(PUBLISHED);
+		itemRepository.save(entity);
 	}
 }
