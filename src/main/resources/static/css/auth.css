@@ -306,6 +306,7 @@ a:hover {
 	color: var(--text-sub);
 	line-height: 1.6;
 	margin-top: 10px;
+	text-align: center;
 }
 
 /* バリデーションエラー */
