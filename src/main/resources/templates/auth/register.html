@@ -12,12 +12,14 @@
 	<script th:src="@{/js/theme.js}"></script>
 	<!-- 認証系CSS -->
 	<link rel="stylesheet" th:href="@{/css/auth.css}">
+	<!-- Flatpickr（生年月日カレンダー・日本語表示） -->
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr@4.6.13/dist/flatpickr.min.css">
 </head>
 
 <body>
 	<!-- 共通ヘッダー（商品一覧などと同じ・新規登録はヘッダーに表示しない） -->
 	<div th:replace="~{ui/fragments :: header}"></div>
-	<div class="container">
+	<div class="container register-container">
 		<div class="auth-card-header">
 			<h1>新規登録</h1>
 		</div>
@@ -32,31 +34,64 @@
 			<form th:action="@{/register}" th:object="${userForm}" method="post">
 				<th:block th:replace="~{ui/fragments :: csrf_token}"></th:block>
 
-				<div class="form-group">
-					<label>
-						メールアドレス<span class="required">(必須)</span>
-					</label>
-					<input type="email" th:field="*{email}" placeholder="mail@example.com">
-					<p th:if="${#fields.hasErrors('email')}" th:errors="*{email}" class="error-text"></p>
-				</div>
+				<div class="register-form-grid">
+					<div class="form-group">
+						<label>
+							表示名<span class="required">(必須)</span>
+						</label>
+						<input type="text" th:field="*{displayName}" placeholder="表示名を入力" maxlength="50">
+						<p th:if="${#fields.hasErrors('displayName')}" th:errors="*{displayName}" class="error-text"></p>
+					</div>
 
-				<div class="form-group">
-					<label>
-						パスワード<span class="required">(必須)</span>
-					</label>
-					<input type="password" th:field="*{password}" placeholder="10文字以上、英数字・記号を含む">
-				</div>
+					<div class="form-group">
+						<label>性別（任意）</label>
+						<select th:field="*{gender}">
+							<option value="">選択してください</option>
+							<option value="MALE">男性</option>
+							<option value="FEMALE">女性</option>
+							<option value="OTHER">その他</option>
+						</select>
+						<p th:if="${#fields.hasErrors('gender')}" th:errors="*{gender}" class="error-text"></p>
+					</div>
 
-				<div class="form-group">
-					<label>
-						パスワード確認<span class="required">(必須)</span>
-					</label>
-					<input type="password" th:field="*{confirmPassword}" placeholder="再度入力してください">
-				</div>
+					<div class="form-group">
+						<label>
+							生年月日<span class="required">(必須)</span>
+						</label>
+						<input type="text" id="dateOfBirth" name="dateOfBirth" th:value="*{dateOfBirth}" placeholder="1990 / 1 / 1" autocomplete="off" data-input>
+						<p th:if="${#fields.hasErrors('dateOfBirth')}" th:errors="*{dateOfBirth}" class="error-text"></p>
+					</div>
 
-				<button type="submit" class="btn btn-register">
-					新規作成
-				</button>
+					<div class="form-group">
+						<label>
+							メールアドレス<span class="required">(必須)</span>
+						</label>
+						<input type="email" th:field="*{email}" placeholder="mail@example.com">
+						<p th:if="${#fields.hasErrors('email')}" th:errors="*{email}" class="error-text"></p>
+					</div>
+
+					<div class="form-group">
+						<label>
+							パスワード<span class="required">(必須)</span>
+						</label>
+						<input type="password" th:field="*{password}" placeholder="10文字以上、英数字・記号を含む">
+						<p th:if="${#fields.hasErrors('password')}" th:errors="*{password}" class="error-text"></p>
+					</div>
+
+					<div class="form-group">
+						<label>
+							パスワード確認<span class="required">(必須)</span>
+						</label>
+						<input type="password" th:field="*{confirmPassword}" placeholder="再度入力してください">
+						<p th:if="${#fields.hasErrors('confirmPassword')}" th:errors="*{confirmPassword}" class="error-text"></p>
+					</div>
+
+					<div class="form-group form-group--full">
+						<button type="submit" class="btn btn-register">
+							新規作成
+						</button>
+					</div>
+				</div>
 			</form>
 
 			<div class="footer-text">
@@ -68,6 +103,19 @@
 
 	<div class="copyright">© My Shop</div>
 
+	<script src="https://cdn.jsdelivr.net/npm/flatpickr@4.6.13/dist/flatpickr.min.js"></script>
+	<script src="https://cdn.jsdelivr.net/npm/flatpickr@4.6.13/dist/l10n/ja.js"></script>
+	<script>
+		document.addEventListener("DOMContentLoaded", function() {
+			flatpickr("#dateOfBirth", {
+				locale: "ja",
+				dateFormat: "Y-m-d",
+				altInput: true,
+				altFormat: "Y/m/d",
+				allowInput: false
+			});
+		});
+	</script>
 </body>
 
 </html>

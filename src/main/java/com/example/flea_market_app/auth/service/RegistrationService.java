@@ -47,11 +47,19 @@ public class RegistrationService {
 
 		UserEntity user = new UserEntity();
 		user.setId(UUID.randomUUID());
-		user.setDisplayName(extractDisplayName(form.getEmail()));
+		user.setDisplayName(form.getDisplayName().trim());
 		user.setUserRankId(INITIAL_RANK_ID);
 		user.setIdentityStatus(VerificationStatus.UNVERIFIED.name());
 		user.setActive(true);
 		user.setProfileImageS3Key(null);
+		user.setRecipientName(trimToNull(form.getRecipientName()));
+		user.setRecipientNameFurigana(trimToNull(form.getRecipientNameFurigana()));
+		user.setPostalCode(trimToNull(form.getPostalCode()));
+		user.setAddress(trimToNull(form.getAddress()));
+		user.setPhone(trimToNull(form.getPhone()));
+		user.setDateOfBirth(form.getDateOfBirth());
+		String gender = form.getGender();
+		user.setGender(gender != null && !gender.isBlank() ? gender.trim() : null);
 		userRepository.save(user);
 
 		AuthUserEntity authUser = new AuthUserEntity();
@@ -63,8 +71,11 @@ public class RegistrationService {
 		authUserRepository.save(authUser);
 	}
 
-	private String extractDisplayName(String email) {
-		int at = email.indexOf('@');
-		return at > 0 ? email.substring(0, at) : email;
+	private static String trimToNull(String s) {
+		if (s == null || s.isBlank()) {
+			return null;
+		}
+		String t = s.trim();
+		return t.isEmpty() ? null : t;
 	}
 }

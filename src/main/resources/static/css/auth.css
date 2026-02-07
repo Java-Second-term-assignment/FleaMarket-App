@@ -46,6 +46,22 @@ body > .header .theme-icon {
 	overflow: hidden;
 }
 
+/* 新規登録画面のみ幅2倍 */
+.container.register-container {
+	max-width: 1000px;
+}
+
+/* 新規登録フォーム：2カラムグリッド */
+.register-form-grid {
+	display: grid;
+	grid-template-columns: 1fr 1fr;
+	gap: 1rem 1.5rem;
+}
+
+.register-form-grid .form-group--full {
+	grid-column: 1 / -1;
+}
+
 /* カード内ヘッダー（共通ヘッダーと区別するため .auth-card-header を使用） */
 .container .auth-card-header {
 	position: static;
@@ -153,6 +169,53 @@ input:focus {
 
 input::placeholder {
 	color: var(--text-muted);
+}
+
+/* select（性別など）を input とデザイン統一 */
+.content select {
+	width: 100%;
+	padding: 12px 15px;
+	border: 1px solid var(--border-light);
+	border-radius: 8px;
+	box-sizing: border-box;
+	font-size: 14px;
+	font-weight: 600;
+	background-color: var(--bg-dark);
+	color: var(--text-heading);
+	transition: border-color 0.2s, box-shadow 0.2s;
+	appearance: none;
+	background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23888' d='M6 8L1 3h10z'/%3E%3C/svg%3E");
+	background-repeat: no-repeat;
+	background-position: right 14px center;
+	padding-right: 40px;
+	cursor: pointer;
+}
+
+.content select:focus {
+	outline: none;
+	border-color: var(--accent-blue);
+	box-shadow: 0 0 0 3px rgba(74, 93, 153, 0.25);
+}
+
+/* Flatpickr 生年月日：表示用入力が他ボックスと統一されるように */
+.form-group .flatpickr {
+	width: 100%;
+}
+.form-group .flatpickr input.flatpickr-input {
+	width: 100%;
+	padding: 12px 15px;
+	border: 1px solid var(--border-light);
+	border-radius: 8px;
+	box-sizing: border-box;
+	font-size: 14px;
+	font-weight: 600;
+	background-color: var(--bg-dark);
+	color: var(--text-heading);
+}
+.form-group .flatpickr input.flatpickr-input:focus {
+	outline: none;
+	border-color: var(--accent-blue);
+	box-shadow: 0 0 0 3px rgba(74, 93, 153, 0.25);
 }
 
 /* ボタンの共通設定 */

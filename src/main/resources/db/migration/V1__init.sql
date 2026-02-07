@@ -56,9 +56,12 @@ CREATE TABLE users (
   profile_image_url    varchar(500) NULL,
   caption         varchar(200) NULL,
   recipient_name  varchar(100) NULL,
+  recipient_name_furigana varchar(100) NULL,
+  date_of_birth   date NULL,
   postal_code     varchar(20) NULL,
   address         varchar(500) NULL,
   phone           varchar(30) NULL,
+  gender          varchar(20) NULL CHECK (gender IS NULL OR gender IN ('MALE', 'FEMALE', 'OTHER')),
   notification_enabled boolean NOT NULL DEFAULT true,
   created_at      timestamptz NOT NULL DEFAULT now(),
   updated_at      timestamptz NOT NULL DEFAULT now()
