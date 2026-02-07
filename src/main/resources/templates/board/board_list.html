@@ -114,7 +114,7 @@
 		                
 		                <div class="item-card-image">
 		                    <img th:src="${product.imageUrl != null ? product.imageUrl : '/images/no-image.png'}" class="item-img" alt="商品画像">
-		                    <div th:if="${product.stock <= 0}" class="soldout-badge">
+		                    <div th:if="${product.soldOut}" class="soldout-badge">
 		                        <span>Sold out</span>
 		                    </div>
 		                </div>
@@ -122,7 +122,7 @@
 		                <div class="item-card-content">
 		                    <div class="item-card-title" th:text="${product.name}">商品タイトル</div>
 		                    <div class="item-card-price">
-		                        値段: <span class="price-value" th:text="${#numbers.formatInteger(product.price, 1, 'COMMA') + '円'}">3,000円</span>
+		                        値段: <span class="price-value" th:text="${(product.price != null ? product.price : '0') + '円'}">3,000円</span>
 		                    </div>
 		                    <div class="item-card-footer">
 		                        ジャンル:

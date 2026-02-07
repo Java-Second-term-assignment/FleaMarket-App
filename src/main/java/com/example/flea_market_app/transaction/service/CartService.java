@@ -33,7 +33,7 @@ public class CartService {
 	@SuppressWarnings("unchecked")
 	public List<UUID> getItemIds(HttpSession session) {
 		List<UUID> cart = (List<UUID>) session.getAttribute(SESSION_KEY_CART);
-		return cart != null ? new ArrayList<>(cart) : List.of();
+		return cart != null ? new ArrayList<>(cart) : new ArrayList<>();
 	}
 
 	public void addItem(HttpSession session, UUID productId) {

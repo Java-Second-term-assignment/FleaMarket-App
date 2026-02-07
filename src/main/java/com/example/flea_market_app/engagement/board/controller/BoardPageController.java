@@ -1,6 +1,7 @@
 package com.example.flea_market_app.engagement.board.controller;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 import org.slf4j.Logger;
@@ -15,6 +16,7 @@ import org.springframework.validation.annotation.Validated;
 
 import com.example.flea_market_app.config.security.SecurityUtil;
 import com.example.flea_market_app.catalog.service.ItemQueryService;
+import com.example.flea_market_app.catalog.service.ProductListService;
 import com.example.flea_market_app.engagement.board.service.BoardListService;
 import com.example.flea_market_app.engagement.board.service.BoardService;
 import com.example.flea_market_app.engagement.board.service.dto.PostResponse;
@@ -34,10 +36,14 @@ public class BoardPageController {
 	private final BoardListService boardListService;
 	private final BoardService boardService;
 	private final ItemQueryService itemQueryService;
+	private final ProductListService productListService;
 
 	@GetMapping("/board")
 	public String boardList(Model model) {
 		model.addAttribute("boards", boardListService.getBoards());
+		model.addAttribute("categories", productListService.getCategories());
+		model.addAttribute("products", productListService.getProducts(
+				Optional.empty(), Optional.empty(), "new", 0, 100).products());
 		log.info("Board list displayed");
 		return "board/board_list";
 	}

@@ -91,14 +91,12 @@ public class UserService {
 	 */
 	@Transactional(readOnly = true)
 	public Map<String, String> getDefaultShippingAddress(UUID userId) {
-		UserEntity e = userRepository.findById(userId).orElse(null);
-		if (e == null) {
-			return Map.of("name", "", "postcode", "", "fullAddress", "");
-		}
-		return Map.of(
-				"name", nullToEmpty(e.getRecipientName()),
-				"postcode", nullToEmpty(e.getPostalCode()),
-				"fullAddress", nullToEmpty(e.getAddress()));
+		return userRepository.findShippingAddressByUserId(userId)
+				.map(a -> Map.<String, String>of(
+						"name", nullToEmpty(a.getRecipientName()),
+						"postcode", nullToEmpty(a.getPostalCode()),
+						"fullAddress", nullToEmpty(a.getAddress())))
+				.orElseGet(() -> Map.of("name", "", "postcode", "", "fullAddress", ""));
 	}
 
 	private static String trimToNull(String value, int maxLen) {

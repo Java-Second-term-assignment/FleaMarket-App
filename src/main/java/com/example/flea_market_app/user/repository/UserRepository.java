@@ -2,6 +2,7 @@ package com.example.flea_market_app.user.repository;
 
 import java.time.OffsetDateTime;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -12,6 +13,19 @@ import org.springframework.data.repository.query.Param;
 import com.example.flea_market_app.user.domain.UserEntity;
 
 public interface UserRepository extends JpaRepository<UserEntity, UUID> {
+
+	/**
+	 * 配送先表示用に recipient_name, postal_code, address のみ取得する。
+	 * notification_enabled 等を参照しないため、カラム未追加のDBでも動作する。
+	 */
+	@Query("SELECT u.recipientName AS recipientName, u.postalCode AS postalCode, u.address AS address FROM UserEntity u WHERE u.id = :userId")
+	Optional<ShippingAddressProjection> findShippingAddressByUserId(@Param("userId") UUID userId);
+
+	interface ShippingAddressProjection {
+		String getRecipientName();
+		String getPostalCode();
+		String getAddress();
+	}
 
 	List<UserEntity> findByActiveFalse();
 
