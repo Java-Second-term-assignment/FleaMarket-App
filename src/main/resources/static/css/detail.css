@@ -171,6 +171,11 @@
 	margin-bottom: 25px;
 }
 
+.cart-icon-form {
+	display: inline-block;
+	margin: 0;
+}
+
 /* お気に入り・旗アイコンの四角ボタン */
 .icon-btn {
 	background: rgba(255, 255, 255, 0.12);
@@ -245,6 +250,17 @@
 	pointer-events: none;
 	opacity: 0.6;
 	cursor: not-allowed;
+}
+
+.product-description-section {
+	margin-top: 24px;
+}
+
+.product-description-title {
+	font-size: 18px;
+	font-weight: 700;
+	margin: 0 0 12px 0;
+	color: var(--text-heading);
 }
 
 .long-text {

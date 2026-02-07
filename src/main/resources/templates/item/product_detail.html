@@ -8,6 +8,8 @@
 </head>
 
 <body th:attr="data-anonymous=${#authorization.expression('isAnonymous()')}">
+	<input type="hidden" id="csrfToken" th:value="${_csrf.token}"/>
+	<input type="hidden" id="csrfHeader" th:value="${_csrf.headerName}"/>
 	<div th:replace="~{ui/fragments :: header}"></div>
 
 	<main class="main-container" th:attr="data-product-id=${product.id}, data-is-favorited=${isFavorited}">
@@ -63,29 +65,26 @@
 							th:attr="aria-pressed=${isFavorited}">
 							<span class="material-symbols-outlined favorite-icon" th:text="${isFavorited} ? 'favorite' : 'favorite_border'">favorite_border</span>
 						</button>
+						<form th:action="@{/cart/add}" method="post" class="cart-icon-form">
+							<th:block th:replace="~{ui/fragments :: csrf_token}"></th:block>
+							<input type="hidden" name="productId" th:value="${product.id}">
+							<button type="submit" class="icon-btn" title="カートに入れる" aria-label="カートに入れる" th:disabled="${product.stock == 0}">
+								<span class="material-symbols-outlined">shopping_cart</span>
+							</button>
+						</form>
 						<button type="button" class="icon-btn" id="reportBtn" title="通報" aria-label="この商品を通報する">
 							<span class="material-symbols-outlined">error</span>
 						</button>
 					</div>
+					<span id="favoriteError" class="favorite-error" role="alert" aria-live="polite"></span>
 
 					<a th:href="@{/order/confirm(productId=${product.id})}" class="btn-purchase" th:classappend="${product.stock == 0} ? 'disabled'">購入に進む</a>
 
-					<div class="long-text">
-						<p th:text="${product.description}">商品説明</p>
-					</div>
-
-					<!-- ================= カート ================= -->
-					<div class="button-group">
-						<form th:action="@{/cart/add}" method="post" style="flex:2;">
-							<th:block th:replace="~{ui/fragments :: csrf_token}"></th:block>
-							<input type="hidden" name="productId" th:value="${product.id}">
-							<button type="submit" class="btn-blue" th:disabled="${product.stock == 0}">
-								カートに入れる
-							</button>
-						</form>
-						<button type="button" class="btn-gray favorite-toggle-btn" data-favorite-toggle
-							th:text="${isFavorited} ? 'お気に入り解除' : 'お気に入り'">お気に入り</button>
-						<span id="favoriteError" class="favorite-error" role="alert" aria-live="polite"></span>
+					<div class="product-description-section">
+						<h3 class="product-description-title">商品説明</h3>
+						<div class="long-text">
+							<p th:text="${product.description}">商品説明</p>
+						</div>
 					</div>
 
 					<!-- ================= レビュー ================= -->
