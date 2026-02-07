@@ -386,7 +386,23 @@
 	border-radius: 12px;
 }
 
-
+/* ダークモード：ランキング項目をレビュー欄と同じ薄いグレーに */
+html:not([data-theme="light"]) .ranking-item-link {
+	background: #4a4a50;
+}
+html:not([data-theme="light"]) .ranking-item-link:hover {
+	background: #55555c;
+}
+html:not([data-theme="light"]) .ranking-item-title {
+	color: #e0e0e0;
+}
+html:not([data-theme="light"]) .ranking-item-price {
+	color: var(--text-muted);
+}
+html:not([data-theme="light"]) .ranking-thumb {
+	border-color: #5a5a60;
+	background: #38383c;
+}
 
 /* 商品グリッド */
 .main-container {
