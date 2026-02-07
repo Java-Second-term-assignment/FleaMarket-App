@@ -1,5 +1,6 @@
 package com.example.flea_market_app.user.controller;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -19,6 +20,7 @@ import com.example.flea_market_app.common.constant.ImageConstants;
 import com.example.flea_market_app.config.security.SecurityUtil;
 import com.example.flea_market_app.engagement.favorite.service.FavoriteService;
 import com.example.flea_market_app.engagement.favorite.service.dto.FavoriteItemResponse;
+import com.example.flea_market_app.engagement.notification.domain.NotificationEntity;
 import com.example.flea_market_app.engagement.notification.service.NotificationService;
 import com.example.flea_market_app.user.controller.dto.FavoriteItemViewDto;
 import com.example.flea_market_app.user.controller.dto.UserProductItemDto;
@@ -68,7 +70,13 @@ public class UserPageController {
 				.toList();
 
 		List<UserProductItemDto> userProducts = userProductsQueryService.listBySeller(userId);
-		var notifications = notificationService.listByUser(userId, 50);
+		List<NotificationEntity> notifications;
+		try {
+			notifications = notificationService.listByUser(userId, 50);
+		} catch (Exception e) {
+			log.warn("Could not load notifications (table may not exist): {}", e.getMessage());
+			notifications = Collections.emptyList();
+		}
 
 		model.addAttribute("user", user);
 		model.addAttribute("favorites", favoriteViews);

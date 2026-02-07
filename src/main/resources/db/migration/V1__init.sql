@@ -1,4 +1,4 @@
--- V1__init.sql（統合版）
+-- V1__init.sql（統合版・スキーマ一式）
 -- PostgreSQL 13+ 推奨（gen_random_uuid() のため pgcrypto 使用）
 -- 方針:
 -- - PKはUUID
@@ -7,7 +7,7 @@
 -- - 手数料率はbps（0..10000）
 -- - 画像はS3 object keyを保存（URLは保存しない）
 -- - 監査/通報は target_type + target_id
--- テーブル定義は最初から完成形（ADD COLUMN による後付けなし）
+-- テーブル定義は最初から完成形（users.notification_enabled / notifications 含む）
 
 BEGIN;
 

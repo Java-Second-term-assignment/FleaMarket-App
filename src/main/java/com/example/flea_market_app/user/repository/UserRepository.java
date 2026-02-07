@@ -27,6 +27,36 @@ public interface UserRepository extends JpaRepository<UserEntity, UUID> {
 		String getAddress();
 	}
 
+	/**
+	 * getRequired 用。notification_enabled を参照しないため、カラム未追加のDBでも動作する。
+	 */
+	@Query("SELECT u.id AS id, u.displayName AS displayName, u.identityStatus AS identityStatus, u.userRankId AS userRankId, u.active AS active FROM UserEntity u WHERE u.id = :userId")
+	Optional<RequiredUserProjection> findRequiredProjection(@Param("userId") UUID userId);
+
+	interface RequiredUserProjection {
+		UUID getId();
+		String getDisplayName();
+		String getIdentityStatus();
+		short getUserRankId();
+		boolean isActive();
+	}
+
+	/**
+	 * 設定画面表示用。notification_enabled を参照しないため、カラム未追加のDBでも動作する。
+	 */
+	@Query("SELECT u.profileImageUrl AS profileImageUrl, u.profileImageS3Key AS profileImageS3Key, u.caption AS caption, u.recipientName AS recipientName, u.postalCode AS postalCode, u.address AS address, u.phone AS phone FROM UserEntity u WHERE u.id = :userId")
+	Optional<ProfileForMeProjection> findProfileForMeByUserId(@Param("userId") UUID userId);
+
+	interface ProfileForMeProjection {
+		String getProfileImageUrl();
+		String getProfileImageS3Key();
+		String getCaption();
+		String getRecipientName();
+		String getPostalCode();
+		String getAddress();
+		String getPhone();
+	}
+
 	List<UserEntity> findByActiveFalse();
 
 	@Modifying

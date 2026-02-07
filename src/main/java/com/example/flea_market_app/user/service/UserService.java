@@ -24,6 +24,7 @@ import com.example.flea_market_app.user.domain.User;
 import com.example.flea_market_app.user.domain.UserEntity;
 import com.example.flea_market_app.user.domain.VerificationStatus;
 import com.example.flea_market_app.user.repository.UserRepository;
+import com.example.flea_market_app.user.repository.UserRepository.RequiredUserProjection;
 import com.example.flea_market_app.user.service.dto.ProfileImageResponse;
 
 import lombok.RequiredArgsConstructor;
@@ -46,10 +47,9 @@ public class UserService {
 
 	@Transactional(readOnly = true)
 	public User getRequired(UUID userId) {
-		UserEntity e = userRepository.findById(userId)
+		RequiredUserProjection p = userRepository.findRequiredProjection(userId)
 				.orElseThrow(() -> NotFoundBusinessException.of(ResourceType.USER));
-
-		return toDomain(e);
+		return toDomain(p);
 	}
 
 	@Transactional
@@ -211,6 +211,15 @@ public class UserService {
 		// レスポンス生成
 		String imageUrl = s3ImageService.generateImageUrl(bucketName, newS3Key);
 		return new ProfileImageResponse(newS3Key, imageUrl);
+	}
+
+	private User toDomain(RequiredUserProjection p) {
+		return new User(
+				p.getId(),
+				p.getDisplayName(),
+				VerificationStatus.valueOf(p.getIdentityStatus()),
+				userRankService.loadRank(p.getUserRankId()),
+				p.isActive());
 	}
 
 	private User toDomain(UserEntity e) {
