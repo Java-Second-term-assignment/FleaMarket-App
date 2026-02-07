@@ -35,3 +35,6 @@ build/
 
 ### environment ###
 .env
+
+# 開発時のローカル画像アップロード（プッシュしない）
+/uploads/
