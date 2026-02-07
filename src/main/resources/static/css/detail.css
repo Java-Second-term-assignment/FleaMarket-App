@@ -826,9 +826,18 @@ html[data-theme="light"] #loginRequiredModal .btn.btn-login {
 	justify-content: flex-end;
 	margin-top: 20px;
 }
-html[data-theme="light"] #reportModal .modal-content,
+html[data-theme="light"] #reportModal .modal-content {
+	background: #ffffff;
+	box-shadow: 0 8px 40px rgba(0, 0, 0, 0.2);
+	color: #1a1a1a;
+}
+html[data-theme="light"] #reportModal .modal-content h2,
+html[data-theme="light"] #reportModal .modal-body,
 html[data-theme="light"] #reportModal .form-group label {
 	color: #1a1a1a;
+}
+html[data-theme="light"] #reportModal .form-group .required {
+	color: #e33e3e;
 }
 html[data-theme="light"] #reportModal .modal-body select,
 html[data-theme="light"] #reportModal .modal-body textarea {
@@ -838,4 +847,21 @@ html[data-theme="light"] #reportModal .modal-body textarea {
 }
 html[data-theme="light"] #reportModal .modal-close-btn {
 	color: #333;
+}
+html[data-theme="light"] #reportModal .modal-actions .btn-gray {
+	background-color: #e8e8e8;
+	color: #333;
+	border: 1px solid #ccc;
+}
+html[data-theme="light"] #reportModal .modal-actions .btn-gray:hover {
+	background-color: #ddd;
+}
+html[data-theme="light"] #reportModal .modal-actions .btn-blue {
+	background-color: #007bff;
+	color: #fff;
+	border: 1px solid #007bff;
+}
+html[data-theme="light"] #reportModal .modal-actions .btn-blue:hover {
+	background-color: #0056b3;
+	border-color: #0056b3;
 }
