@@ -1,6 +1,5 @@
 package com.example.flea_market_app.user.controller;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -20,8 +19,6 @@ import com.example.flea_market_app.common.constant.ImageConstants;
 import com.example.flea_market_app.config.security.SecurityUtil;
 import com.example.flea_market_app.engagement.favorite.service.FavoriteService;
 import com.example.flea_market_app.engagement.favorite.service.dto.FavoriteItemResponse;
-import com.example.flea_market_app.engagement.notification.domain.NotificationEntity;
-import com.example.flea_market_app.engagement.notification.service.NotificationService;
 import com.example.flea_market_app.user.controller.dto.FavoriteItemViewDto;
 import com.example.flea_market_app.user.controller.dto.UserProductItemDto;
 import com.example.flea_market_app.user.controller.dto.UserSettingsViewDto;
@@ -45,7 +42,6 @@ public class UserPageController {
 	private final UserService userService;
 	private final FavoriteService favoriteService;
 	private final UserProductsQueryService userProductsQueryService;
-	private final NotificationService notificationService;
 
 	@GetMapping("/user/settings")
 	public String userSettings(Model model) {
@@ -70,13 +66,6 @@ public class UserPageController {
 				.toList();
 
 		List<UserProductItemDto> userProducts = userProductsQueryService.listBySeller(userId);
-		List<NotificationEntity> notifications;
-		try {
-			notifications = notificationService.listByUser(userId, 50);
-		} catch (Exception e) {
-			log.warn("Could not load notifications (table may not exist): {}", e.getMessage());
-			notifications = Collections.emptyList();
-		}
 
 		model.addAttribute("user", user);
 		model.addAttribute("favorites", favoriteViews);
@@ -86,7 +75,6 @@ public class UserPageController {
 				"expireMonth", "",
 				"expireYear", ""));
 		model.addAttribute("userProducts", userProducts);
-		model.addAttribute("notifications", notifications);
 		model.addAttribute("address", me.getAddress());
 
 		return "user/user_settings";

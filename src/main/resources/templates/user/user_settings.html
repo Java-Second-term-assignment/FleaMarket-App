@@ -84,7 +84,6 @@
 				<div class="tab-bar">
 					<button class="tab active" data-tab="favorite">お気に入り</button>
 					<button class="tab" data-tab="history">商品</button>
-					<button class="tab" data-tab="notification">通知</button>
 					<button class="tab" data-tab="settings">設定</button>
 				</div>
 
@@ -123,24 +122,6 @@
 							投稿した商品はありません。
 						</p>
 					</div>
-				</div>
-
-				<div class="profile-tab-content" id="tab-notification" style="display:none;">
-					<ul class="notification-list">
-
-						<th:block th:if="${notifications != null and !notifications.empty}">
-							<li th:each="notif : ${notifications}" class="notification-item">
-								<span class="notif-message" th:text="${notif.message}">通知メッセージ</span>
-								<small class="notif-date"
-									th:text="${#temporals.format(notif.createdAt, 'yyyy/MM/dd')}">2024/01/01</small>
-							</li>
-						</th:block>
-
-						<li th:if="${notifications == null or notifications.empty}" class="empty-notification">
-							現在、新しい通知はありません。
-						</li>
-
-					</ul>
 				</div>
 
 				<!-- 設定 -->
