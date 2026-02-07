@@ -7,7 +7,7 @@
 }
 
 .detail-card {
-	max-height: calc(100vh - 120px);
+	max-height: calc(100vh - 330px);
 	display: flex;
 	flex-direction: column;
 	overflow: hidden;

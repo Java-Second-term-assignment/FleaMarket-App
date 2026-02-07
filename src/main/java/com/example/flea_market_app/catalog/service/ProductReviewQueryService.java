@@ -43,7 +43,7 @@ public class ProductReviewQueryService {
 		List<ReviewEntity> reviews = collectReviewsForItem(itemId);
 
 		if (reviews.isEmpty()) {
-			return new ReviewSummaryDto(0, 0.0, "★★★★☆");
+			return new ReviewSummaryDto(0, 0.0, toStarsDisplay(0.0));
 		}
 
 		long goodCount = reviews.stream().filter(r -> "GOOD".equals(r.getRating())).count();
