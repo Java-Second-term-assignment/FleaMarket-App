@@ -27,6 +27,8 @@ public class OrderDetailDto {
 	private String role;
 
 	private String shippingAddressSnapshot;
+	/** お届け先の表示用整形文字列（名前・郵便番号・住所） */
+	private String shippingAddressFormatted;
 	private String counterpartyDisplayName;
 
 	private boolean canConfirm;

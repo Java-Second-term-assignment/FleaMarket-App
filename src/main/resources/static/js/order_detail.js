@@ -144,10 +144,16 @@ document.addEventListener("DOMContentLoaded", () => {
 			}
 			showChatError("");
 			if (chatSendBtn) chatSendBtn.disabled = true;
+			const headers = { "Content-Type": "application/json" };
+			const csrfTokenEl = document.getElementById("csrfToken");
+			const csrfHeaderEl = document.getElementById("csrfHeader");
+			if (csrfTokenEl && csrfHeaderEl) {
+				headers[csrfHeaderEl.value] = csrfTokenEl.value;
+			}
 			fetch("/user/orders/" + orderId + "/messages", {
 				method: "POST",
 				credentials: "same-origin",
-				headers: { "Content-Type": "application/json" },
+				headers: headers,
 				body: JSON.stringify({ content: content })
 			})
 				.then((res) => {

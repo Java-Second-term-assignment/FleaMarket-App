@@ -8,6 +8,8 @@
 </head>
 
 <body>
+	<input type="hidden" id="csrfToken" th:value="${_csrf.token}"/>
+	<input type="hidden" id="csrfHeader" th:value="${_csrf.headerName}"/>
 	<div th:replace="~{ui/fragments :: header}"></div>
 
 	<main class="confirm-container order-detail-main">
@@ -48,9 +50,9 @@
 				</div>
 			</div>
 
-			<div class="section-card" th:if="${order.shippingAddressSnapshot != null and !#strings.isEmpty(order.shippingAddressSnapshot)}">
+			<div class="section-card" th:if="${order.shippingAddressFormatted != null and !#strings.isEmpty(order.shippingAddressFormatted)}">
 				<div class="section-title">お届け先</div>
-				<pre class="order-detail-address" th:text="${order.shippingAddressSnapshot}"></pre>
+				<p class="order-detail-address" th:text="${order.shippingAddressFormatted}"></p>
 			</div>
 
 			<div class="section-card" th:if="${order.counterpartyDisplayName != null and !#strings.isEmpty(order.counterpartyDisplayName)}">
