@@ -15,6 +15,8 @@
 		<section class="confirm-main">
 			<h1 class="page-title">注文確認</h1>
 
+			<div th:if="${errorMessage}" class="flash-error" th:text="${errorMessage}" role="alert"></div>
+
 			<!-- 商品 -->
 			<div class="section-card">
 				<div class="section-title">注文商品</div>
@@ -87,8 +89,8 @@
 				</div>
 
 				<div class="summary-row">
-					<span>手数料</span>
-					<span>¥ 0</span>
+					<span>手数料（出品者負担）</span>
+					<span th:text="'¥ ' + ${#numbers.formatInteger(order.commissionFee != null ? order.commissionFee : 0, 3, 'COMMA')}">¥ 0</span>
 				</div>
 
 				<div class="total-row">

@@ -10,6 +10,8 @@ import com.example.flea_market_app.transaction.domain.OrderEntity;
 
 public interface OrderRepository extends JpaRepository<OrderEntity, UUID> {
 
+	boolean existsByItemId(UUID itemId);
+
 	List<OrderEntity> findByBuyerIdOrderByUpdatedAtDesc(UUID buyerId);
 
 	List<OrderEntity> findBySellerIdOrderByUpdatedAtDesc(UUID sellerId);

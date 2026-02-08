@@ -60,21 +60,6 @@
 				<p th:text="${order.counterpartyDisplayName}"></p>
 			</div>
 
-			<!-- 取引チャット -->
-			<div class="section-card order-detail-chat" id="orderDetailChat"
-				th:attr="data-order-id=${order.orderId}, data-current-user-id=${currentUserId}, data-counterparty-name=${order.counterpartyDisplayName}">
-				<div class="section-title">取引チャット</div>
-				<div class="chat-messages" id="chatMessages" aria-live="polite"></div>
-				<div class="chat-form">
-					<textarea id="chatInput" class="chat-input" placeholder="メッセージを入力（最大4000文字）" maxlength="4000" rows="3"></textarea>
-					<div class="chat-form-actions">
-						<button type="button" id="chatSendBtn" class="btn-order-action">送信</button>
-						<button type="button" id="chatRefreshBtn" class="btn-order-action btn-chat-refresh">更新</button>
-						<span class="chat-error" id="chatError" role="alert"></span>
-					</div>
-				</div>
-			</div>
-
 			<!-- 操作ボタン -->
 			<div class="section-card order-detail-actions">
 				<div class="section-title">操作</div>
@@ -98,6 +83,23 @@
 
 			<p class="order-detail-back"><a th:href="@{/user/orders}">注文一覧へ戻る</a></p>
 		</section>
+
+		<!-- 右：取引チャット -->
+		<aside class="confirm-sidebar">
+			<div class="section-card order-detail-chat" id="orderDetailChat"
+				th:attr="data-order-id=${order.orderId}, data-current-user-id=${currentUserId}, data-counterparty-name=${order.counterpartyDisplayName}">
+				<div class="section-title">取引チャット</div>
+				<div class="chat-messages" id="chatMessages" aria-live="polite"></div>
+				<div class="chat-form">
+					<textarea id="chatInput" class="chat-input" placeholder="メッセージを入力（最大4000文字）" maxlength="4000" rows="3"></textarea>
+					<div class="chat-form-actions">
+						<button type="button" id="chatSendBtn" class="btn-order-action">送信</button>
+						<button type="button" id="chatRefreshBtn" class="btn-order-action btn-chat-refresh">更新</button>
+						<span class="chat-error" id="chatError" role="alert"></span>
+					</div>
+				</div>
+			</div>
+		</aside>
 	</main>
 
 	<!-- キャンセルモーダル -->

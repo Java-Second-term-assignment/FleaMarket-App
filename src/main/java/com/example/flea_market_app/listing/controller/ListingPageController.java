@@ -20,6 +20,10 @@ import com.example.flea_market_app.listing.controller.dto.ProductFormDto;
 import com.example.flea_market_app.listing.service.ListingService;
 import com.example.flea_market_app.listing.service.dto.CreateItemRequest;
 import com.example.flea_market_app.listing.service.dto.CreateItemResponse;
+import com.example.flea_market_app.user.domain.UserEntity;
+import com.example.flea_market_app.user.domain.UserRank;
+import com.example.flea_market_app.user.repository.UserRepository;
+import com.example.flea_market_app.user.service.UserRankService;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -32,6 +36,8 @@ public class ListingPageController {
 
 	private final ProductListService productListService;
 	private final ListingService listingService;
+	private final UserRepository userRepository;
+	private final UserRankService userRankService;
 
 	@GetMapping({ "/product/add", "/items/add" })
 	public String productAddPage(Model model) {
@@ -41,6 +47,7 @@ public class ListingPageController {
 
 		model.addAttribute("productForm", form);
 		model.addAttribute("categories", productListService.getCategories());
+		addCommissionAttributes(model, SecurityUtil.getCurrentUserId(), null);
 		log.info("Product add page displayed");
 		return "item/product_add";
 	}
@@ -59,6 +66,7 @@ public class ListingPageController {
 		if (bindingResult.hasErrors()) {
 			model.addAttribute("productForm", form);
 			model.addAttribute("categories", productListService.getCategories());
+			addCommissionAttributes(model, SecurityUtil.getCurrentUserId(), form.getPrice());
 			if (bindingResult.hasGlobalErrors()) {
 				model.addAttribute("errorMessage", bindingResult.getGlobalErrors().get(0).getDefaultMessage());
 			}
@@ -73,6 +81,28 @@ public class ListingPageController {
 		log.info("Product created successfully: itemId={}, name={}", response.getItemId(), form.getName());
 		redirectAttributes.addFlashAttribute("successMessage", "出品が完了しました");
 		return "redirect:/products/" + response.getItemId();
+	}
+
+	private void addCommissionAttributes(Model model, java.util.UUID userId, Long priceAmount) {
+		if (userId == null) {
+			model.addAttribute("commissionRatePercent", 10);
+			model.addAttribute("fee", null);
+			return;
+		}
+		UserEntity user = userRepository.findById(userId).orElse(null);
+		if (user == null) {
+			model.addAttribute("commissionRatePercent", 10);
+			model.addAttribute("fee", null);
+			return;
+		}
+		UserRank rank = userRankService.loadRank(user.getUserRankId());
+		int bps = rank.getCommissionBps();
+		model.addAttribute("commissionRatePercent", bps / 100);
+		Long fee = null;
+		if (priceAmount != null && priceAmount > 0) {
+			fee = priceAmount * bps / 10000;
+		}
+		model.addAttribute("fee", fee);
 	}
 
 	private CreateItemRequest toCreateItemRequest(ProductFormDto form) {

@@ -22,6 +22,8 @@ public class ProductDetailViewDto {
 	private List<ProductImageDto> images;
 	private CategoryDisplayDto category;
 	private int stock;
+	/** 出品者ID（注文確認時の手数料計算に使用） */
+	private UUID sellerId;
 
 	@Data
 	@NoArgsConstructor

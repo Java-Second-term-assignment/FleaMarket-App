@@ -8,7 +8,8 @@ INSERT INTO user_ranks (id, rank_code, rank_name, commission_bps)
 VALUES
   (1, 'BRONZE', 'ブロンズ', 1000),
   (2, 'SILVER', 'シルバー', 800),
-  (3, 'GOLD',   'ゴールド', 600)
+  (3, 'GOLD',   'ゴールド', 600),
+  (4, 'PLATINUM', 'プラチナ', 300)
 ON CONFLICT (id) DO UPDATE
 SET
   rank_code      = EXCLUDED.rank_code,

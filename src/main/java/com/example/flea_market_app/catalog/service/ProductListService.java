@@ -205,6 +205,7 @@ public class ProductListService {
 				.images(images)
 				.category(new ProductDetailViewDto.CategoryDisplayDto(categoryName))
 				.stock(stock)
+				.sellerId(item.getSellerId())
 				.build();
 	}
 }

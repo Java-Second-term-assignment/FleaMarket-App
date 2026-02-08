@@ -162,7 +162,8 @@
 
 					<div class="price-fee">
 						<span>販売手数料</span>
-						<span th:text="${fee != null ? '¥' + fee : '-'}">-</span>
+						<span th:if="${fee != null}" th:text="'¥' + ${#numbers.formatInteger(fee, 3, 'COMMA')} + '（' + ${commissionRatePercent} + '%）'">-</span>
+						<span th:if="${fee == null}" th:text="'手数料率 ' + ${commissionRatePercent} + '%（出品時に価格に応じて計算）'">-</span>
 					</div>
 
 					<div class="price-profit">
@@ -249,8 +250,8 @@
 <strong>第7条（販売手数料およびランク）</strong><br>
 出品者は、販売手数料として以下の割合を負担します。<br>
 プラチナ：3%<br>
-ゴールド：5%<br>
-シルバー：7%<br>
+ゴールド：6%<br>
+シルバー：8%<br>
 ブロンズ：10%<br>
 ランク条件は以下のとおりとします。<br>
 プラチナ：過去3ヶ月連続で10回以上かつ月額50,000円の取引<br>

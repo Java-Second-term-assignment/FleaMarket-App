@@ -21,6 +21,15 @@ body {
 	margin-bottom: 20px;
 }
 
+.flash-error {
+	margin-bottom: 16px;
+	padding: 12px;
+	background: rgba(229, 57, 53, 0.2);
+	border-radius: 8px;
+	color: #e53935;
+	font-size: 14px;
+}
+
 .confirm-main {
 	flex: 2;
 }
