@@ -110,14 +110,29 @@
 				<div class="profile-tab-content" id="tab-history" style="display:none;">
 					<div class="product-grid">
 						<th:block th:if="${userProducts != null and !userProducts.empty}">
-							<a th:each="item : ${userProducts}"
-								th:href="${item.orderId != null} ? @{/user/orders/{id}(id=${item.orderId})} : @{/products/{id}(id=${item.id})}"
-								class="product-card-link">
-								<div class="item-card">
-									<img th:src="${item.imageUrl}" class="item-img" alt="商品画像">
-									<div class="item-card-title" th:text="${item.name}">商品名</div>
+							<div th:each="item : ${userProducts}" class="product-card-wrapper" style="display: flex; flex-direction: column; gap: 6px;">
+								<a th:href="${item.orderId != null} ? @{/user/orders/{id}(id=${item.orderId})} : @{/products/{id}(id=${item.id})}"
+									class="product-card-link">
+									<div class="item-card">
+										<img th:src="${item.imageUrl}" class="item-img" alt="商品画像">
+										<div class="item-card-title" th:text="${item.name}">商品名</div>
+									</div>
+								</a>
+								<div class="seller-card-actions" style="display: flex; gap: 6px; flex-wrap: wrap;">
+									<form th:if="${item.status == 'PUBLISHED'}" th:action="@{/product/{id}/suspend(id=${item.id})}" method="post" style="display: inline;">
+										<th:block th:replace="~{ui/fragments :: csrf_token}"></th:block>
+										<button type="submit" class="profile-icon-edit" style="padding: 4px 10px; font-size: 12px;">出品停止</button>
+									</form>
+									<form th:if="${item.status == 'SUSPENDED'}" th:action="@{/product/{id}/unsuspend(id=${item.id})}" method="post" style="display: inline;">
+										<th:block th:replace="~{ui/fragments :: csrf_token}"></th:block>
+										<button type="submit" class="profile-icon-edit" style="padding: 4px 10px; font-size: 12px; background: #4a7c59; color: #fff;">出品再開</button>
+									</form>
+									<form th:if="${item.status == 'SUSPENDED'}" th:action="@{/product/{id}/delete(id=${item.id})}" method="post" style="display: inline;">
+										<th:block th:replace="~{ui/fragments :: csrf_token}"></th:block>
+										<button type="submit" class="profile-icon-edit" style="padding: 4px 10px; font-size: 12px; background: #a44; color: #fff;">削除</button>
+									</form>
 								</div>
-							</a>
+							</div>
 						</th:block>
 						<p th:if="${userProducts == null or userProducts.empty}" class="empty-message">
 							投稿した商品はありません。

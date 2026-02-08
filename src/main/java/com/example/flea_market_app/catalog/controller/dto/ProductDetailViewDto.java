@@ -24,6 +24,8 @@ public class ProductDetailViewDto {
 	private int stock;
 	/** 出品者ID（注文確認時の手数料計算に使用） */
 	private UUID sellerId;
+	/** 商品ステータス（出品停止・削除ボタン表示に利用） */
+	private String status;
 
 	@Data
 	@NoArgsConstructor

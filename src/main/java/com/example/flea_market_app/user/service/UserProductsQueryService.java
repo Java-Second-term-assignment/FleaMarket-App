@@ -53,6 +53,7 @@ public class UserProductsQueryService {
 				item.getId(),
 				imageUrl,
 				item.getName() != null ? item.getName() : "",
-				orderId);
+				orderId,
+				item.getStatus());
 	}
 }

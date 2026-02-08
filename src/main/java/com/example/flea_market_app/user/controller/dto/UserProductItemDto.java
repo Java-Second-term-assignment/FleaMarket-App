@@ -17,4 +17,6 @@ public class UserProductItemDto {
 	private String name;
 	/** この商品に紐づく注文ID。取引があるときのみセット。 */
 	private UUID orderId;
+	/** 商品ステータス（出品停止・削除ボタン表示に利用） */
+	private String status;
 }
