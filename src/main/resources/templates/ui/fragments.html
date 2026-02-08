@@ -46,11 +46,11 @@
 					<div class="nav-item nav-item-theme">
 						<th:block th:replace="~{ui/fragments :: theme_toggle_button}"></th:block>
 					</div>
-					<!-- 一般画面のみ表示（管理者画面では非表示） -->
-					<div class="nav-item" th:if="${isAdminContext != true}">
+					<!-- 一般向け：商品一覧・掲示板（管理者ログイン後も表示して両方の遷移先を用意） -->
+					<div class="nav-item" th:if="${isAdminContext != true or isAdminUser}">
 						<a th:href="@{/products}">商品一覧</a>
 					</div>
-					<div class="nav-item" th:if="${isAdminContext != true}">
+					<div class="nav-item" th:if="${isAdminContext != true or isAdminUser}">
 						<a th:href="@{/board}">掲示板一覧</a>
 					</div>
 
@@ -66,23 +66,23 @@
 						</a>
 					</div>
 
-					<!-- ログイン時（管理者画面では非表示） -->
-					<div class="nav-item" sec:authorize="isAuthenticated()" th:if="${isAdminContext != true}">
+					<!-- ログイン時：カート・注文・設定（管理者ログイン後も表示） -->
+					<div class="nav-item" sec:authorize="isAuthenticated()" th:if="${isAdminContext != true or isAdminUser}">
 						<a th:href="@{/cart}">
 							カート
 						</a>
 					</div>
-					<div class="nav-item" sec:authorize="isAuthenticated()" th:if="${isAdminContext != true}">
+					<div class="nav-item" sec:authorize="isAuthenticated()" th:if="${isAdminContext != true or isAdminUser}">
 						<a th:href="@{/user/orders}">
 							注文一覧
 						</a>
 					</div>
-					<div class="nav-item" sec:authorize="isAuthenticated()" th:if="${isAdminContext != true}">
+					<div class="nav-item" sec:authorize="isAuthenticated()" th:if="${isAdminContext != true or isAdminUser}">
 						<a th:href="@{/user/settings}">
 							ユーザー設定
 						</a>
 					</div>
-					<!-- 管理者画面用ナビ -->
+					<!-- 管理者用ナビ（管理者ログイン時のみ表示） -->
 					<div class="nav-item" sec:authorize="hasRole('ADMIN')">
 						<a th:href="@{/admin/dashboard}">
 							統計画面
@@ -100,8 +100,8 @@
 					</div>
 				</div>
 
-				<!-- ログイン時のみ（管理者画面では非表示） -->
-				<button sec:authorize="isAuthenticated()" th:if="${isAdminContext != true}" class="btn-post" th:onclick="|location.href='@{/product/add}'|">
+				<!-- ログイン時：出品する（管理者ログイン後も表示） -->
+				<button sec:authorize="isAuthenticated()" th:if="${isAdminContext != true or isAdminUser}" class="btn-post" th:onclick="|location.href='@{/product/add}'|">
 					出品する
 				</button>
 

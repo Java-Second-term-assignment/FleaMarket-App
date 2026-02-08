@@ -269,6 +269,11 @@ a {
 a:hover {
 	text-decoration: underline;
 }
+/* ヘッダーナビは common.css の ::after で下線表示するため、二重線防止で text-decoration は付けない */
+body > .header a:hover,
+body > .header .nav-links a:hover {
+	text-decoration: none;
+}
 
 /* 左下のコピーライト */
 .copyright {
