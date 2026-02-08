@@ -93,7 +93,7 @@ body.no-scroll {
 /* ヘッダーは common.css / theme.css に任せ、出品画面も他画面と統一 */
 
 .main-container {
-	max-width: 1100px;
+	max-width: 1200px;
 	margin: 40px auto;
 	padding: 0 20px;
 }

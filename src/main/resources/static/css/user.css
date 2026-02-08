@@ -7,7 +7,7 @@ body {
 }
 
 .main-container {
-	max-width: 1100px;
+	max-width: 1200px;
 	margin: 40px auto;
 	padding: 0 20px;
 }
@@ -28,7 +28,8 @@ body {
 	margin-top: 38px;
 	border-radius: 9px;
 	border: 1.5px solid #454654;
-	background: var(--bg-dark);
+	/* 注文確認画面と同じ薄いグレー（ダークモードで見やすく） */
+	background: #3a3a3a;
 	padding: 32px 32px 30px 32px;
 }
 
@@ -238,7 +239,7 @@ body {
 .tab-bar {
 	display: flex;
 	align-items: center;
-	background: var(--bg-dark);
+	background: #3a3a3a;
 	border-radius: 5px 5px 0 0;
 	padding: 0 8px 0 0;
 	margin-bottom: 0;
@@ -259,7 +260,7 @@ body {
 
 .tab-bar .tab.active,
 .tab-bar .tab:hover {
-	background: #1D284E;
+	background: #3a3a3a;
 	color: #fff;
 }
 
@@ -268,13 +269,13 @@ body {
 }
 
 .profile-card-list-wrap {
-	background: #334180;
+	background: #3a3a3a;
 	border-radius: 0 0 8px 8px;
 	padding: 36px 26px 22px 26px;
 }
 
 .profile-card-list {
-	background: #1D284E;
+	background: #3a3a3a;
 	padding: 14px 16px 18px 16px;
 	display: flex;
 	flex-direction: column;
@@ -287,8 +288,8 @@ body {
 	min-height: 400px;
 	overflow-y: auto;
 	scrollbar-width: thin;
-	scrollbar-color: #b0b6d6 #334180;
-	background: #1D284E;
+	scrollbar-color: #b0b6d6 #3a3a3a;
+	background: #3a3a3a;
 	border-radius: 0 0 8px 8px;
 	padding: 20px 26px 22px 26px;
 }
@@ -430,7 +431,7 @@ body {
 	min-height: 250px;
 	max-height: 470px;
 	overflow-y: auto;
-	background: #1D284E;
+	background: #3a3a3a;
 	border-radius: 0 0 8px 8px;
 	padding: 24px 18px 22px 18px;
 	box-shadow: 0 4px 20px #1a1b2240;
@@ -583,7 +584,7 @@ body {
 }
 
 .settings-card {
-	background: #1D284E;
+	background: #3a3a3a;
 	border-radius: 0 0 8px 8px;
 	padding: 36px 26px 22px 26px;
 	color: #fffefa;
@@ -633,7 +634,7 @@ body {
 	min-height: 250px;
 	max-height: 470px;
 	overflow-y: auto;
-	background: #1D284E;
+	background: #3a3a3a;
 	border-radius: 0 0 8px 8px;
 	padding: 24px 18px 22px 18px;
 	box-shadow: 0 4px 20px #1a1b2240;
@@ -830,8 +831,8 @@ a {
 	padding: 15px;
 	min-height: 10px;
 	margin: 0;
-	/* データがなくても高さを出す */
-	background-color: #1D284E;
+	/* データがなくても高さを出す。注文確認画面と同じ薄いグレーに統一 */
+	background-color: #3a3a3a;
 	border-radius: 0 0 8px 8px;
 }
 
