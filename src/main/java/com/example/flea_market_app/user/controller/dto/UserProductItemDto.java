@@ -15,4 +15,6 @@ public class UserProductItemDto {
 	private UUID id;
 	private String imageUrl;
 	private String name;
+	/** この商品に紐づく注文ID。取引があるときのみセット。 */
+	private UUID orderId;
 }

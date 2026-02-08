@@ -16,6 +16,8 @@ public interface OrderRepository extends JpaRepository<OrderEntity, UUID> {
 
 	List<OrderEntity> findBySellerIdOrderByUpdatedAtDesc(UUID sellerId);
 
+	Optional<OrderEntity> findByItemId(UUID itemId);
+
 	Optional<OrderEntity> findByItemIdAndStatus(UUID itemId, String status);
 
 	/**

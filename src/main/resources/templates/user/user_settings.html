@@ -110,7 +110,8 @@
 				<div class="profile-tab-content" id="tab-history" style="display:none;">
 					<div class="product-grid">
 						<th:block th:if="${userProducts != null and !userProducts.empty}">
-							<a th:each="item : ${userProducts}" th:href="@{/products/{id}(id=${item.id})}"
+							<a th:each="item : ${userProducts}"
+								th:href="${item.orderId != null} ? @{/user/orders/{id}(id=${item.orderId})} : @{/products/{id}(id=${item.id})}"
 								class="product-card-link">
 								<div class="item-card">
 									<img th:src="${item.imageUrl}" class="item-img" alt="商品画像">
