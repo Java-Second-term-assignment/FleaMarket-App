@@ -2,6 +2,7 @@ package com.example.flea_market_app.user.repository;
 
 import java.time.OffsetDateTime;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -12,6 +13,49 @@ import org.springframework.data.repository.query.Param;
 import com.example.flea_market_app.user.domain.UserEntity;
 
 public interface UserRepository extends JpaRepository<UserEntity, UUID> {
+
+	/**
+	 * 配送先表示用に recipient_name, postal_code, address のみ取得する。
+	 * notification_enabled 等を参照しないため、カラム未追加のDBでも動作する。
+	 */
+	@Query("SELECT u.recipientName AS recipientName, u.postalCode AS postalCode, u.address AS address FROM UserEntity u WHERE u.id = :userId")
+	Optional<ShippingAddressProjection> findShippingAddressByUserId(@Param("userId") UUID userId);
+
+	interface ShippingAddressProjection {
+		String getRecipientName();
+		String getPostalCode();
+		String getAddress();
+	}
+
+	/**
+	 * getRequired 用。notification_enabled を参照しないため、カラム未追加のDBでも動作する。
+	 */
+	@Query("SELECT u.id AS id, u.displayName AS displayName, u.identityStatus AS identityStatus, u.userRankId AS userRankId, u.active AS active FROM UserEntity u WHERE u.id = :userId")
+	Optional<RequiredUserProjection> findRequiredProjection(@Param("userId") UUID userId);
+
+	interface RequiredUserProjection {
+		UUID getId();
+		String getDisplayName();
+		String getIdentityStatus();
+		short getUserRankId();
+		boolean isActive();
+	}
+
+	/**
+	 * 設定画面表示用。notification_enabled を参照しないため、カラム未追加のDBでも動作する。
+	 */
+	@Query("SELECT u.profileImageUrl AS profileImageUrl, u.profileImageS3Key AS profileImageS3Key, u.caption AS caption, u.recipientName AS recipientName, u.postalCode AS postalCode, u.address AS address, u.phone AS phone FROM UserEntity u WHERE u.id = :userId")
+	Optional<ProfileForMeProjection> findProfileForMeByUserId(@Param("userId") UUID userId);
+
+	interface ProfileForMeProjection {
+		String getProfileImageUrl();
+		String getProfileImageS3Key();
+		String getCaption();
+		String getRecipientName();
+		String getPostalCode();
+		String getAddress();
+		String getPhone();
+	}
 
 	List<UserEntity> findByActiveFalse();
 

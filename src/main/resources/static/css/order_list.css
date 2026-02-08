@@ -2,9 +2,9 @@
 
 /* 注文一覧：管理者ユーザー一覧と同様の中央レイアウト（variables.css / theme.css 参照） */
 
-/* ページ全体：プロフィール画面と統一・最大幅 1100px */
+/* ページ全体：プロフィール画面と統一・最大幅 1200px */
 .order-list-main {
-	max-width: 1100px;
+	max-width: 1200px;
 	margin: 100px auto 40px;
 	padding: 0 20px;
 	background-color: var(--bg-dark);

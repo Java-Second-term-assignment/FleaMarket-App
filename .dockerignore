@@ -1,0 +1,20 @@
+# Build output
+target/
+
+# Git and IDE
+.git
+.gitignore
+.idea
+*.iml
+.vscode
+.cursor
+
+# Docs and local config (not needed in image)
+docs/
+*.md
+!README.md
+
+# Test and dev
+src/test/
+*.log
+.DS_Store

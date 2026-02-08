@@ -21,7 +21,7 @@ public class AuthorizationConfig {
 				.requestMatchers(HttpMethod.GET, "/community/boards/**").permitAll()
 				.requestMatchers(HttpMethod.POST, "/community/boards/**").hasRole("USER")
 				// 商品出品APIは /api/listings（ListingController）で提供
-				.requestMatchers("/user/me/**").hasRole("USER")
+				.requestMatchers("/api/user/**").hasRole("USER")
 				.requestMatchers("/api/favorites/**").hasRole("USER")
 				.requestMatchers("/admin/**").hasRole("ADMIN")
 				.anyRequest().authenticated();
@@ -39,7 +39,7 @@ public class AuthorizationConfig {
 				.requestMatchers("/", "/products", "/products/**").permitAll()
 				.requestMatchers(HttpMethod.GET, "/board", "/board/**").permitAll()
 				.requestMatchers(HttpMethod.POST, "/board/*/posts").authenticated()
-				.requestMatchers("/user/settings", "/user/settings/**", "/user/address/**", "/user/orders", "/user/orders/**", "/user/favorites", "/user/favorites/**", "/product/add", "/items/add", "/product/submit", "/product/*/review", "/products/*/report", "/order/confirm", "/payment", "/address", "/cart", "/cart/**").authenticated()
+				.requestMatchers("/user/settings", "/user/settings/**", "/user/address/**", "/user/orders", "/user/orders/**", "/user/favorites", "/user/favorites/**", "/product/add", "/items/add", "/product/submit", "/product/*/review", "/product/*/suspend", "/product/*/unsuspend", "/product/*/delete", "/products/*/report", "/order/confirm", "/payment", "/address", "/cart", "/cart/**").authenticated()
 				.requestMatchers("/admin/**").hasRole("ADMIN")
 				.requestMatchers("/password/change", "/password-change").authenticated()
 				.anyRequest().authenticated();

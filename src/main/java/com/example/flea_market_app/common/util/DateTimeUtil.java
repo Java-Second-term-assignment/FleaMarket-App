@@ -25,7 +25,7 @@ public class DateTimeUtil {
 
 		if (testClock == null) {
 
-			throw new IllegalArgumentException("Clock ust not be null");
+			throw new IllegalArgumentException("Clock must not be null");
 
 		}
 

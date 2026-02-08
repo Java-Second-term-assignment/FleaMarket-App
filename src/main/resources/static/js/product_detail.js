@@ -117,6 +117,11 @@
 			var url = "/user/favorites/" + productId;
 			var method = favorited ? "DELETE" : "POST";
 			var opts = { method: method, credentials: "same-origin", headers: {} };
+			var csrfTokenEl = document.getElementById("csrfToken");
+			var csrfHeaderEl = document.getElementById("csrfHeader");
+			if (csrfTokenEl && csrfHeaderEl) {
+				opts.headers[csrfHeaderEl.value] = csrfTokenEl.value;
+			}
 			if (method === "POST") {
 				opts.headers["Content-Type"] = "application/json";
 				opts.body = JSON.stringify({ itemId: productId });

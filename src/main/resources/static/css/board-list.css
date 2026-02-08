@@ -4,7 +4,7 @@
 
 /* --- メインレイアウト --- */
 main {
-	max-width: 1100px;
+	max-width: 1200px;
 	margin: 100px auto 40px;
 	padding: 0 20px;
 }
@@ -326,6 +326,38 @@ main {
 	border-radius: 4px;
 	cursor: pointer;
 	font-size: 13px;
+}
+
+/* ダークモード：投稿セクションをレビュー欄・ランキングと同じ薄いグレーに */
+html:not([data-theme="light"]) .post-box {
+	background-color: #4a4a50;
+	color: #e0e0e0;
+}
+html:not([data-theme="light"]) .post-box input,
+html:not([data-theme="light"]) .post-box textarea {
+	background: #38383c;
+	border-color: #5a5a60;
+	color: var(--text-main);
+}
+html:not([data-theme="light"]) .post-box input::placeholder,
+html:not([data-theme="light"]) .post-box textarea::placeholder {
+	color: var(--text-muted);
+}
+html:not([data-theme="light"]) .post-box .category-select-trigger {
+	background: #38383c !important;
+	border-color: #5a5a60 !important;
+	color: var(--text-main) !important;
+}
+html:not([data-theme="light"]) .post-box .category-select-trigger div {
+	color: var(--text-muted) !important;
+}
+html:not([data-theme="light"]) .post-box .category-select-trigger span {
+	color: var(--link-blue) !important;
+}
+html:not([data-theme="light"]) .post-box .btn-select-product {
+	background: #38383c;
+	border-color: #5a5a60;
+	color: var(--text-main);
 }
 
 /* --- 掲示板リスト --- */

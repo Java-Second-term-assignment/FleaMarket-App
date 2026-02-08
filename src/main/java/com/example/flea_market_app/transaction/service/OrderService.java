@@ -16,6 +16,10 @@ import com.example.flea_market_app.transaction.domain.Order;
 import com.example.flea_market_app.transaction.domain.OrderEntity;
 import com.example.flea_market_app.transaction.domain.OrderStatus;
 import com.example.flea_market_app.transaction.repository.OrderRepository;
+import com.example.flea_market_app.user.domain.UserEntity;
+import com.example.flea_market_app.user.domain.UserRank;
+import com.example.flea_market_app.user.repository.UserRepository;
+import com.example.flea_market_app.user.service.UserRankService;
 
 import lombok.RequiredArgsConstructor;
 
@@ -25,6 +29,8 @@ public class OrderService {
 
 	private final OrderRepository orderRepository;
 	private final ItemRepository itemRepository;
+	private final UserRepository userRepository;
+	private final UserRankService userRankService;
 	private final EmailNotificationSender emailNotificationSender;
 	private final NotificationService notificationService;
 
@@ -115,6 +121,11 @@ public class OrderService {
 	public UUID createOrderFromProduct(UUID itemId, UUID buyerId, String addressSnapshot) {
 		var item = itemRepository.findById(itemId)
 				.orElseThrow(() -> NotFoundBusinessException.of(ResourceType.ITEM));
+		if (orderRepository.existsByItemId(itemId)) {
+			throw new ValidationBusinessException(
+					com.example.flea_market_app.common.error.ErrorCode.INVALID_STATE,
+					"error.order.item_already_ordered");
+		}
 		if (item.getSellerId().equals(buyerId)) {
 			throw new ValidationBusinessException(
 					com.example.flea_market_app.common.error.ErrorCode.INVALID_STATE,
@@ -124,14 +135,22 @@ public class OrderService {
 		long shippingFee = 0L;
 		long total = price + shippingFee;
 
+		UUID sellerId = item.getSellerId();
+		int commissionBps = 0;
+		UserEntity seller = userRepository.findById(sellerId).orElse(null);
+		if (seller != null) {
+			UserRank rank = userRankService.loadRank(seller.getUserRankId());
+			commissionBps = rank.getCommissionBps();
+		}
+
 		OrderEntity e = new OrderEntity();
 		e.setId(UUID.randomUUID());
 		e.setItemId(itemId);
 		e.setBuyerId(buyerId);
-		e.setSellerId(item.getSellerId());
+		e.setSellerId(sellerId);
 		e.setStripePaymentIntentId(null);
 		e.setStatus(OrderStatus.PAID.name());
-		e.setAppliedCommissionBps(0);
+		e.setAppliedCommissionBps(commissionBps);
 		e.setItemPriceAmount(price);
 		e.setShippingFeeAmount(shippingFee);
 		e.setTotalAmount(total);

@@ -53,6 +53,8 @@ Flyway のマイグレーションは **2通りの実行方法** があります
 
 Flyway は Spring Boot に組み込まれており、`spring-boot:run` 実行時に **自動でマイグレーションが実行** されます。
 
+> **注意（Spring Boot 4.x）:** 自動実行には `spring-boot-starter-flyway` の依存が必要です。`flyway-core` のみではマイグレーションは実行されません。
+
 ```bash
 ./mvnw spring-boot:run
 ```
@@ -155,7 +157,59 @@ SPRING_PROFILES_ACTIVE=pg ./mvnw spring-boot:run
 
 ### Flyway の「Validate failed」エラー
 - 既存の `flyway_schema_history` テーブルとマイグレーションファイルの整合性が取れていない可能性があります
-- 開発環境で DB を初期化してよい場合は、データベースを削除して再作成し、マイグレーションをやり直してください
+- 開発環境で DB を初期化してよい場合は、データベースを削除して再作成するか、下記「Flyway clean で開発用DBをリセット」を実行してください。
+
+### Flyway clean で開発用DBをリセット
+開発用のみで、スキーマごとすべて消してマイグレーションを最初からやり直したい場合に使います。**本番DBでは絶対に実行しないでください。**
+
+Flyway は安全のため `clean` がデフォルトで無効です。有効にして実行するには `-Dflyway.cleanDisabled=false` を付けます。
+
+```bash
+# 1. target を消してから（古い dev_migration が target に残っていると migrate が失敗することがあります）
+./mvnw clean compile -DskipTests
+
+# 2. clean でスキーマを削除（要 -Dflyway.cleanDisabled=false）
+./mvnw flyway:clean -Dflyway.cleanDisabled=false
+
+# 3. マイグレーションを最初から実行
+./mvnw flyway:migrate
+```
+
+パスワードを指定する場合:
+```bash
+./mvnw flyway:clean -Dflyway.cleanDisabled=false -Dflyway.password=postgres
+./mvnw flyway:migrate -Dflyway.password=postgres
+```
+
+### 開発用シード（V70/V71）が反映されない・表示名が「購入者B」のまま
+
+`dev` プロファイルで起動しているのに、ユーザー設定で「テストユーザー B」「鈴木 花子」などではなく「購入者B」「プロフィールはまだ未記入です」と表示される場合、**V70 が適用されていない**か、**V70 適用前に既に buyerB@example.com が登録されていた**可能性があります（auth_users の email UNIQUE により V70 の挿入が失敗している）。
+
+**対処: 開発用 DB を一度リセットし、V1 → V2 → V70 → V71 をすべてやり直す。**
+
+1. **アプリを止める**  
+   `./mvnw spring-boot:run` を実行しているターミナルで Ctrl+C。
+
+2. **PostgreSQL で開発用 DB を削除して作り直す**
+   ```bash
+   psql -U postgres -h localhost -c "DROP DATABASE flea_market;"
+   psql -U postgres -h localhost -c "CREATE DATABASE flea_market;"
+   ```
+   （GUI ツールの場合は `DROP DATABASE flea_market;` → `CREATE DATABASE flea_market;` を実行）
+
+3. **dev プロファイルでアプリを起動する**
+   ```bash
+   ./mvnw spring-boot:run
+   ```
+   または明示的に: `./mvnw spring-boot:run -Dspring-boot.run.profiles=dev`
+
+4. **起動ログで V70・V71 の実行を確認する**  
+   `Migrating schema ...` で `V70__dev_seed_users.sql` と `V71__dev_seed_items.sql` が適用されていることを確認。
+
+5. **ログインして表示を確認する**  
+   `buyerB@example.com` / `password` でログインし、ユーザー設定で表示名「テストユーザー B」・配送先など「鈴木 花子」など V70 の内容になっていることを確認。
+
+これで DevMigration のテストユーザー・本名が正しく反映されます。
 
 ### H2 で試したい場合
 本プロジェクトは PostgreSQL を前提としており、H2 ドライバは `pom.xml` に含まれていません。開発・本番ともに PostgreSQL の利用を推奨します。

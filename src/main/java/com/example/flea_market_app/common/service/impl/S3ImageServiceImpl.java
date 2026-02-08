@@ -7,6 +7,7 @@ import java.util.UUID;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Service;
 
 import com.example.flea_market_app.common.error.ErrorCode;
@@ -24,11 +25,13 @@ import software.amazon.awssdk.services.s3.model.S3Exception;
  * 
  * <p>S3ImageServiceインターフェースの実装です。
  * AWS SDK for Java 2.xを使用してS3操作を行います。
+ * app.image.storage=s3 のときのみ有効（デフォルト）。
  * 
  * @author FleaMarket-App Team
  * @since 1.0.0
  */
 @Service
+@ConditionalOnProperty(name = "app.image.storage", havingValue = "s3", matchIfMissing = true)
 public class S3ImageServiceImpl implements S3ImageService {
 
 	private static final Logger log = LoggerFactory.getLogger(S3ImageServiceImpl.class);

@@ -170,7 +170,7 @@ document.addEventListener("DOMContentLoaded", () => {
 	document.addEventListener("submit", (e) => {
 		const form = e.target.closest("form.toggle-form");
 		if (!form) return;
-		const submitter = e.submitter;
+		const submitter = e.submitter ? (e.submitter.closest && e.submitter.closest("button")) || e.submitter : null;
 		if (submitter && submitter.classList.contains("toggle-disable-btn")) {
 			e.preventDefault();
 			if (confirm("このユーザーを無効にしますか？")) form.submit();

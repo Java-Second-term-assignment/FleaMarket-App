@@ -22,7 +22,7 @@
 						<div class="cart-list-item-inner">
 							<a th:href="@{/products/{id}(id=${item.id})}" class="order-list-link">
 								<div class="order-item-thumb">
-									<img th:src="${item.imageUrl}" alt="" onerror="this.src='/img/no-image.png'">
+									<img th:src="${item.imageUrl}" alt="" onerror="this.src='/img/no-image.svg'">
 								</div>
 								<div class="order-item-info">
 									<div class="order-item-name" th:text="${item.name}">商品名</div>

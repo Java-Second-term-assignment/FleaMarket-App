@@ -22,7 +22,7 @@
 					<li th:each="o : ${orders}" class="order-list-item">
 						<a th:href="@{/user/orders/{id}(id=${o.orderId})}" class="order-list-link">
 							<div class="order-item-thumb">
-								<img th:src="${o.itemThumbnailUrl}" alt="" onerror="this.src='/img/no-image.png'">
+								<img th:src="${o.itemThumbnailUrl}" alt="" onerror="this.src='/img/no-image.svg'">
 							</div>
 							<div class="order-item-info">
 								<div class="order-item-name" th:text="${o.itemName}">商品名</div>

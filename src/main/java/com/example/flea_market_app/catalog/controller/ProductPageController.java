@@ -87,15 +87,18 @@ public class ProductPageController {
 	@GetMapping("/products/{id}")
 	public String productDetail(@PathVariable UUID id, Model model) {
 		log.info("Product detail requested: itemId={}", id);
-		return productListService.getProductDetail(id)
+		Optional<UUID> currentUserId = SecurityUtil.getCurrentUserIdOptional();
+		return productListService.getProductDetail(id, currentUserId)
 				.map(product -> {
-					SecurityUtil.getCurrentUserIdOptional()
-							.ifPresent(userId -> itemViewService.recordViewIfNew(userId, id));
-					boolean isFavorited = SecurityUtil.getCurrentUserIdOptional()
+					currentUserId.ifPresent(userId -> itemViewService.recordViewIfNew(userId, id));
+					boolean isFavorited = currentUserId
 							.map(userId -> favoriteRepository.existsByUserIdAndItemId(userId, id))
 							.orElse(false);
+					boolean isSeller = product.getSellerId() != null && currentUserId.isPresent()
+							&& product.getSellerId().equals(currentUserId.get());
 					model.addAttribute("product", product);
 					model.addAttribute("isFavorited", isFavorited);
+					model.addAttribute("isSeller", isSeller);
 					model.addAttribute("reviewSummary", productReviewQueryService.getReviewSummary(id));
 					model.addAttribute("reviews", productReviewQueryService.getReviewsForItem(id));
 					model.addAttribute("reviewForm", new ReviewForm());

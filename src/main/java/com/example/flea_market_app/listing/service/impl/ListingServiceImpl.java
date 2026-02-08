@@ -13,6 +13,8 @@ import org.springframework.web.multipart.MultipartFile;
 import com.example.flea_market_app.admin.service.ItemModerationRecordService;
 import com.example.flea_market_app.catalog.service.ItemImageService;
 import com.example.flea_market_app.catalog.service.ItemService;
+import com.example.flea_market_app.common.error.ErrorCode;
+import com.example.flea_market_app.common.exception.ValidationBusinessException;
 import com.example.flea_market_app.listing.domain.ItemCondition;
 import com.example.flea_market_app.listing.service.ListingModerationService;
 import com.example.flea_market_app.listing.domain.Listing;
@@ -48,14 +50,20 @@ public class ListingServiceImpl implements ListingService {
 		ItemCondition condition = ItemCondition.valueOf(request.getCondition());
 		ShippingFeePayer shippingFeePayer = ShippingFeePayer.valueOf(request.getShippingFeePayer());
 
-		Listing draft = Listing.createDraft(
-				sellerId,
-				request.getCategoryId(),
-				request.getName(),
-				request.getDescription(),
-				request.getPriceAmount(),
-				condition,
-				shippingFeePayer);
+		Listing draft;
+		try {
+			draft = Listing.createDraft(
+					sellerId,
+					request.getCategoryId(),
+					request.getName(),
+					request.getDescription(),
+					request.getPriceAmount(),
+					condition,
+					shippingFeePayer);
+		} catch (IllegalArgumentException e) {
+			log.warn("Listing validation failed: {}", e.getMessage());
+			throw new ValidationBusinessException(ErrorCode.LISTING_VALIDATION, "error.listing.validation");
+		}
 
 		UUID itemId = itemService.createDraftItem(
 				draft.getSellerId(),
@@ -91,6 +99,9 @@ public class ListingServiceImpl implements ListingService {
 		} catch (Exception e) {
 			log.warn("Moderation check skipped or failed for item {}: {}", itemId, e.getMessage());
 		}
+
+		// 下書きを公開状態にして商品詳細・一覧に表示できるようにする
+		itemService.publishItem(itemId);
 
 		log.info("Successfully created item with {} images: {}", imageUrls.size(), itemId);
 		return new CreateItemResponse(itemId, imageUrls);

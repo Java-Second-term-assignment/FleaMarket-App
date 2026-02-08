@@ -157,6 +157,7 @@ html[data-theme="light"] .theme-icon-dark {
 /* ライトモード時：商品詳細・商品一覧の表示を崩さない（文字色・背景を明示） */
 html[data-theme="light"] .detail-card,
 html[data-theme="light"] .detail-card .product-title,
+html[data-theme="light"] .detail-card .product-description-title,
 html[data-theme="light"] .detail-card .long-text,
 html[data-theme="light"] .detail-card .stock-info {
 	color: #1a1a1a;

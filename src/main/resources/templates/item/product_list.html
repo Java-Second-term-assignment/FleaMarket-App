@@ -83,7 +83,7 @@
 						<li class="ranking-item" th:each="rank, stat : ${rankings}">
 							<a th:href="@{/products/{id}(id=${rank.id != null ? rank.id.toString() : ''})}" class="ranking-item-link">
 								<span class="ranking-rank" th:text="${stat.count}"></span>
-								<img th:src="${rank.imageUrl}" class="ranking-thumb" onerror="this.src='/img/no-image.png'">
+								<img th:src="${rank.imageUrl}" class="ranking-thumb" onerror="this.src='/img/no-image.svg'">
 
 								<div class="ranking-info">
 									<span class="ranking-item-title" th:text="${rank.name}"></span>
@@ -104,7 +104,7 @@
 				<div class="item-card">
 
 					<div class="item-card-image">
-						<img th:src="${product.imageUrl}" class="item-img" onerror="this.src='/img/no-image.png'">
+						<img th:src="${product.imageUrl}" class="item-img" onerror="this.src='/img/no-image.svg'">
 
 						<div class="soldout-badge" th:if="${product.soldOut}">
 							<span>Sold out</span>

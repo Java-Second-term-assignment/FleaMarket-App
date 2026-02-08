@@ -22,6 +22,10 @@ import lombok.RequiredArgsConstructor;
 /**
  * お気に入り用エンドポイント（セッション認証）。
  * 商品詳細画面から fetch で呼び出す。JWT 不要。
+ *
+ * <p>このコントローラはタイムリーフを想定していない。セッション認証専用。
+ * 既存の product_detail.js が同一オリジンで利用。
+ * タイムリーフ利用時は JWT 対応の API（例: /api/favorites）の利用を検討すること。
  */
 @RestController
 @RequestMapping("/user/favorites")

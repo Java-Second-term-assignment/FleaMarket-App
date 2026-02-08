@@ -21,4 +21,11 @@ public interface ItemService {
 	 */
 	UUID createDraftItem(UUID sellerId, UUID categoryId, String name, String description,
 			long priceAmount, String condition, String shippingFeePayer);
+
+	/**
+	 * 下書き商品を公開状態（PUBLISHED）にする。出品完了時に呼ぶ。
+	 *
+	 * @param itemId 商品ID
+	 */
+	void publishItem(UUID itemId);
 }

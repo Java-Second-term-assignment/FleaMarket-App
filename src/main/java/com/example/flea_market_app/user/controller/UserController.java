@@ -26,7 +26,7 @@ import lombok.RequiredArgsConstructor;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/user")
+@RequestMapping("/api/user")
 @Validated
 public class UserController {
 
@@ -36,6 +36,7 @@ public class UserController {
 	private final UserService userService;
 
 	// userIdはSecurityContextからのみ取得（引数で受け取らない）
+	// 成功レスポンスは ApiResponse でラップしていない（タイムリーフ側で success/data 形式を期待する場合は要対応）。既存の user_settings.js および統合テストが現形式を利用。
 	@GetMapping("/me")
 	public ResponseEntity<UserMeResponse> getMe() {
 		UUID userId = SecurityUtil.getCurrentUserId();
@@ -54,6 +55,8 @@ public class UserController {
 	 * 
 	 * <p>認証済みユーザーが自分のプロフィール画像を設定・更新できます。
 	 * 既存の画像がある場合は、自動的に削除されてから新しい画像がアップロードされます。
+	 *
+	 * <p>成功レスポンスは ApiResponse でラップしていない（タイムリーフ側で success/data 形式を期待する場合は要対応）。既存の user_settings.js および統合テストが現形式を利用。
 	 * 
 	 * @param image アップロードする画像ファイル
 	 * @return プロフィール画像の情報（S3キー、URL等）

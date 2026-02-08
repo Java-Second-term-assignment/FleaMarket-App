@@ -34,7 +34,7 @@ import lombok.RequiredArgsConstructor;
 public class BoardController {
 
 	private static final Logger log = LoggerFactory.getLogger(BoardController.class);
-	private static final int DEFAULT_POST_LIMIT = 50;
+	private static final int DEFAULT_POST_SIZE = 50;
 
 	private final BoardService boardService;
 
@@ -42,16 +42,18 @@ public class BoardController {
 	 * 掲示板の投稿一覧を取得します（最新順）。未ログインでも閲覧可能です。
 	 *
 	 * @param boardId 掲示板ID（商品ID = item_id）
-	 * @param limit   取得件数上限（省略時は {@value #DEFAULT_POST_LIMIT} 件）
+	 * @param page    ページ番号（0 始まり、省略時は 0）
+	 * @param size    1 ページあたりの件数（省略時は {@value #DEFAULT_POST_SIZE}、1〜100）
 	 * @return 投稿一覧
 	 */
 	@GetMapping("/{boardId}/posts")
 	public ResponseEntity<ApiResponse<List<PostResponse>>> getPosts(
 			@PathVariable UUID boardId,
-			@RequestParam(defaultValue = "" + DEFAULT_POST_LIMIT) @Min(1) @Max(100) int limit) {
-		log.info("Getting posts for board: {}, limit={}", boardId, limit);
+			@RequestParam(defaultValue = "0") @Min(0) int page,
+			@RequestParam(defaultValue = "" + DEFAULT_POST_SIZE) @Min(1) @Max(100) int size) {
+		log.info("Getting posts for board: {}, page={}, size={}", boardId, page, size);
 
-		List<PostResponse> posts = boardService.getPosts(boardId, limit);
+		List<PostResponse> posts = boardService.getPosts(boardId, page, size);
 
 		log.info("Found {} posts for board: {}", posts.size(), boardId);
 		return ResponseEntity.ok(ApiResponse.success(posts));
@@ -73,6 +75,7 @@ public class BoardController {
 
 		UUID postId = boardService.createPost(boardId, userId, request.getContent());
 
+		// Location に相対パスを設定している。SPA/タイムリーフからは絶対 URL の方が扱いやすい場合は要対応。
 		URI location = URI.create("/community/boards/" + boardId + "/posts/" + postId);
 		log.info("Created post: postId={}", postId);
 		return ResponseEntity.created(location).build();

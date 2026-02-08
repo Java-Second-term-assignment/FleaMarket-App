@@ -1,6 +1,6 @@
 -- V71__dev_seed_items.sql
 -- dev プロファイルのみ適用
--- 開発/検証用のサンプル商品を投入
+-- 開発/検証用のサンプル商品25件とデモ画像（picture/）の紐付けを投入
 -- カテゴリ: メンズ(20000000...0001), レディース(20000000...0002), スマホ(20000000...0101)
 -- 出品者: 30000000-0000-0000-0000-000000000001
 
@@ -32,3 +32,33 @@ VALUES
   ('40000000-0000-0000-0000-000000000024'::uuid, NULL, NULL, '30000000-0000-0000-0000-000000000001'::uuid, '20000000-0000-0000-0000-000000000002'::uuid, 'ネックレス シルバー', 'ハートペンダント。', 1200, 'JPY', 'PUBLISHED', 'USED_GOOD', 'SELLER'),
   ('40000000-0000-0000-0000-000000000025'::uuid, NULL, NULL, '30000000-0000-0000-0000-000000000001'::uuid, '20000000-0000-0000-0000-000000000101'::uuid, 'ヘッドホン オーバーイヤー', '閉鎖型。長時間使用に。', 4500, 'JPY', 'PUBLISHED', 'USED_GOOD', 'SELLER')
 ON CONFLICT (id) DO NOTHING;
+
+-- デモ商品25件に picture/ の画像を紐付け（s3_key は demo/ プレフィックスで WebMvcConfig の /img/demo/** から配信）
+INSERT INTO item_images (id, item_id, s3_key, content_type, byte_size, display_order, created_at)
+VALUES
+  (gen_random_uuid(), '40000000-0000-0000-0000-000000000001'::uuid, 'demo/ノートpc.png', 'image/png', NULL, 0, now()),
+  (gen_random_uuid(), '40000000-0000-0000-0000-000000000002'::uuid, 'demo/ワイヤレスイヤホン.png', 'image/png', NULL, 0, now()),
+  (gen_random_uuid(), '40000000-0000-0000-0000-000000000003'::uuid, 'demo/デニムジャケット.png', 'image/png', NULL, 0, now()),
+  (gen_random_uuid(), '40000000-0000-0000-0000-000000000004'::uuid, 'demo/スニーカー.png', 'image/png', NULL, 0, now()),
+  (gen_random_uuid(), '40000000-0000-0000-0000-000000000005'::uuid, 'demo/ワンピース.png', 'image/png', NULL, 0, now()),
+  (gen_random_uuid(), '40000000-0000-0000-0000-000000000006'::uuid, 'demo/タブレット.png', 'image/png', NULL, 0, now()),
+  (gen_random_uuid(), '40000000-0000-0000-0000-000000000007'::uuid, 'demo/デジタル時計.png', 'image/png', NULL, 0, now()),
+  (gen_random_uuid(), '40000000-0000-0000-0000-000000000008'::uuid, 'demo/モバイルバッテリー.png', 'image/png', NULL, 0, now()),
+  (gen_random_uuid(), '40000000-0000-0000-0000-000000000009'::uuid, 'demo/スピーカー.png', 'image/png', NULL, 0, now()),
+  (gen_random_uuid(), '40000000-0000-0000-0000-000000000010'::uuid, 'demo/マウス.png', 'image/png', NULL, 0, now()),
+  (gen_random_uuid(), '40000000-0000-0000-0000-000000000011'::uuid, 'demo/ポロシャツ.png', 'image/png', NULL, 0, now()),
+  (gen_random_uuid(), '40000000-0000-0000-0000-000000000012'::uuid, 'demo/チノパン.png', 'image/png', NULL, 0, now()),
+  (gen_random_uuid(), '40000000-0000-0000-0000-000000000013'::uuid, 'demo/パーカー.png', 'image/png', NULL, 0, now()),
+  (gen_random_uuid(), '40000000-0000-0000-0000-000000000014'::uuid, 'demo/ダウンジャケット.png', 'image/png', NULL, 0, now()),
+  (gen_random_uuid(), '40000000-0000-0000-0000-000000000015'::uuid, 'demo/カーディガン.png', 'image/png', NULL, 0, now()),
+  (gen_random_uuid(), '40000000-0000-0000-0000-000000000016'::uuid, 'demo/レースシャツ.png', 'image/png', NULL, 0, now()),
+  (gen_random_uuid(), '40000000-0000-0000-0000-000000000017'::uuid, 'demo/スカート.png', 'image/png', NULL, 0, now()),
+  (gen_random_uuid(), '40000000-0000-0000-0000-000000000018'::uuid, 'demo/ヒール.png', 'image/png', NULL, 0, now()),
+  (gen_random_uuid(), '40000000-0000-0000-0000-000000000019'::uuid, 'demo/iPhone.png', 'image/png', NULL, 0, now()),
+  (gen_random_uuid(), '40000000-0000-0000-0000-000000000020'::uuid, 'demo/webカメラ.png', 'image/png', NULL, 0, now()),
+  (gen_random_uuid(), '40000000-0000-0000-0000-000000000021'::uuid, 'demo/デニムジーンズ.png', 'image/png', NULL, 0, now()),
+  (gen_random_uuid(), '40000000-0000-0000-0000-000000000022'::uuid, 'demo/皮財布.png', 'image/png', NULL, 0, now()),
+  (gen_random_uuid(), '40000000-0000-0000-0000-000000000023'::uuid, 'demo/トートバック.png', 'image/png', NULL, 0, now()),
+  (gen_random_uuid(), '40000000-0000-0000-0000-000000000024'::uuid, 'demo/ハートのネックレス.png', 'image/png', NULL, 0, now()),
+  (gen_random_uuid(), '40000000-0000-0000-0000-000000000025'::uuid, 'demo/ヘッドホン.png', 'image/png', NULL, 0, now())
+ON CONFLICT (item_id, s3_key) DO NOTHING;

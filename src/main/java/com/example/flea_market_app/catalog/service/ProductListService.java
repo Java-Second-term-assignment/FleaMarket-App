@@ -178,9 +178,25 @@ public class ProductListService {
 
 	@Transactional(readOnly = true)
 	public Optional<ProductDetailViewDto> getProductDetail(UUID itemId) {
+		return getProductDetail(itemId, Optional.empty());
+	}
+
+	@Transactional(readOnly = true)
+	public Optional<ProductDetailViewDto> getProductDetail(UUID itemId, Optional<UUID> viewerId) {
 		return itemRepository.findById(itemId)
-				.filter(item -> STATUS_PUBLISHED.equals(item.getStatus()) || "SOLD".equals(item.getStatus()))
+				.filter(item -> isVisibleForDetail(item, viewerId))
 				.map(this::toProductDetailDto);
+	}
+
+	private boolean isVisibleForDetail(ItemEntity item, Optional<UUID> viewerId) {
+		String status = item.getStatus();
+		if (STATUS_PUBLISHED.equals(status) || STATUS_SOLD.equals(status)) {
+			return true;
+		}
+		if ("SUSPENDED".equals(status) || "DRAFT".equals(status)) {
+			return viewerId.isPresent() && item.getSellerId().equals(viewerId.get());
+		}
+		return false;
 	}
 
 	private ProductDetailViewDto toProductDetailDto(ItemEntity item) {
@@ -205,6 +221,8 @@ public class ProductListService {
 				.images(images)
 				.category(new ProductDetailViewDto.CategoryDisplayDto(categoryName))
 				.stock(stock)
+				.sellerId(item.getSellerId())
+				.status(item.getStatus())
 				.build();
 	}
 }

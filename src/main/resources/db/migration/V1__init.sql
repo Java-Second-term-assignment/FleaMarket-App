@@ -1,4 +1,4 @@
--- V1__init.sql（統合版）
+-- V1__init.sql（統合版・スキーマ一式）
 -- PostgreSQL 13+ 推奨（gen_random_uuid() のため pgcrypto 使用）
 -- 方針:
 -- - PKはUUID
@@ -7,7 +7,7 @@
 -- - 手数料率はbps（0..10000）
 -- - 画像はS3 object keyを保存（URLは保存しない）
 -- - 監査/通報は target_type + target_id
--- テーブル定義は最初から完成形（ADD COLUMN による後付けなし）
+-- テーブル定義は最初から完成形（users.notification_enabled / notifications 含む）
 
 BEGIN;
 
@@ -56,9 +56,12 @@ CREATE TABLE users (
   profile_image_url    varchar(500) NULL,
   caption         varchar(200) NULL,
   recipient_name  varchar(100) NULL,
+  recipient_name_furigana varchar(100) NULL,
+  date_of_birth   date NULL,
   postal_code     varchar(20) NULL,
   address         varchar(500) NULL,
   phone           varchar(30) NULL,
+  gender          varchar(20) NULL CHECK (gender IS NULL OR gender IN ('MALE', 'FEMALE', 'OTHER')),
   notification_enabled boolean NOT NULL DEFAULT true,
   created_at      timestamptz NOT NULL DEFAULT now(),
   updated_at      timestamptz NOT NULL DEFAULT now()

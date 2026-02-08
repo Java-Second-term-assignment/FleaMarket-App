@@ -8,6 +8,9 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 
+import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.type.SqlTypes;
+
 import lombok.Getter;
 import lombok.Setter;
 
@@ -61,6 +64,7 @@ public class OrderEntity {
 	@Column(nullable = false, length = 3)
 	private String currency;
 
+	@JdbcTypeCode(SqlTypes.JSON)
 	@Column(name = "shipping_address_snapshot", nullable = false, length = 4096)
 	private String shippingAddressSnapshot;
 

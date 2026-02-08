@@ -8,7 +8,7 @@ body {
 }
 
 .confirm-container {
-	max-width: 1100px;
+	max-width: 1200px;
 	margin: 0 auto;
 	padding: 0 20px;
 	display: flex;
@@ -19,6 +19,15 @@ body {
 .page-title {
 	color: #F2EEB8;
 	margin-bottom: 20px;
+}
+
+.flash-error {
+	margin-bottom: 16px;
+	padding: 12px;
+	background: rgba(229, 57, 53, 0.2);
+	border-radius: 8px;
+	color: #e53935;
+	font-size: 14px;
 }
 
 .confirm-main {
@@ -234,4 +243,85 @@ body {
 
 .cart-empty a:hover {
 	text-decoration: underline;
+}
+
+/* --- ダークモード：カードを薄いグレーにして見やすく --- */
+html:not([data-theme="light"]) .section-card,
+html:not([data-theme="light"]) .summary-card {
+	background: #3a3a3a;
+	box-shadow: 0 4px 15px rgba(0, 0, 0, 0.25);
+}
+
+html:not([data-theme="light"]) .section-card .section-title {
+	color: #e8e8e8;
+}
+
+html:not([data-theme="light"]) .section-desc {
+	color: #b0b0b0;
+}
+
+html:not([data-theme="light"]) .item-row {
+	border-bottom-color: #505050;
+}
+
+html:not([data-theme="light"]) .item-details h4 {
+	color: #e8e8e8;
+}
+
+html:not([data-theme="light"]) .item-qty {
+	color: #a0a0a0;
+}
+
+html:not([data-theme="light"]) .section-card .edit-link {
+	color: #6eb5ff;
+}
+
+html:not([data-theme="light"]) .form-input,
+html:not([data-theme="light"]) .form-select {
+	background: #2d2d2d;
+	border-color: #555;
+	color: #e8e8e8;
+}
+
+html:not([data-theme="light"]) .form-group .info-label {
+	color: #b0b0b0;
+}
+
+html:not([data-theme="light"]) .info-label {
+	color: #b0b0b0;
+}
+
+html:not([data-theme="light"]) .info-value {
+	color: #e8e8e8;
+}
+
+html:not([data-theme="light"]) .info-grid > .info-value {
+	border-bottom-color: #505050;
+}
+
+html:not([data-theme="light"]) .summary-card h3 {
+	color: #e8e8e8;
+}
+
+html:not([data-theme="light"]) .summary-row span,
+html:not([data-theme="light"]) .total-row span {
+	color: #e8e8e8;
+}
+
+html:not([data-theme="light"]) .total-row {
+	border-top-color: #5a6a9a;
+}
+
+html:not([data-theme="light"]) .btn-remove {
+	color: #b0b0b0;
+	border-color: #555;
+}
+
+html:not([data-theme="light"]) .btn-remove:hover {
+	background: #454545;
+	color: #e8e8e8;
+}
+
+html:not([data-theme="light"]) .cart-empty {
+	color: #b0b0b0;
 }

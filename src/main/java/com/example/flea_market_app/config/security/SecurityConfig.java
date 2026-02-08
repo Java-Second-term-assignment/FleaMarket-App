@@ -24,6 +24,7 @@ import lombok.RequiredArgsConstructor;
 public class SecurityConfig {
 
 	private final JwtAuthenticationFilter jwtAuthenticationFilter;
+	private final SessionFallbackFilter sessionFallbackFilter;
 	private final AuthorizationConfig authorizationConfig;
 
 	@Bean
@@ -77,12 +78,16 @@ public class SecurityConfig {
 	@Order(2)
 	SecurityFilterChain apiSecurityFilterChain(HttpSecurity http) throws Exception {
 		http
+				// /user/orders, /user/favorites はセッション認証用のため Web チェーンで処理している。
+				// JWT のみのクライアント（タイムリーフ等）でこれらを利用する場合は、
+				// API 用マッチャに /user/** を追加するか、同等機能を /api/** で提供する必要がある。
 				.securityMatcher("/api/**", "/auth/**", "/community/**", "/orders/**")
 				.csrf(AbstractHttpConfigurer::disable)
 				.cors(Customizer.withDefaults())
 				.sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
 				.authorizeHttpRequests(auth -> authorizationConfig.configureApi(auth))
 				.addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
+				.addFilterAfter(sessionFallbackFilter, JwtAuthenticationFilter.class)
 				.exceptionHandling(ex -> ex
 						.authenticationEntryPoint((request, response, authException) -> {
 							response.setStatus(401);

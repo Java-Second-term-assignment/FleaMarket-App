@@ -1,11 +1,14 @@
 package com.example.flea_market_app.transaction.controller;
 
+import java.util.Locale;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
 import jakarta.servlet.http.HttpSession;
 
+import org.springframework.context.MessageSource;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -17,7 +20,12 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import com.example.flea_market_app.catalog.service.ProductListService;
 import com.example.flea_market_app.config.security.SecurityUtil;
 import com.example.flea_market_app.transaction.domain.ReviewRating;
+import com.example.flea_market_app.user.domain.UserEntity;
+import com.example.flea_market_app.user.domain.UserRank;
+import com.example.flea_market_app.user.repository.UserRepository;
+import com.example.flea_market_app.user.service.UserRankService;
 import com.example.flea_market_app.user.service.UserService;
+import com.example.flea_market_app.common.exception.ValidationBusinessException;
 import com.example.flea_market_app.transaction.service.OrderQueryService;
 import com.example.flea_market_app.transaction.service.OrderService;
 import com.example.flea_market_app.transaction.service.ReviewService;
@@ -39,12 +47,16 @@ public class OrderPageController {
 	private final OrderService orderService;
 	private final ReviewService reviewService;
 	private final UserService userService;
+	private final UserRepository userRepository;
+	private final UserRankService userRankService;
+	private final MessageSource messageSource;
 
 	@PostMapping("/order/confirm")
 	public String orderConfirmPost(
 			@RequestParam(required = false) UUID productId,
 			HttpSession session,
-			RedirectAttributes ra) {
+			RedirectAttributes ra,
+			Locale locale) {
 		if (productId == null) {
 			ra.addFlashAttribute("errorMessage", "商品を指定してください。");
 			return "redirect:/order/confirm";
@@ -54,9 +66,18 @@ public class OrderPageController {
 		Map<String, String> sessionAddress = (Map<String, String>) session.getAttribute(ORDER_ADDRESS);
 		Map<String, String> addressMap = sessionAddress != null ? sessionAddress : DEFAULT_ADDRESS;
 		String addressSnapshot = toJsonSnapshot(addressMap);
-		UUID orderId = orderService.createOrderFromProduct(productId, userId, addressSnapshot);
-		ra.addFlashAttribute("message", "注文を作成しました。");
-		return "redirect:/user/orders/" + orderId;
+		try {
+			UUID orderId = orderService.createOrderFromProduct(productId, userId, addressSnapshot);
+			ra.addFlashAttribute("message", "注文を作成しました。");
+			return "redirect:/user/orders/" + orderId;
+		} catch (ValidationBusinessException e) {
+			String message = messageSource.getMessage(e.getMessageKey(), null, "この商品はすでに注文済みです。", locale != null ? locale : Locale.getDefault());
+			ra.addFlashAttribute("errorMessage", message);
+			return "redirect:/order/confirm?productId=" + productId;
+		} catch (DataIntegrityViolationException e) {
+			ra.addFlashAttribute("errorMessage", messageSource.getMessage("error.order.item_already_ordered", null, "この商品はすでに注文済みです。", locale != null ? locale : Locale.getDefault()));
+			return "redirect:/order/confirm?productId=" + productId;
+		}
 	}
 
 	@GetMapping("/order/confirm")
@@ -64,6 +85,14 @@ public class OrderPageController {
 		if (productId != null) {
 			productListService.getProductDetail(productId).ifPresent(product -> {
 				Long price = product.getPrice() != null ? product.getPrice() : 0L;
+				long commissionFee = 0L;
+				if (product.getSellerId() != null) {
+					UserEntity seller = userRepository.findById(product.getSellerId()).orElse(null);
+					if (seller != null) {
+						UserRank rank = userRankService.loadRank(seller.getUserRankId());
+						commissionFee = price * rank.getCommissionBps() / 10000;
+					}
+				}
 				List<Map<String, Object>> items = List.of(Map.<String, Object>of(
 						"imageUrl", product.getMainImageUrl() != null ? product.getMainImageUrl() : "",
 						"name", product.getName() != null ? product.getName() : "",
@@ -73,6 +102,7 @@ public class OrderPageController {
 						"items", items,
 						"subtotal", String.valueOf(price),
 						"shippingFee", "0",
+						"commissionFee", Long.valueOf(commissionFee),
 						"total", String.valueOf(price)));
 			});
 		}
@@ -81,6 +111,7 @@ public class OrderPageController {
 					"items", List.<Map<String, Object>>of(),
 					"subtotal", "0",
 					"shippingFee", "0",
+					"commissionFee", Long.valueOf(0L),
 					"total", "0"));
 		}
 		if (productId != null) {

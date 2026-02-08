@@ -6,6 +6,8 @@ import java.util.Objects;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -13,7 +15,9 @@ import com.example.flea_market_app.catalog.service.ItemImageService;
 import com.example.flea_market_app.catalog.service.ItemQueryService;
 import com.example.flea_market_app.catalog.service.dto.ItemSummary;
 import com.example.flea_market_app.common.constant.ImageConstants;
+import com.example.flea_market_app.common.error.ErrorCode;
 import com.example.flea_market_app.common.exception.AccessDeniedBusinessException;
+import com.example.flea_market_app.common.exception.BusinessException;
 import com.example.flea_market_app.common.exception.NotFoundBusinessException;
 import com.example.flea_market_app.common.exception.ResourceType;
 import com.example.flea_market_app.transaction.domain.OrderEntity;
@@ -33,6 +37,8 @@ import lombok.RequiredArgsConstructor;
 @Service
 @RequiredArgsConstructor
 public class OrderQueryService {
+
+	private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
 
 	private final OrderRepository orderRepository;
 	private final ItemQueryService itemQueryService;
@@ -86,7 +92,8 @@ public class OrderQueryService {
 		UUID buyerId = e.getBuyerId();
 		UUID sellerId = e.getSellerId();
 		if (buyerId == null || sellerId == null) {
-			throw new IllegalStateException("Order has null buyer or seller: orderId=" + e.getId());
+			throw new BusinessException(ErrorCode.INTERNAL_SERVER_ERROR, "error.internal_server_error",
+					new IllegalStateException("Order has null buyer or seller: orderId=" + e.getId())) {};
 		}
 		boolean isBuyer = Objects.equals(buyerId, userId);
 		boolean isSeller = Objects.equals(sellerId, userId);
@@ -129,6 +136,7 @@ public class OrderQueryService {
 				.createdAt(e.getCreatedAt())
 				.role(role)
 				.shippingAddressSnapshot(e.getShippingAddressSnapshot())
+				.shippingAddressFormatted(formatShippingAddress(e.getShippingAddressSnapshot()))
 				.counterpartyDisplayName(counterpartyDisplayName)
 				.canConfirm(canConfirm)
 				.canShip(canShip)
@@ -136,5 +144,28 @@ public class OrderQueryService {
 				.canCancel(canCancel)
 				.canReview(canReview)
 				.build();
+	}
+
+	/**
+	 * お届け先スナップショット（JSON文字列）を表示用の1行テキストに整形する。
+	 * 形式: "名前　〒郵便番号　住所"
+	 */
+	private String formatShippingAddress(String shippingAddressSnapshot) {
+		if (shippingAddressSnapshot == null || shippingAddressSnapshot.isBlank()) {
+			return null;
+		}
+		try {
+			JsonNode node = OBJECT_MAPPER.readTree(shippingAddressSnapshot);
+			String name = node.has("name") ? node.get("name").asText("") : "";
+			String postcode = node.has("postcode") ? node.get("postcode").asText("") : "";
+			String fullAddress = node.has("fullAddress") ? node.get("fullAddress").asText("") : "";
+			String postPart = postcode.isEmpty() ? "" : "〒" + postcode;
+			String joined = String.join("　", java.util.List.of(name, postPart, fullAddress).stream()
+					.filter(s -> s != null && !s.isEmpty())
+					.toList());
+			return joined.isEmpty() ? shippingAddressSnapshot : joined;
+		} catch (Exception e) {
+			return shippingAddressSnapshot;
+		}
 	}
 }

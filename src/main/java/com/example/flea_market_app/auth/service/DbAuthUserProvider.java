@@ -5,6 +5,7 @@ import org.springframework.stereotype.Component;
 import com.example.flea_market_app.auth.domain.AuthUser;
 import com.example.flea_market_app.auth.domain.AuthUserEntity;
 import com.example.flea_market_app.auth.repository.AuthUserRepository;
+import com.example.flea_market_app.common.exception.UnauthorizedBusinessException;
 
 import lombok.RequiredArgsConstructor;
 
@@ -17,7 +18,7 @@ public class DbAuthUserProvider implements AuthUserProvider {
 	@Override
 	public AuthUser loadByIdentifier(String identifier) {
 		AuthUserEntity entity = authUserRepository.findByEmail(identifier)
-				.orElseThrow(() -> new IllegalArgumentException("not found"));
+				.orElseThrow(UnauthorizedBusinessException::invalidCredentials);
 
 		return AuthUser.of(
 				entity.getUserId().toString(),

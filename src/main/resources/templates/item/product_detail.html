@@ -8,6 +8,8 @@
 </head>
 
 <body th:attr="data-anonymous=${#authorization.expression('isAnonymous()')}">
+	<input type="hidden" id="csrfToken" th:value="${_csrf.token}"/>
+	<input type="hidden" id="csrfHeader" th:value="${_csrf.headerName}"/>
 	<div th:replace="~{ui/fragments :: header}"></div>
 
 	<main class="main-container" th:attr="data-product-id=${product.id}, data-is-favorited=${isFavorited}">
@@ -19,13 +21,14 @@
 				<aside class="image-aside">
 					<div class="sticky-wrapper">
 						<div class="main-image-container">
-							<img id="target-main-image" class="main-image" th:src="${product.mainImageUrl}" alt="商品画像" onerror="this.src='/img/no-image.png'">
+							<img id="target-main-image" class="main-image" th:src="${product.mainImageUrl}" alt="商品画像" onerror="this.src='/img/no-image.svg'">
 						</div>
 
 						<ul class="thumbnail-list">
 							<li th:each="img, stat : ${product.images}" class="thumbnail-item"
 								th:classappend="${stat.first} ? 'active'"
-								th:onclick="|changeImage('${img.largeUrl}', this)|">
+								th:attr="data-image-url=${img.largeUrl}"
+								onclick="changeImage(this.dataset.imageUrl, this)">
 								<img th:src="${img.thumbnailUrl}" alt="サムネイル">
 							</li>
 						</ul>
@@ -57,35 +60,48 @@
 						</div>
 					</div>
 
-					<div class="action-row">
+					<div th:if="${!isSeller}" class="action-row">
 						<button type="button" class="icon-btn favorite-toggle-btn" data-favorite-toggle title="お気に入り"
 							th:classappend="${isFavorited} ? 'is-favorited'"
 							th:attr="aria-pressed=${isFavorited}">
 							<span class="material-symbols-outlined favorite-icon" th:text="${isFavorited} ? 'favorite' : 'favorite_border'">favorite_border</span>
 						</button>
+						<form th:action="@{/cart/add}" method="post" class="cart-icon-form">
+							<th:block th:replace="~{ui/fragments :: csrf_token}"></th:block>
+							<input type="hidden" name="productId" th:value="${product.id}">
+							<button type="submit" class="icon-btn" title="カートに入れる" aria-label="カートに入れる" th:disabled="${product.stock == 0}">
+								<span class="material-symbols-outlined">shopping_cart</span>
+							</button>
+						</form>
 						<button type="button" class="icon-btn" id="reportBtn" title="通報" aria-label="この商品を通報する">
 							<span class="material-symbols-outlined">error</span>
 						</button>
 					</div>
+					<span id="favoriteError" class="favorite-error" role="alert" aria-live="polite"></span>
 
-					<a th:href="@{/order/confirm(productId=${product.id})}" class="btn-purchase" th:classappend="${product.stock == 0} ? 'disabled'">購入に進む</a>
-
-					<div class="long-text">
-						<p th:text="${product.description}">商品説明</p>
+					<!-- 出品者用：出品停止・出品再開・削除 -->
+					<div th:if="${isSeller}" class="seller-actions" style="margin-bottom: 12px;">
+						<form th:if="${product.status == 'PUBLISHED'}" th:action="@{/product/{id}/suspend(id=${product.id})}" method="post" style="display: inline;">
+							<th:block th:replace="~{ui/fragments :: csrf_token}"></th:block>
+							<button type="submit" class="btn-purchase" style="background: #8a7a5c; color: #fff;">出品停止</button>
+						</form>
+						<form th:if="${product.status == 'SUSPENDED'}" th:action="@{/product/{id}/unsuspend(id=${product.id})}" method="post" style="display: inline;">
+							<th:block th:replace="~{ui/fragments :: csrf_token}"></th:block>
+							<button type="submit" class="btn-purchase" style="background: #4a7c59; color: #fff;">出品再開</button>
+						</form>
+						<form th:if="${product.status == 'SUSPENDED'}" th:action="@{/product/{id}/delete(id=${product.id})}" method="post" style="display: inline;">
+							<th:block th:replace="~{ui/fragments :: csrf_token}"></th:block>
+							<button type="submit" class="btn-purchase" style="background: #a44; color: #fff;">削除する</button>
+						</form>
 					</div>
 
-					<!-- ================= カート ================= -->
-					<div class="button-group">
-						<form th:action="@{/cart/add}" method="post" style="flex:2;">
-							<th:block th:replace="~{ui/fragments :: csrf_token}"></th:block>
-							<input type="hidden" name="productId" th:value="${product.id}">
-							<button type="submit" class="btn-blue" th:disabled="${product.stock == 0}">
-								カートに入れる
-							</button>
-						</form>
-						<button type="button" class="btn-gray favorite-toggle-btn" data-favorite-toggle
-							th:text="${isFavorited} ? 'お気に入り解除' : 'お気に入り'">お気に入り</button>
-						<span id="favoriteError" class="favorite-error" role="alert" aria-live="polite"></span>
+					<a th:if="${!isSeller}" th:href="@{/order/confirm(productId=${product.id})}" class="btn-purchase" th:classappend="${product.stock == 0} ? 'disabled'">購入に進む</a>
+
+					<div class="product-description-section">
+						<h3 class="product-description-title">商品説明</h3>
+						<div class="long-text">
+							<p th:text="${product.description}">商品説明</p>
+						</div>
 					</div>
 
 					<!-- ================= レビュー ================= -->
@@ -143,7 +159,6 @@
 							<div class="review-form-group">
 								<label class="review-form-label">
 									レビュー
-									<span class="review-required">(必須)</span>
 								</label>
 
 								<textarea id="review-text" class="review-form-textarea" th:field="*{comment}"
@@ -160,7 +175,6 @@
 							<div class="review-form-group mb20">
 								<label class="review-form-label">
 									評価
-									<span class="review-required">(必須)</span>
 								</label>
 
 								<div class="review-rating-row">
@@ -192,7 +206,7 @@
 				<a th:each="product : ${relatedProducts}" th:with="productId=${product.id != null ? product.id.toString() : ''}" th:href="@{/products/{id}(id=${productId})}">
 					<div class="item-card">
 						<div class="item-card-image">
-							<img th:src="${product.imageUrl}" class="item-img" onerror="this.src='/img/no-image.png'">
+							<img th:src="${product.imageUrl}" class="item-img" onerror="this.src='/img/no-image.svg'">
 							<div class="soldout-badge" th:if="${product.soldOut}">
 								<span>Sold out</span>
 							</div>

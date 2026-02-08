@@ -6,9 +6,11 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.example.flea_market_app.common.exception.NotFoundBusinessException;
+import com.example.flea_market_app.common.exception.ResourceType;
 import com.example.flea_market_app.common.service.S3ImageService;
-import com.example.flea_market_app.user.domain.UserEntity;
 import com.example.flea_market_app.user.repository.UserRepository;
+import com.example.flea_market_app.user.repository.UserRepository.ProfileForMeProjection;
 import com.example.flea_market_app.user.service.dto.UserAddressDto;
 import com.example.flea_market_app.user.service.dto.UserMeResponse;
 import com.example.flea_market_app.user.service.port.AuthAccountQueryPort;
@@ -32,23 +34,25 @@ public class UserProfileQueryService {
 		var user = userService.getRequired(userId);
 		String email = authAccountQueryPort.findEmailByUserId(userId).orElse(null);
 
-		UserEntity entity = userRepository.findById(userId).orElseThrow();
-		String profileImageUrl = entity.getProfileImageUrl();
+		ProfileForMeProjection profile = userRepository.findProfileForMeByUserId(userId)
+				.orElseThrow(() -> NotFoundBusinessException.of(ResourceType.USER));
+		String profileImageUrl = profile.getProfileImageUrl();
 		if (profileImageUrl == null || profileImageUrl.isEmpty()) {
-			String profileImageS3Key = entity.getProfileImageS3Key();
+			String profileImageS3Key = profile.getProfileImageS3Key();
 			profileImageUrl = (profileImageS3Key != null && !profileImageS3Key.isEmpty())
 					? s3ImageService.generateImageUrl(bucketName, profileImageS3Key)
 					: null;
 		}
 		String iconUrl = profileImageUrl;
-		String caption = entity.getCaption() != null ? entity.getCaption() : "";
+		String caption = profile.getCaption() != null ? profile.getCaption() : "";
 
 		UserAddressDto address = UserAddressDto.from(
-				entity.getRecipientName(),
-				entity.getPostalCode(),
-				entity.getAddress(),
-				entity.getPhone());
+				profile.getRecipientName(),
+				profile.getPostalCode(),
+				profile.getAddress(),
+				profile.getPhone());
 
-		return UserMeResponse.of(user, email, iconUrl, caption, address, entity.isNotificationEnabled());
+		// notification_enabled を参照しないため、カラム未追加のDBではデフォルト true
+		return UserMeResponse.of(user, email, iconUrl, caption, address, true);
 	}
 }

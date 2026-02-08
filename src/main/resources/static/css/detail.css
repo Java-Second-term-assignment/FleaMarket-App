@@ -1,13 +1,13 @@
 @charset "UTF-8";
 
 .main-container {
-	max-width: 1100px;
+	max-width: 1200px;
 	margin: 20px auto;
 	padding: 0 20px;
 }
 
 .detail-card {
-	max-height: calc(100vh - 120px);
+	max-height: calc(100vh - 330px);
 	display: flex;
 	flex-direction: column;
 	overflow: hidden;
@@ -60,6 +60,7 @@
 /* --- サムネイル（画像選択肢）の再現 --- */
 .thumbnail-list {
 	display: flex;
+	flex-wrap: wrap;
 	gap: 10px;
 	padding: 0;
 	list-style: none;
@@ -67,7 +68,8 @@
 }
 
 .thumbnail-item {
-	flex: 1;
+	width: 64px;
+	flex: 0 0 64px;
 	cursor: pointer;
 	border-radius: 8px;
 	overflow: hidden;
@@ -171,6 +173,11 @@
 	margin-bottom: 25px;
 }
 
+.cart-icon-form {
+	display: inline-block;
+	margin: 0;
+}
+
 /* お気に入り・旗アイコンの四角ボタン */
 .icon-btn {
 	background: rgba(255, 255, 255, 0.12);
@@ -245,6 +252,17 @@
 	pointer-events: none;
 	opacity: 0.6;
 	cursor: not-allowed;
+}
+
+.product-description-section {
+	margin-top: 24px;
+}
+
+.product-description-title {
+	font-size: 18px;
+	font-weight: 700;
+	margin: 0 0 12px 0;
+	color: var(--text-heading);
 }
 
 .long-text {
@@ -378,6 +396,35 @@
 	background: #fff;
 	box-shadow: 0 0 0 2px #5662a6 inset;
 	color: #5662a6;
+}
+
+/* ダークモード：レビュー投稿エリアを薄いグレーに */
+html:not([data-theme="light"]) .review-form {
+	background: #4a4a50;
+	border-color: #5a5a60;
+	box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+html:not([data-theme="light"]) .review-form-label {
+	color: #e0e0e0;
+}
+html:not([data-theme="light"]) .review-form-textarea {
+	background: #38383c;
+	border-color: #5a5a60;
+	color: var(--text-main);
+}
+html:not([data-theme="light"]) .review-form-textarea::placeholder {
+	color: var(--text-muted);
+}
+html:not([data-theme="light"]) .review-charcount {
+	color: var(--text-muted);
+}
+html:not([data-theme="light"]) .review-form-select {
+	background: #38383c;
+	border-color: #5a5a60;
+	color: var(--text-main);
+}
+html:not([data-theme="light"]) .star#single-star {
+	color: var(--text-sub);
 }
 
 /* 関連商品（商品一覧と同じフォーマット） */
@@ -826,9 +873,18 @@ html[data-theme="light"] #loginRequiredModal .btn.btn-login {
 	justify-content: flex-end;
 	margin-top: 20px;
 }
-html[data-theme="light"] #reportModal .modal-content,
+html[data-theme="light"] #reportModal .modal-content {
+	background: #ffffff;
+	box-shadow: 0 8px 40px rgba(0, 0, 0, 0.2);
+	color: #1a1a1a;
+}
+html[data-theme="light"] #reportModal .modal-content h2,
+html[data-theme="light"] #reportModal .modal-body,
 html[data-theme="light"] #reportModal .form-group label {
 	color: #1a1a1a;
+}
+html[data-theme="light"] #reportModal .form-group .required {
+	color: #e33e3e;
 }
 html[data-theme="light"] #reportModal .modal-body select,
 html[data-theme="light"] #reportModal .modal-body textarea {
@@ -838,4 +894,21 @@ html[data-theme="light"] #reportModal .modal-body textarea {
 }
 html[data-theme="light"] #reportModal .modal-close-btn {
 	color: #333;
+}
+html[data-theme="light"] #reportModal .modal-actions .btn-gray {
+	background-color: #e8e8e8;
+	color: #333;
+	border: 1px solid #ccc;
+}
+html[data-theme="light"] #reportModal .modal-actions .btn-gray:hover {
+	background-color: #ddd;
+}
+html[data-theme="light"] #reportModal .modal-actions .btn-blue {
+	background-color: #007bff;
+	color: #fff;
+	border: 1px solid #007bff;
+}
+html[data-theme="light"] #reportModal .modal-actions .btn-blue:hover {
+	background-color: #0056b3;
+	border-color: #0056b3;
 }

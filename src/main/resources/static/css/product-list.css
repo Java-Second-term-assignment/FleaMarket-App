@@ -82,9 +82,9 @@
 
 
 .horizontal-search-ranking {
-	display: flex;
-	flex-direction: row;
-	gap: 32px;
+	display: grid;
+	grid-template-columns: minmax(290px, 800px) minmax(250px, 340px);
+	gap: 28px;
 	align-items: flex-start;
 	margin-bottom: 39px;
 }
@@ -99,6 +99,7 @@
 	min-width: 290px;
 	font-family: inherit;
 	margin-bottom: 0;
+	overflow: hidden;
 }
 
 .wider-search-card {
@@ -178,6 +179,7 @@
 	display: flex;
 	align-items: center;
 	margin-top: 2px;
+	min-width: 0;
 }
 
 .search-row-with-sort .search-row {
@@ -201,6 +203,7 @@
 	height: 42px;
 	border: 1px solid #d5dcf1;
 	flex: 1;
+	min-width: 0;
 	border: none;
 	border-radius: 4px;
 	background: #e7eafd;
@@ -365,7 +368,7 @@
 
 @media (max-width: 1000px) {
 	.horizontal-search-ranking {
-		flex-direction: column;
+		grid-template-columns: 1fr;
 		gap: 18px;
 	}
 
@@ -386,11 +389,27 @@
 	border-radius: 12px;
 }
 
-
+/* ダークモード：ランキング項目をレビュー欄と同じ薄いグレーに */
+html:not([data-theme="light"]) .ranking-item-link {
+	background: #4a4a50;
+}
+html:not([data-theme="light"]) .ranking-item-link:hover {
+	background: #55555c;
+}
+html:not([data-theme="light"]) .ranking-item-title {
+	color: #e0e0e0;
+}
+html:not([data-theme="light"]) .ranking-item-price {
+	color: var(--text-muted);
+}
+html:not([data-theme="light"]) .ranking-thumb {
+	border-color: #5a5a60;
+	background: #38383c;
+}
 
 /* 商品グリッド */
 .main-container {
-	max-width: 1100px;
+	max-width: 1200px;
 	margin: 40px auto;
 	padding: 0 20px;
 }

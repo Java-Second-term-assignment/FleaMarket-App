@@ -2,6 +2,8 @@ package com.example.flea_market_app.user.service;
 
 import org.springframework.stereotype.Service;
 
+import com.example.flea_market_app.common.exception.NotFoundBusinessException;
+import com.example.flea_market_app.common.exception.ResourceType;
 import com.example.flea_market_app.user.domain.UserRank;
 import com.example.flea_market_app.user.repository.UserRankRepository;
 
@@ -15,6 +17,6 @@ public class UserRankService {
 
 	public UserRank loadRank(short rankId) {
 		return userRankRepository.findById(rankId)
-				.orElseThrow(() -> new IllegalArgumentException("Rank not found: " + rankId));
+				.orElseThrow(() -> NotFoundBusinessException.of(ResourceType.RANK));
 	}
 }

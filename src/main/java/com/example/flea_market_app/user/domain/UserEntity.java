@@ -1,5 +1,6 @@
 package com.example.flea_market_app.user.domain;
 
+import java.time.LocalDate;
 import java.time.OffsetDateTime;
 import java.util.UUID;
 
@@ -48,6 +49,12 @@ public class UserEntity {
 	@Column(name = "recipient_name", length = 100)
 	private String recipientName;
 
+	@Column(name = "recipient_name_furigana", length = 100)
+	private String recipientNameFurigana;
+
+	@Column(name = "date_of_birth")
+	private LocalDate dateOfBirth;
+
 	@Column(name = "postal_code", length = 20)
 	private String postalCode;
 
@@ -56,6 +63,9 @@ public class UserEntity {
 
 	@Column(name = "phone", length = 30)
 	private String phone;
+
+	@Column(name = "gender", length = 20)
+	private String gender;
 
 	@Column(name = "notification_enabled", nullable = false)
 	private boolean notificationEnabled = true;
