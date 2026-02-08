@@ -60,6 +60,7 @@
 /* --- サムネイル（画像選択肢）の再現 --- */
 .thumbnail-list {
 	display: flex;
+	flex-wrap: wrap;
 	gap: 10px;
 	padding: 0;
 	list-style: none;
@@ -67,7 +68,8 @@
 }
 
 .thumbnail-item {
-	flex: 1;
+	width: 64px;
+	flex: 0 0 64px;
 	cursor: pointer;
 	border-radius: 8px;
 	overflow: hidden;
