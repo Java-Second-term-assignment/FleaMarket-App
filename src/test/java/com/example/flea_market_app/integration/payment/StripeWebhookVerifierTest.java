@@ -16,7 +16,7 @@ class StripeWebhookVerifierTest {
 	class WebhookSecretNotConfigured {
 		@Test
 		void whenSecretIsNull_throwsExternalServiceExceptionWithWebhookNotConfigured() {
-			StripeProperties props = new StripeProperties(null, null, "JPY");
+			StripeProperties props = new StripeProperties(null, null, "JPY", null);
 			StripeWebhookVerifier verifier = new StripeWebhookVerifier(props);
 
 			assertThatThrownBy(() -> verifier.verify("{}", "stripe-signature"))
@@ -29,7 +29,7 @@ class StripeWebhookVerifierTest {
 
 		@Test
 		void whenSecretIsBlank_throwsExternalServiceExceptionWithWebhookNotConfigured() {
-			StripeProperties props = new StripeProperties(null, "  ", "JPY");
+			StripeProperties props = new StripeProperties(null, "  ", "JPY", null);
 			StripeWebhookVerifier verifier = new StripeWebhookVerifier(props);
 
 			assertThatThrownBy(() -> verifier.verify("{}", "stripe-signature"))
@@ -45,7 +45,7 @@ class StripeWebhookVerifierTest {
 	class InvalidSignature {
 		@Test
 		void whenSignatureInvalid_throwsExternalServiceExceptionWithSignatureInvalid() {
-			StripeProperties props = new StripeProperties(null, "whsec_test_secret", "JPY");
+			StripeProperties props = new StripeProperties(null, "whsec_test_secret", "JPY", null);
 			StripeWebhookVerifier verifier = new StripeWebhookVerifier(props);
 
 			assertThatThrownBy(() -> verifier.verify("{\"type\":\"event\"}", "invalid_signature"))

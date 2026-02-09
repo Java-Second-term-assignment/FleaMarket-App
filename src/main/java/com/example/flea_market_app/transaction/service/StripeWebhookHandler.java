@@ -27,20 +27,27 @@ public class StripeWebhookHandler {
 		if (!"payment_intent.succeeded".equals(e.eventType())) {
 			return;
 		}
-		if (e.orderId() == null || e.orderId().isBlank()) {
+
+		// 旧フロー: metadata に orderId がある場合は PENDING を PAID に更新
+		if (e.orderId() != null && !e.orderId().isBlank()) {
+			final UUID orderId;
+			try {
+				orderId = UUID.fromString(e.orderId());
+			} catch (IllegalArgumentException ex) {
+				log.warn("Stripe webhook orderId is not a valid UUID: eventType={}, orderId={}", e.eventType(), e.orderId(), ex);
+				return;
+			}
+			orderService.markOrderPaidByStripe(orderId);
 			return;
 		}
 
-		// Stripe metadata の orderId は String なので UUID に変換
-		final UUID orderId;
-		try {
-			orderId = UUID.fromString(e.orderId());
-		} catch (IllegalArgumentException ex) {
-			log.warn("Stripe webhook orderId is not a valid UUID: eventType={}, orderId={}", e.eventType(), e.orderId(), ex);
-			return;
+		// 新フロー: metadata に productId/buyerId/addressSnapshot がある場合は決済完了後に注文を 1 件作成（冪等）
+		if (e.productId() != null && !e.productId().isBlank() && e.externalPaymentId() != null && !e.externalPaymentId().isBlank()) {
+			try {
+				orderService.createOrderFromPaymentIntentMetadata(e.externalPaymentId());
+			} catch (Exception ex) {
+				log.warn("Stripe webhook createOrderFromPaymentIntentMetadata failed: paymentIntentId={}", e.externalPaymentId(), ex);
+			}
 		}
-
-		// 既存の OrderService API を呼ぶ（責務が合う）
-		orderService.recordOrderPaid(orderId);
 	}
 }

@@ -67,7 +67,7 @@ Successfully applied X migration(s)
 ```
 
 **マイグレーション対象:**
-- `db/migration/` … V1__init.sql（スキーマ）, V2__seed.sql（シードデータ）
+- `db/migration/` … V1__init.sql（スキーマ。orders.status に PENDING 含む）, V2__seed.sql（シードデータ）
 - `db/dev_migration/` … V70__dev_seed_users.sql, V71__dev_seed_items.sql（dev プロファイル時のみ）
 
 ---
@@ -109,12 +109,37 @@ Successfully applied X migration(s)
 
 | 場所 | ファイル | 内容 |
 |------|----------|------|
-| `db/migration/` | V1__init.sql | スキーマ（テーブル作成など） |
+| `db/migration/` | V1__init.sql | スキーマ（テーブル作成。orders.status は PENDING/PAID/...） |
 | `db/migration/` | V2__seed.sql | 本番用シードデータ |
 | `db/dev_migration/` | V70__dev_seed_users.sql | 開発用ユーザーシード |
 | `db/dev_migration/` | V71__dev_seed_items.sql | 開発用商品シード |
 
 `dev_migration` は `dev` プロファイル時のみ適用されます。本番（`pg` プロファイル）では `db/migration` のみが使用されます。
+
+---
+
+## 3.1 マイグレーションをクリーンして再実行する（開発用）
+
+開発中に「マイグレーションを一度全部やり直したい」場合は、次の手順で **clean → migrate** を実行します。**本番DBでは絶対に実行しないでください。**
+
+```bash
+# 1. clean でスキーマを削除（要 -Dflyway.cleanDisabled=false）
+./mvnw flyway:clean -Dflyway.cleanDisabled=false -Dflyway.password=postgres
+
+# 2. マイグレーションを最初から実行（V1 → V2、dev の場合は V70/V71 は起動時に適用）
+./mvnw flyway:migrate -Dflyway.password=postgres
+```
+
+パスワードが不要な環境では `-Dflyway.password=postgres` を外してよいです。  
+`dev` プロファイルでアプリ起動時には `db/dev_migration` も読み込まれるため、clean + migrate のあと `./mvnw spring-boot:run` で起動すると V70・V71 も適用されます。
+
+**別案（DB ごと作り直す）:** 上記の代わりに、データベースを削除して再作成してから起動しても同じ結果になります。
+
+```bash
+psql -U postgres -h localhost -c "DROP DATABASE flea_market;"
+psql -U postgres -h localhost -c "CREATE DATABASE flea_market;"
+./mvnw spring-boot:run
+```
 
 ---
 
@@ -157,6 +182,7 @@ SPRING_PROFILES_ACTIVE=pg ./mvnw spring-boot:run
 
 ### Flyway の「Validate failed」エラー
 - 既存の `flyway_schema_history` テーブルとマイグレーションファイルの整合性が取れていない可能性があります
+- **「Migration checksum mismatch for migration version 1」** … 既に適用済みの V1 を編集した場合に発生します。開発環境では **clean → migrate** で最初からやり直してください（下記コマンド）。
 - 開発環境で DB を初期化してよい場合は、データベースを削除して再作成するか、下記「Flyway clean で開発用DBをリセット」を実行してください。
 
 ### Flyway clean で開発用DBをリセット

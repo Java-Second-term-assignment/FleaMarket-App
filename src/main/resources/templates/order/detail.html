@@ -26,6 +26,7 @@
 			<div class="section-card">
 				<div class="section-title">状態</div>
 				<p class="order-detail-status" th:switch="${order.status}">
+					<span th:case="'PENDING'">支払待ち</span>
 					<span th:case="'PAID'">支払済み</span>
 					<span th:case="'AWAITING_SHIPMENT'">発送待ち</span>
 					<span th:case="'SHIPPED'">発送済み</span>

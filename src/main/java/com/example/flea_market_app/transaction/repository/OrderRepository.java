@@ -20,6 +20,8 @@ public interface OrderRepository extends JpaRepository<OrderEntity, UUID> {
 
 	Optional<OrderEntity> findByItemIdAndStatus(UUID itemId, String status);
 
+	Optional<OrderEntity> findByStripePaymentIntentId(String stripePaymentIntentId);
+
 	/**
 	 * 同一商品で指定ステータスの注文を、作成日時の新しい順で取得する。
 	 * 1商品が複数回売れた場合に複数件返る。

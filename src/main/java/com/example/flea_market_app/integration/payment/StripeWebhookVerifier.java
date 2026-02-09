@@ -40,9 +40,12 @@ public class StripeWebhookVerifier implements WebhookVerifier {
 							ErrorCode.EXTERNAL_SERVICE_FAILED.getMessageKey(),
 							new IllegalStateException("stripe webhook data object missing")));
 
-			String orderId = intent.getMetadata() == null ? null : intent.getMetadata().get("orderId");
-
-			return new VerifiedWebhook(type, intent.getId(), orderId);
+			java.util.Map<String, String> meta = intent.getMetadata();
+			String orderId = meta == null ? null : meta.get("orderId");
+			String productId = meta == null ? null : meta.get("productId");
+			String buyerId = meta == null ? null : meta.get("buyerId");
+			String addressSnapshot = meta == null ? null : meta.get("addressSnapshot");
+			return new VerifiedWebhook(type, intent.getId(), orderId, productId, buyerId, addressSnapshot);
 
 		} catch (SignatureVerificationException e) {
 			throw new ExternalServiceException(
