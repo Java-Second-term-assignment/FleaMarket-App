@@ -211,7 +211,7 @@ CREATE TABLE orders (
   buyer_id                  uuid NOT NULL REFERENCES users(id),
   seller_id                 uuid NOT NULL REFERENCES users(id),
   stripe_payment_intent_id  text NULL UNIQUE,
-  status                   text NOT NULL CHECK (status IN ('PAID','AWAITING_SHIPMENT','SHIPPED','COMPLETED','CANCELLED')),
+  status                   text NOT NULL CHECK (status IN ('PENDING','PAID','AWAITING_SHIPMENT','SHIPPED','COMPLETED','CANCELLED')),
   applied_commission_bps   integer NOT NULL CHECK (applied_commission_bps >= 0 AND applied_commission_bps <= 10000),
   item_price_amount        bigint NOT NULL CHECK (item_price_amount >= 0),
   shipping_fee_amount      bigint NOT NULL DEFAULT 0 CHECK (shipping_fee_amount >= 0),

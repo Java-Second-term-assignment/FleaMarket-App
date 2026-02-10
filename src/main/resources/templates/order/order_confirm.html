@@ -8,6 +8,9 @@
 <body>
 	<!-- 共通ヘッダー -->
 	<div th:replace="~{ui/fragments :: header}"></div>
+	<th:block th:if="${clientSecret != null and !#strings.isEmpty(clientSecret)}">
+		<script src="https://js.stripe.com/v3/"></script>
+	</th:block>
 
 	<main class="confirm-container">
 
@@ -98,13 +101,32 @@
 					<span th:text="'¥ ' + ${order.total}">¥ 0</span>
 				</div>
 
-				<form th:action="@{/order/confirm}" method="post">
-					<th:block th:replace="~{ui/fragments :: csrf_token}"></th:block>
-					<input type="hidden" name="productId" th:value="${productId}" th:if="${productId != null}">
-					<button class="btn-submit" type="submit">
-						注文を確定する
-					</button>
-				</form>
+				<!-- Stripe 決済（clientSecret があるときのみ表示） -->
+				<th:block th:if="${clientSecret != null and !#strings.isEmpty(clientSecret)}">
+					<h4 style="margin-top: 1.5rem; margin-bottom: 0.5rem;">決済確認</h4>
+					<p class="section-desc">以下の内容で決済を完了します。</p>
+					<div id="payment-error" class="flash-error" role="alert" style="display:none;"></div>
+					<form id="payment-form">
+						<div id="payment-element-wrapper" style="min-height: 280px;">
+							<p id="payment-element-loading" style="margin: 1rem 0; color: #666;">カード情報を読み込み中…</p>
+							<div id="payment-element"></div>
+						</div>
+						<div class="form-actions" style="margin-top: 1rem;">
+							<button type="submit" id="submit-payment-button" class="btn-submit">決済を完了する</button>
+						</div>
+					</form>
+				</th:block>
+
+				<!-- 注文を確定する（Stripe 無効または clientSecret がないとき） -->
+				<th:block th:if="${clientSecret == null or #strings.isEmpty(clientSecret)}">
+					<form th:action="@{/order/confirm}" method="post">
+						<th:block th:replace="~{ui/fragments :: csrf_token}"></th:block>
+						<input type="hidden" name="productId" th:value="${productId}" th:if="${productId != null}">
+						<button class="btn-submit" type="submit">
+							注文を確定する
+						</button>
+					</form>
+				</th:block>
 
 				<p class="info-text">
 					注文確定後のキャンセルはできません。
@@ -115,6 +137,71 @@
 	</main>
 
 	<script th:src="@{/js/order_confirm.js}"></script>
+	<script th:if="${clientSecret != null and !#strings.isEmpty(clientSecret)}" th:inline="javascript">
+	(function() {
+		var publishableKey = /*[[${publishableKey}]]*/ '';
+		var clientSecret = /*[[${clientSecret}]]*/ '';
+		var paymentIntentId = /*[[${paymentIntentId}]]*/ '';
+		var returnUrl = window.location.origin + '/order/complete-purchase?payment_intent_id=' + encodeURIComponent(paymentIntentId);
+
+		var errorDiv = document.getElementById('payment-error');
+		var loadingEl = document.getElementById('payment-element-loading');
+
+		if (!publishableKey || !clientSecret || !paymentIntentId) {
+			if (errorDiv) {
+				errorDiv.textContent = '決済情報の読み込みに失敗しました。';
+				errorDiv.style.display = 'block';
+			}
+			if (loadingEl) loadingEl.style.display = 'none';
+			return;
+		}
+
+		var stripe = Stripe(publishableKey);
+		var elements = stripe.elements({
+			clientSecret: clientSecret,
+			appearance: { theme: 'stripe', variables: { borderRadius: '6px' } }
+		});
+		var paymentElement = elements.create('payment');
+		paymentElement.on('ready', function() {
+			if (loadingEl) loadingEl.style.display = 'none';
+		});
+		paymentElement.on('loaderror', function() {
+			if (loadingEl) loadingEl.textContent = 'カード欄の読み込みに失敗しました。';
+			if (errorDiv) {
+				errorDiv.textContent = 'Stripe の読み込みに失敗しました。ページを再読み込みしてください。';
+				errorDiv.style.display = 'block';
+			}
+		});
+		paymentElement.mount('#payment-element');
+
+		var form = document.getElementById('payment-form');
+		var submitBtn = document.getElementById('submit-payment-button');
+		if (form && submitBtn) {
+			form.addEventListener('submit', function(ev) {
+				ev.preventDefault();
+				submitBtn.disabled = true;
+				if (errorDiv) { errorDiv.style.display = 'none'; errorDiv.textContent = ''; }
+				stripe.confirmPayment({
+					elements: elements,
+					confirmParams: { return_url: returnUrl },
+					redirect: 'if_required'
+				}).then(function(result) {
+					if (result.error) {
+						if (errorDiv) {
+							errorDiv.textContent = (result.error.type === 'card_error' || result.error.type === 'validation_error')
+								? (result.error.message || '支払いに失敗しました。')
+								: '予期せぬエラーが発生しました。';
+							errorDiv.style.display = 'block';
+						}
+						submitBtn.disabled = false;
+					} else {
+						window.location.href = returnUrl;
+					}
+				});
+			});
+		}
+	})();
+	</script>
 </body>
 
 </html>

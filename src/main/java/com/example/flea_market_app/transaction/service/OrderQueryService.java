@@ -163,9 +163,9 @@ public class OrderQueryService {
 			String joined = String.join("　", java.util.List.of(name, postPart, fullAddress).stream()
 					.filter(s -> s != null && !s.isEmpty())
 					.toList());
-			return joined.isEmpty() ? shippingAddressSnapshot : joined;
+			return joined.isEmpty() ? null : joined;
 		} catch (Exception e) {
-			return shippingAddressSnapshot;
+			return null;
 		}
 	}
 }

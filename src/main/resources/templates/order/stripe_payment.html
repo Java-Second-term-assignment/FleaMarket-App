@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="ja" xmlns:th="http://www.thymeleaf.org">
+
+<head th:replace="~{ui/fragments :: common_head('決済確認', ~{::link})}">
+	<link rel="stylesheet" th:href="@{/css/order_confirm.css}">
+</head>
+
+<body>
+	<div th:replace="~{ui/fragments :: header}"></div>
+	<script src="https://js.stripe.com/v3/"></script>
+
+	<main class="confirm-container">
+		<!-- 左：注文確認（注文サマリー） -->
+		<section class="confirm-main">
+			<h1 class="page-title">注文確認</h1>
+			<p class="section-desc">内容を確認のうえ、右側で決済を完了してください。</p>
+
+			<div class="section-card" th:if="${orderDetail != null}">
+				<div class="section-title">注文商品</div>
+				<div class="item-row" th:with="od=${orderDetail}">
+					<img th:src="${od.itemThumbnailUrl}" class="item-img" alt="" onerror="this.src='/img/no-image.svg'">
+					<div class="item-details">
+						<h4 th:text="${od.itemName}">商品名</h4>
+						<div class="item-price" th:text="'¥ ' + ${#numbers.formatInteger(od.totalAmount != null ? od.totalAmount : 0, 3, 'COMMA')}">¥ 0</div>
+					</div>
+				</div>
+			</div>
+
+			<div class="section-card" th:if="${orderDetail != null and orderDetail.shippingAddressFormatted != null and !#strings.isEmpty(orderDetail.shippingAddressFormatted)}">
+				<div class="section-title">お届け先</div>
+				<p style="margin:0; font-size:14px; line-height:1.5;" th:text="${orderDetail.shippingAddressFormatted}"></p>
+			</div>
+
+			<div class="section-card" th:if="${orderDetail != null}">
+				<div class="section-title">請求金額</div>
+				<p class="total-row" style="margin:0; font-size:18px; font-weight:bold;" th:text="'¥ ' + ${#numbers.formatInteger(orderDetail.totalAmount != null ? orderDetail.totalAmount : 0, 3, 'COMMA')}"></p>
+			</div>
+		</section>
+
+		<!-- 右：決済確認（Stripe 支払い） -->
+		<aside class="confirm-sidebar">
+			<div class="summary-card">
+				<h3>決済確認</h3>
+				<p class="section-desc">以下の内容で決済を完了します。</p>
+
+				<div id="payment-error" class="flash-error" role="alert" style="display:none;"></div>
+
+				<form id="payment-form">
+					<div id="payment-element-wrapper" style="min-height: 280px;">
+						<p id="payment-element-loading" style="margin: 1rem 0; color: #666;">カード情報を読み込み中…</p>
+						<div id="payment-element"></div>
+					</div>
+					<div class="form-actions" style="margin-top: 1rem;">
+						<button type="submit" id="submit-button" class="btn-submit">決済を完了する</button>
+					</div>
+				</form>
+				<p class="back-link" style="margin-top: 1rem;">
+					<a th:if="${itemId != null}" th:href="@{/products/{id}(id=${itemId})}">商品詳細に戻る</a>
+					<a th:if="${itemId == null}" th:href="@{/user/orders}">注文一覧に戻る</a>
+				</p>
+			</div>
+		</aside>
+	</main>
+
+	<script th:inline="javascript">
+	(function() {
+		var publishableKey = /*[[${publishableKey}]]*/ '';
+		var clientSecret = /*[[${clientSecret}]]*/ '';
+		var orderId = /*[[${orderId}]]*/ '';
+		var returnUrl = window.location.origin + '/user/orders/' + orderId;
+
+		var errorDiv = document.getElementById('payment-error');
+		var loadingEl = document.getElementById('payment-element-loading');
+
+		if (!publishableKey || !clientSecret || !orderId) {
+			if (errorDiv) {
+				errorDiv.textContent = '決済情報の読み込みに失敗しました。公開キー・注文IDを確認してください。';
+				errorDiv.style.display = 'block';
+			}
+			if (loadingEl) loadingEl.style.display = 'none';
+			return;
+		}
+
+		var stripe = Stripe(publishableKey);
+		var elements = stripe.elements({
+			clientSecret: clientSecret,
+			appearance: {
+				theme: 'stripe',
+				variables: { borderRadius: '6px' }
+			}
+		});
+		var paymentElement = elements.create('payment');
+		paymentElement.on('ready', function() {
+			if (loadingEl) loadingEl.style.display = 'none';
+		});
+		paymentElement.on('loaderror', function() {
+			if (loadingEl) loadingEl.textContent = 'カード欄の読み込みに失敗しました。';
+			if (errorDiv) {
+				errorDiv.textContent = 'Stripe の読み込みに失敗しました。ページを再読み込みするか、しばらく待ってから再度お試しください。';
+				errorDiv.style.display = 'block';
+			}
+		});
+		paymentElement.mount('#payment-element');
+
+		var form = document.getElementById('payment-form');
+		var submitButton = document.getElementById('submit-button');
+
+		form.addEventListener('submit', function(ev) {
+			ev.preventDefault();
+			submitButton.disabled = true;
+			if (errorDiv) {
+				errorDiv.style.display = 'none';
+				errorDiv.textContent = '';
+			}
+
+			stripe.confirmPayment({
+				elements: elements,
+				confirmParams: {
+					return_url: returnUrl
+				},
+				redirect: 'if_required'
+			}).then(function(result) {
+				if (result.error) {
+					if (errorDiv) {
+						if (result.error.type === 'card_error' || result.error.type === 'validation_error') {
+							errorDiv.textContent = result.error.message || '支払いに失敗しました。';
+						} else {
+							errorDiv.textContent = '予期せぬエラーが発生しました。';
+						}
+						errorDiv.style.display = 'block';
+					}
+					submitButton.disabled = false;
+				} else {
+					window.location.href = returnUrl;
+				}
+			});
+		});
+	})();
+	</script>
+</body>
+
+</html>

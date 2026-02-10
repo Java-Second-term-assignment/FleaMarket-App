@@ -29,6 +29,7 @@
 								<div class="order-item-meta">
 									<span class="order-item-id" th:text="'注文番号: ' + ${#strings.substring(o.orderId.toString(), 0, 8)}">注文番号</span>
 									<span class="order-item-status status-badge" th:classappend="${o.status != null ? 'status-' + o.status : ''}" th:switch="${o.status}">
+										<span th:case="'PENDING'">支払待ち</span>
 										<span th:case="'PAID'">支払済み</span>
 										<span th:case="'AWAITING_SHIPMENT'">発送待ち</span>
 										<span th:case="'SHIPPED'">発送済み</span>
